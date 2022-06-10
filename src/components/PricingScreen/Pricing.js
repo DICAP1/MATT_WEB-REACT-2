@@ -89,7 +89,7 @@ export default function Pricing() {
             justifyContent="center"
             alignItems="center"
           >
-          
+
            <DoneRoundedIcon  sx={ {fontSize : '15px', margin :'10px' , padding : '2px' ,  color : 'white' ,  backgroundColor: 'rgb(39,39,41)' , border : 'none' , borderRadius : '50%'}}/>
 
             <p>No commitments, cancel any time. </p>
@@ -154,10 +154,10 @@ export default function Pricing() {
                         borderRadius: tier.subheader === "Most popular" ? '0px 0px 15px 15px' : '15px 15px 15px 15px',
                         border:tier.subheader === "Most popular" ? '2px solid #ee6535' : '2px solid rgb(30,30,30)',
                         // width :400
-                  
+
                     }}
                   >
-                  
+
                     <Box
                       sx={{
                         display: "flex",
@@ -253,12 +253,12 @@ export default function Pricing() {
                             lineHeight: 0.5,
                           }}
                         >
-                          
+
                           {line}
                         </Typography>
                       </Grid>
-                       
-                        
+
+
                       ))}
                     </ul>
                   </CardContent>

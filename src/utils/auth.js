@@ -18,3 +18,13 @@ export function confirmEmail(token) {
     },
   }).then(res => res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`));
 }
+
+export function signIn(userData) {
+  return fetch(`${BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userData)
+  }).then(res => res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`));
+}

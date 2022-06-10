@@ -7,13 +7,14 @@ export const authSlice = createSlice({
       email: '',
       name: '',
       lastName: '',
-      password: ''
+      password: '',
+      isAuthenticated: false
     }
   },
   reducers: {
     setUser: (state, action) => {
       state.user = {...state.user, ...action.payload};
-    },
+    }
   }
 });
 

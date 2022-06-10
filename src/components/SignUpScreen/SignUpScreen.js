@@ -54,7 +54,7 @@ export default function SignUp() {
         register(userData)
           .then(data => {
             if (data) {
-              navigate('../');
+              navigate('../login');
             }
           })
           .catch(err => console.log(err)); // todo add logic

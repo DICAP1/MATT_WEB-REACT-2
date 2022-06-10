@@ -1,27 +1,28 @@
-import * as React from "react";
+import * as React from 'react';
 import {useState} from 'react';
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import "./style.css";
-import facebook from "../../assets/Icons/facebook.png";
-import google from "../../assets/Icons/google.png";
-import linkedin from "../../assets/Icons/linkedin.png";
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import './style.css';
+import facebook from '../../assets/Icons/facebook.png';
+import google from '../../assets/Icons/google.png';
+import linkedin from '../../assets/Icons/linkedin.png';
 import Logo from '../Logo/Logo';
-import MainScreen from "../MainScreen/MainScreen";
+import MainScreen from '../MainScreen/MainScreen';
 import {Link, useLocation, useNavigate} from 'react-router-dom';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import {useSelector} from 'react-redux';
-import {confirmEmail} from '../../utils/auth';
+import {useDispatch, useSelector} from 'react-redux';
+import {confirmEmail, signIn} from '../../utils/auth';
+import {setUser} from '../../slices/authSlice';
 
 // const theme = createTheme();
 
 export default function SignIn() {
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const hash = useLocation().hash;
 
@@ -32,7 +33,7 @@ export default function SignIn() {
       .then(data => {
         if (data) {
           console.log(data);
-          navigate('../');
+          navigate('../login');
         }
       })
       .catch(err => console.log(err)); // todo add logic
@@ -40,11 +41,28 @@ export default function SignIn() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
+
+    if (isValid) {
+      const data = new FormData(form);
+      const email = data.get('email');
+      const password = data.get('password');
+      const userData = {email, password};
+
+      signIn(userData)
+        .then(data => {
+          if (data.status === 'success') {
+            console.log(data);
+            dispatch(setUser({isAuthenticated: true, ...userData})); // todo put only what really need
+            navigate('../pricing');
+          }
+        })
+        .catch(err => console.log(err)); // todo add logic
+    } else {
+      console.log('not valid inputs');  // todo add logic
+    }
   };
 
   const [values, setValues] = React.useState({
@@ -56,7 +74,7 @@ export default function SignIn() {
   });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    setValues({...values, [prop]: event.target.value});
   };
 
   const handleClickShowPassword = () => {
@@ -82,18 +100,18 @@ export default function SignIn() {
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
+        sx={{padding: 5, paddingRight: {lg: 15, md: 0, sm: 0}}}
         square
         container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {/* </Grid> */}
@@ -102,20 +120,20 @@ export default function SignIn() {
             container
             direction="column"
             justifyContent="space-between"
-            sx={{ height: "88vh" }}
+            sx={{height: '88vh'}}
           >
             <Grid>
-              {" "}
+              {' '}
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
+                sx={{mt: 1, width: {md: 450, sm: 450, xs: 450},}}
               >
                 <Logo/>
                 <h1>Welcome Back!</h1>
-                <p style={{ marginBottom: 20 }}>
-                Stocks, Forex, Indices, Bonds, Equities
+                <p style={{marginBottom: 20}}>
+                  Stocks, Forex, Indices, Bonds, Equities
                 </p>
 
                 <Grid>
@@ -123,20 +141,20 @@ export default function SignIn() {
                 </Grid>
                 <TextField
                   sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
-                    "& .MuiOutlinedInput-root:hover": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
 
                   }}
                   inputProps={{
-                    style: { color: "white", fontSize: 15 , height:30 },
+                    style: {color: 'white', fontSize: 15, height: 30},
                   }}
 
                   className="inputField"
@@ -152,25 +170,24 @@ export default function SignIn() {
                 />
 
 
-
-                <Grid >
-                  <h5 >Password</h5>
+                <Grid>
+                  <h5>Password</h5>
                 </Grid>
                 <TextField
 
                   sx={{
-                    "& .MuiOutlinedInput-root ": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root ': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
-                    "& .MuiOutlinedInput-root:hover": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
                   }}
-                    inputProps={{ style: { color: "white",fontSize: 15 , height:30 } }}
+                  inputProps={{style: {color: 'white', fontSize: 15, height: 30}}}
 
 
                   className="inputField"
@@ -181,22 +198,23 @@ export default function SignIn() {
                   size="small"
                   name="password"
                   type={values.showPassword ? 'text' : 'password'}
-            value={values.password}
-            onChange={handleChange('password')}
+                  value={values.password}
+                  onChange={handleChange('password')}
                   id="password"
                   autoComplete="current-password"
                   InputProps={{
                     endAdornment: (
                       <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {values.showPassword ? <VisibilityOff  sx={{color: 'gray'}}/> : <Visibility sx={{color: 'gray'}}/>}
-                      </IconButton>
-                    </InputAdornment>
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {values.showPassword ? <VisibilityOff sx={{color: 'gray'}}/> :
+                            <Visibility sx={{color: 'gray'}}/>}
+                        </IconButton>
+                      </InputAdornment>
                     ),
                   }}
 
@@ -208,10 +226,10 @@ export default function SignIn() {
                   alignItems="flex-end"
                 >
                   <Link
-                    to={"/forgotPassword"}
+                    to={'/forgotPassword'}
                     style={{
-                      textDecoration: "none",
-                      color: "white",
+                      textDecoration: 'none',
+                      color: 'white',
                       fontSize: 13,
                     }}
                   >
@@ -222,7 +240,7 @@ export default function SignIn() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
+                  sx={{mt: 3, mb: 2, backgroundColor: '#ff6838', textTransform: 'none', fontWeight: 'normal'}}
 
                 >
                   Sign In
@@ -237,14 +255,14 @@ export default function SignIn() {
                   <p>Or continue with this social profile</p>
                 </Grid>
                 <Grid container direction="row" justifyContent="center">
-                  <span className="icon" >
-                    <img src={google} width="25px" height="25px" />
+                  <span className="icon">
+                    <img src={google} width="25px" height="25px"/>
                   </span>
                   <span className="icon">
-                    <img src={facebook} width="25px" height="25px" />
+                    <img src={facebook} width="25px" height="25px"/>
                   </span>
                   <span className="icon">
-                    <img src={linkedin} width="25px" height="25px" />{" "}
+                    <img src={linkedin} width="25px" height="25px"/>{' '}
                   </span>
                 </Grid>
               </Box>
@@ -256,16 +274,16 @@ export default function SignIn() {
                 justifyContent="center"
                 alignItems="center"
               >
-                <p style={{ color: "rgb(209, 209, 209)" }}>
+                <p style={{color: 'rgb(209, 209, 209)'}}>
                   Don't have an account? &nbsp;
                 </p>
 
                 <Link
-                  to="/preSignUp"
+                  to="/register"
                   style={{
-                    color: "#ee6535",
+                    color: '#ee6535',
                     fontSize: 13,
-                    textDecoration: "none",
+                    textDecoration: 'none',
                   }}
                 >
                   Sign Up
