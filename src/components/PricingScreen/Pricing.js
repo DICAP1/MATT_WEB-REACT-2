@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {useState} from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Card from '@mui/material/Card';
@@ -9,10 +10,9 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Switch from '@mui/material/Switch';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import {Link, useNavigate} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import {useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {setBilling} from '../../slices/billingSlice';
 
 const tiers = [
@@ -66,23 +66,22 @@ const tiers = [
 
 export default function Pricing() {
 
-  const [isMonthly, setIsMonthly] = useState(true);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const isMonthlyInit = useSelector(state => state.billing.isMonthly);
+  const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
 
   function handleTerm() {
     setIsMonthly(!isMonthly);
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function handleClick(planData) {
+    return function (event) {
+      event.preventDefault();
 
-    const form = event.currentTarget;
-    const price = form.querySelector('.price').textContent.slice(1);
-    const plan = form.querySelector('.plan-name').textContent;
-
-    dispatch(setBilling({price, plan, isMonthly}));
-    navigate('../setup-payment');
+      dispatch(setBilling({price: planData.price, plan: planData.title, isMonthly}));
+      navigate('../setup-payment');
+    };
   }
 
   return (
@@ -195,7 +194,6 @@ export default function Pricing() {
 
                   <CardContent
                     sx={{
-                      border: '2px solid #ee6535',
                       minHeight: 450,
                       backgroundColor:
                         tier.subheader === 'Most popular' ? '#181212' : null,
@@ -207,9 +205,6 @@ export default function Pricing() {
                   >
 
                     <Box
-                      component="form"
-                      noValidate
-                      onSubmit={handleSubmit}
                       sx={{
                         display: 'flex',
                         justifyContent: 'space-between',
@@ -245,18 +240,10 @@ export default function Pricing() {
                           <h1 className="head price">${tier.price}</h1>
                           <p>/{isMonthly ? 'mo' : 'year'}</p>
                         </Grid>
-                        {/*<Link*/}
-                        {/*  to={'/setup-payment'}*/}
-                        {/*  style={{*/}
-                        {/*    width: '100%',*/}
-                        {/*    // color: "#ee6535",*/}
-                        {/*    // fontSize: 13,*/}
-                        {/*    textDecoration: 'none',*/}
-                        {/*  }}*/}
-                        {/*>*/}
                         {' '}
                         <Button
-                          type="submit"
+                          type="button"
+                          onClick={handleClick(tier)}
                           // variant="contained"
                           fullWidth
                           variant={tier.buttonVariant}
@@ -280,7 +267,6 @@ export default function Pricing() {
                         >
                           {tier.btn}
                         </Button>
-                        {/*</Link>*/}
                       </Grid>
                     </Box>
                     <ul>

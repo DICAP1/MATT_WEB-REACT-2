@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 export const billingSlice = createSlice({
   name: 'billing',
   initialState: {
-    isMonthly: '',
+    isMonthly: true,
     plan: '',
     price: ''
   },
