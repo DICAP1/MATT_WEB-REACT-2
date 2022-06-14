@@ -26,20 +26,6 @@ export default function SignIn() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  useEffect(() => {
-    if (searchParams.has('confirm')) {
-      const token = searchParams.get('confirm');
-
-      confirmEmail(token)
-        .then(data => {
-          if (data) {
-            setSearchParams('', {replace: true});
-          }
-        })
-        .catch(err => console.log(err)); // todo add logic
-    }
-  }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -88,6 +74,20 @@ export default function SignIn() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  useEffect(() => {
+    if (searchParams.has('confirm')) {
+      const token = searchParams.get('confirm');
+
+      confirmEmail(token)
+        .then(data => {
+          if (data) {
+            setSearchParams('', {replace: true});
+          }
+        })
+        .catch(err => console.log(err)); // todo add logic
+    }
+  }, []);
 
   return (
     <MainScreen>
