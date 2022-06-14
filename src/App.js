@@ -11,18 +11,21 @@ import SetupPayment from './components/SetupPaymentScreen/SetupPayment';
 import SelectBroker from './components/SelectBrokerScreen/SelectBroker';
 import ForgotPasswordVerifyOTP from './components/ForgotPasswordVerifyOTPScreen/ForgotPasswordVerifyOTP';
 import {RequireAuth} from './components/RequireAuth/RequireAuth';
+import CheckHash from './components/CheckHash/CheckHash';
 
 function App() {
   return (
     <div className="App">
       <Routes>
+        <Route path="/" element={<CheckHash/>}/>
         <Route path="/register" element={<PreSignUp/>}/>
         <Route path="/create-account" element={<SignUp/>}/>
         <Route path="/login" element={<SignIn/>}/>
         <Route path="/pricing" element={
           <RequireAuth redirectTo="/login">
             <Pricing/>
-          </RequireAuth>}/>
+          </RequireAuth>}
+        />
         {/*<Route path="/verifyEmailOTP" element={<VerifyEmailOTP />} />*/}
         {/*<Route path="/verifyPhoneOTP" element={<VerifyPhoneOTP />} />*/}
         <Route path="/forgotPasswordVerifyOTP" element={<ForgotPasswordVerifyOTP/>}/>
@@ -31,7 +34,7 @@ function App() {
         <Route path="/createNewPassword" element={<CreateNewPassword/>}/>
         <Route path="/setupPayment" element={<SetupPayment/>}/>
         <Route path="/selectBroker" element={<SelectBroker/>}/>
-        <Route path="*" element={<Navigate to="/login" replace/>}/> // todo change to '/'
+        <Route path="*" element={<Navigate to="/" replace/>}/>
       </Routes>
     </div>
   )

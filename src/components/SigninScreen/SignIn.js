@@ -24,20 +24,6 @@ import {setUser} from '../../slices/authSlice';
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const hash = useLocation().hash;
-
-  if (hash.includes('#/account/confirm/')) {
-    const token = hash.substring(hash.lastIndexOf('/') + 1);
-    console.log(token);
-    confirmEmail(token)
-      .then(data => {
-        if (data) {
-          console.log(data);
-          navigate('../login');
-        }
-      })
-      .catch(err => console.log(err)); // todo add logic
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -87,9 +73,6 @@ export default function SignIn() {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-
-  const auth = useSelector(state => state.auth);
-  console.log(auth);
 
   return (
     <MainScreen>
