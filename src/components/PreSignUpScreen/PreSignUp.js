@@ -33,7 +33,7 @@ export default function PreSignUp() {
       const email = data.get('email');
 
       dispatch(setUser({email}));
-      navigate('../signUp');
+      navigate('../create-account');
     } else {
       // todo add logic
       console.log('not valid email address');

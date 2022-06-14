@@ -1,29 +1,59 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Logo from '../Logo/Logo';
-import { Link } from "react-router-dom";
-import MainScreen from "../MainScreen/MainScreen";
+import {Link, useNavigate, useSearchParams} from 'react-router-dom';
+import MainScreen from '../MainScreen/MainScreen';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+import {setUser} from '../../slices/authSlice';
+import {register, setPassword} from '../../utils/auth';
 
-const label = { inputProps: { "aria-label": "Checkbox demo" } };
+const label = {inputProps: {'aria-label': 'Checkbox demo'}};
 
 // const theme = createTheme();
 
 export default function CreateNewPassword() {
+
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      password: data.get("password"),
-      confirmPassword: data.get("ConfirmPassword"),
-    });
+
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
+
+    if (isValid) {
+      const data = new FormData(form);
+      const password = data.get('password');
+      const retypePassword = data.get('confirmPassword');
+      const isPasswordEqual = password === retypePassword;
+
+      if (isPasswordEqual && searchParams.has('reset-token')) {
+
+        const token = searchParams.get('reset-token');
+        const newPassword = {new_password: password};
+
+        setPassword(token, newPassword)
+          .then(data => {
+            if (data.status === 'success') {
+              navigate('../login');
+            }
+          })
+          .catch(err => console.log(err)); // todo add logic
+      } else {
+        console.log('passwords are not the same'); // todo add logic
+      }
+    } else {
+      console.log('not valid fields'); // todo add logic
+    }
   };
+
   const [values, setValues] = React.useState({
     amount: '',
     password: '',
@@ -35,7 +65,7 @@ export default function CreateNewPassword() {
   });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value });
+    setValues({...values, [prop]: event.target.value});
   };
 
   const handleClickShowPassword = () => {
@@ -59,18 +89,18 @@ export default function CreateNewPassword() {
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
+        sx={{padding: 5, paddingRight: {lg: 15, md: 0, sm: 0}}}
         square
         container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {/* </Grid> */}
@@ -79,15 +109,15 @@ export default function CreateNewPassword() {
             container
             direction="column"
             justifyContent="space-between"
-            sx={{ height: "88vh" }}
+            sx={{height: '88vh'}}
           >
             <Grid>
-              {" "}
+              {' '}
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
+                sx={{mt: 1, width: {md: 450, sm: 450, xs: 450},}}
               >
                 <Logo/>
                 <h1>Create new password</h1>
@@ -102,117 +132,110 @@ export default function CreateNewPassword() {
                 </Grid>
                 <TextField
 
-                sx={{
-                  "& .MuiOutlinedInput-root ": {
-                    "& > fieldset": {
-                      borderColor: "rgb(39, 39, 39)",
+                  sx={{
+                    '& .MuiOutlinedInput-root ': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
+                      },
                     },
-                  },
-                  "& .MuiOutlinedInput-root:hover": {
-                    "& > fieldset": {
-                      borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
+                      },
                     },
-                  },
-                }}
-                  inputProps={{ style: { color: "white",fontSize: 15 , height:30 } }}
+                  }}
+                  inputProps={{style: {color: 'white', fontSize: 15, height: 30}}}
 
 
-                className="inputField"
-                margin="normal"
-                placeholder="Create password"
-                required
-                fullWidth
-                size="small"
-                name="password"
-            onChange={handleChange('password')}
+                  className="inputField"
+                  margin="normal"
+                  placeholder="Create password"
+                  required
+                  fullWidth
+                  size="small"
+                  name="password"
+                  onChange={handleChange('password')}
 
-                type={values.showPassword ? 'text' : 'password'}
-                value={values.password}
-                id="password"
-                autoComplete="current-password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? <VisibilityOff sx={{color: 'gray'}}/> : <Visibility sx={{color: 'gray'}}/>}
-                    </IconButton>
-                  </InputAdornment>
-                  ),
-                }}
+                  type={values.showPassword ? 'text' : 'password'}
+                  value={values.password}
+                  id="password"
+                  autoComplete="current-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {values.showPassword ? <VisibilityOff sx={{color: 'gray'}}/> :
+                            <Visibility sx={{color: 'gray'}}/>}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
 
-              />
+                />
 
                 <Grid>
                   <h5>Confirm password</h5>
                 </Grid>
                 <TextField
 
-                sx={{
-                  "& .MuiOutlinedInput-root ": {
-                    "& > fieldset": {
-                      borderColor: "rgb(39, 39, 39)",
+                  sx={{
+                    '& .MuiOutlinedInput-root ': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
+                      },
                     },
-                  },
-                  "& .MuiOutlinedInput-root:hover": {
-                    "& > fieldset": {
-                      borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
+                      },
                     },
-                  },
-                }}
-                  inputProps={{ style: { color: "white",fontSize: 15 , height:30 } }}
-
-
-                className="inputField"
-                margin="normal"
-                placeholder="Re enter password"
-                required
-                fullWidth
-                size="small"
-                name="confirmPassword"
-                type={values.showConfirmPassword ? 'text' : 'password'}
-                value={values.confirmPassword}
-            onChange={handleChange('confirmPassword')}
-
-                id="confirmPassword"
-                autoComplete="current-password"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showConfirmPassword ? <VisibilityOff sx={{color: 'gray'}}/> : <Visibility sx={{color: 'gray'}}/>}
-                    </IconButton>
-                  </InputAdornment>
-                  ),
-                }}
-
-              />
-                <Link
-                  to={"/"}
-                  style={{
-                    color: "#ee6535",
-                    fontSize: 13,
-                    textDecoration: "none",
                   }}
+                  inputProps={{style: {color: 'white', fontSize: 15, height: 30}}}
+
+
+                  className="inputField"
+                  margin="normal"
+                  placeholder="Re enter password"
+                  required
+                  fullWidth
+                  size="small"
+                  name="confirmPassword"
+                  type={values.showConfirmPassword ? 'text' : 'password'}
+                  value={values.confirmPassword}
+                  onChange={handleChange('confirmPassword')}
+
+                  id="confirmPassword"
+                  autoComplete="current-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {values.showConfirmPassword ? <VisibilityOff sx={{color: 'gray'}}/> :
+                            <Visibility sx={{color: 'gray'}}/>}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{mt: 3, mb: 2, backgroundColor: '#ff6838', textTransform: 'none', fontWeight: 'normal'}}
                 >
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
-                  >
-                    Continue
-                  </Button>
-                </Link>
+                  Continue
+                </Button>
               </Box>
             </Grid>
             <Grid>

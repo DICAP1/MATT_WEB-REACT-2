@@ -67,7 +67,7 @@ export default function Paypal() {
             sx={{ mt: 1 }}
           >
             <Grid>
-            <Grid 
+            <Grid
                 container
                 direction="row"
                 justifyContent="flex-start"
@@ -76,9 +76,9 @@ export default function Paypal() {
 
 <h3>Paypal</h3>
               <img src={visa} width="40px" height="25px" style={{  borderRadius: 3 , margin : '5px'}}/>{" "}
-          
+
              </Grid>
-            
+
               <hr
                 style={{
                   border: "1px solid rgb(41, 40, 40)",
@@ -127,7 +127,7 @@ export default function Paypal() {
                   <h5>Password</h5>
                 </Grid>
                 <TextField
-                
+
                   sx={{
                     "& .MuiOutlinedInput-root ": {
                       "& > fieldset": {
@@ -169,7 +169,7 @@ export default function Paypal() {
                     </InputAdornment>
                     ),
                   }}
-                 
+
                 />
               </Grid>
             </Grid>
@@ -231,7 +231,7 @@ export default function Paypal() {
           </Grid>
         </Box>
         <Link
-          to={"/selectBroker"}
+          to={"/select-broker"}
           style={{
             color: "#ee6535",
             fontSize: 13,
@@ -244,7 +244,7 @@ export default function Paypal() {
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2, backgroundColor: "#ee6535" }}
-            
+
           >
             Next
           </Button>

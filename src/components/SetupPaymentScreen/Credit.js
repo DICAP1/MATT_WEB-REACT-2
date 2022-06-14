@@ -39,7 +39,7 @@ export default function Credit() {
             sx={{ mt: 1 }}
           >
             <Grid>
-               <Grid 
+               <Grid
                 container
                 direction="row"
                 justifyContent="flex-start"
@@ -64,7 +64,7 @@ export default function Credit() {
                 justifyContent="space-between"
                 alignItems="center"
                 spacing={1}
-                
+
               >
                 <Grid item xs={6} >
                   <Grid>
@@ -160,7 +160,7 @@ export default function Credit() {
                     // autoComplete="email"
                   />
                 </Grid>
-              
+
                 <Grid item xs={6}>
                   <Grid>
                     <h5>Expiration Date</h5>
@@ -285,7 +285,7 @@ export default function Credit() {
           </Grid>
         </Box>
         <Link
-          to={"/selectBroker"}
+          to={"/select-broker"}
           style={{
             color: "#ee6535",
             fontSize: 13,

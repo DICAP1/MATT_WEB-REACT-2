@@ -1,44 +1,59 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import Logo from '../Logo/Logo';
-import MainScreen from "../MainScreen/MainScreen";
-import { Link } from "react-router-dom";
+import MainScreen from '../MainScreen/MainScreen';
+import {Link, useNavigate, useSearchParams} from 'react-router-dom';
+import {resetPassword} from '../../utils/auth';
 
 // const theme = createTheme();
 
 export default function ForgotPassword() {
+  const navigate = useNavigate();
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-    });
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
+
+    if (isValid) {
+      const data = new FormData(form);
+      const email = data.get('email');
+
+      resetPassword(email)
+        .then(data => {
+          if (data.status === 'success') {
+            navigate('../login');
+          }
+        })
+        .catch(err => console.log(err)); // todo add logic;
+
+    }
   };
 
   return (
     <MainScreen>
-       <Grid
+      <Grid
         className="leftSide"
 
         xs={12}
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
+        sx={{padding: 5, paddingRight: {lg: 15, md: 0, sm: 0}}}
         square
         container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {/* </Grid> */}
@@ -47,19 +62,19 @@ export default function ForgotPassword() {
             container
             direction="column"
             justifyContent="space-between"
-            sx={{ height: "88vh" }}
+            sx={{height: '88vh'}}
           >
             <Grid>
-              {" "}
-             <Box
+              {' '}
+              <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
+                sx={{mt: 1, width: {md: 450, sm: 450, xs: 450},}}
               >
                 <Logo/>
                 <h1>Forgot Password</h1>
-                <p style={{ marginBottom: 20 }}>
+                <p style={{marginBottom: 20}}>
                   Enter the email address you have registered with Traider
                 </p>
 
@@ -68,18 +83,18 @@ export default function ForgotPassword() {
                 </Grid>
                 <TextField
                   sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
-                    "& .MuiOutlinedInput-root:hover": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
                   }}
-                    inputProps={{ style: { color: "white",fontSize: 15 , height:30 } }}
+                  inputProps={{style: {color: 'white', fontSize: 15, height: 30}}}
 
 
                   className="inputField"
@@ -93,23 +108,15 @@ export default function ForgotPassword() {
                   autoComplete="email"
                 />
 
-                <Link
-                  to={"/forgotPasswordVerifyOTP"}
-                  style={{
-                    textDecoration: "none",
-                    color: "white",
-                    fontSize: 13,
-                  }}
+
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{mt: 3, mb: 2, backgroundColor: '#ff6838', textTransform: 'none', fontWeight: 'normal'}}
                 >
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
-                  >
-                    Continue
-                  </Button>
-                </Link>
+                  Continue
+                </Button>
               </Box>
             </Grid>
             <Grid>
@@ -127,4 +134,4 @@ export default function ForgotPassword() {
       </Grid>
     </MainScreen>
   );
-}
+};
