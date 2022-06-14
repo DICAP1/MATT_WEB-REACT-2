@@ -28,3 +28,22 @@ export function signIn(userData) {
     body: JSON.stringify(userData)
   }).then(res => res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`));
 }
+
+export function resetPassword(email) {
+  return fetch(`${BASE_URL}/users/forgotPw?email=${email}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+  }).then(res => res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`));
+}
+
+export function setPassword(token, password) {
+  return fetch(`${BASE_URL}/users/resetPw/${token}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(password)
+  }).then(res => res.ok ? res.json() : Promise.reject(`Ошибка ${res.status}`));
+}

@@ -78,7 +78,7 @@ alignItems="center"
                     </p>
 
                     <Link
-                      to="/forgotPassword"
+                      to="/forgot-password"
                       variant="body2"
                       underline="none"
                       sx={{ color: "#ee6535", fontSize: 13 }}
@@ -150,7 +150,7 @@ alignItems="center"
                   />
                 </Grid>
                 <Link
-                  to={"/createNewPassword"}
+                  to={"/create-password"}
                   style={{
                     color: "#ee6535",
                     fontSize: 13,

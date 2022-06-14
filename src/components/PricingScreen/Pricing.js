@@ -195,7 +195,7 @@ export default function Pricing() {
                           <p>/mo</p>
                         </Grid>
                         <Link
-                          to={"/setupPayment"}
+                          to={"/setup-payment"}
                           style={{
                             width: '100%',
                             // color: "#ee6535",

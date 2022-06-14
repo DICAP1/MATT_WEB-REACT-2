@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {useState} from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -10,20 +9,36 @@ import google from '../../assets/Icons/google.png';
 import linkedin from '../../assets/Icons/linkedin.png';
 import Logo from '../Logo/Logo';
 import MainScreen from '../MainScreen/MainScreen';
-import {Link, useLocation, useNavigate} from 'react-router-dom';
+import {Link, useNavigate, useSearchParams} from 'react-router-dom';
 import InputAdornment from '@mui/material/InputAdornment';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {confirmEmail, signIn} from '../../utils/auth';
 import {setUser} from '../../slices/authSlice';
+import {useEffect} from 'react';
 
 // const theme = createTheme();
 
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.has('confirm')) {
+      const token = searchParams.get('confirm');
+
+      confirmEmail(token)
+        .then(data => {
+          if (data) {
+            setSearchParams('', {replace: true});
+          }
+        })
+        .catch(err => console.log(err)); // todo add logic
+    }
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -209,7 +224,7 @@ export default function SignIn() {
                   alignItems="flex-end"
                 >
                   <Link
-                    to={'/forgotPassword'}
+                    to={'/forgot-password'}
                     style={{
                       textDecoration: 'none',
                       color: 'white',

@@ -11,13 +11,17 @@ import SetupPayment from './components/SetupPaymentScreen/SetupPayment';
 import SelectBroker from './components/SelectBrokerScreen/SelectBroker';
 import ForgotPasswordVerifyOTP from './components/ForgotPasswordVerifyOTPScreen/ForgotPasswordVerifyOTP';
 import {RequireAuth} from './components/RequireAuth/RequireAuth';
-import CheckHash from './components/CheckHash/CheckHash';
+import Main from './components/Main/Main';
 
 function App() {
   return (
     <div className="App">
       <Routes>
-        <Route path="/" element={<CheckHash/>}/>
+        <Route path="/" element={
+          <RequireAuth redirectTo="/login">
+            <Main/>
+          </RequireAuth>}
+        />
         <Route path="/register" element={<PreSignUp/>}/>
         <Route path="/create-account" element={<SignUp/>}/>
         <Route path="/login" element={<SignIn/>}/>
@@ -26,14 +30,22 @@ function App() {
             <Pricing/>
           </RequireAuth>}
         />
+        <Route path="/setup-payment" element={
+          <RequireAuth redirectTo="/login">
+            <SetupPayment/>
+          </RequireAuth>}
+        />
+        <Route path="/select-broker" element={
+          <RequireAuth redirectTo="/login">
+            <SelectBroker/>
+          </RequireAuth>}
+        />
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
+        <Route path="/create-password" element={<CreateNewPassword/>}/>
         {/*<Route path="/verifyEmailOTP" element={<VerifyEmailOTP />} />*/}
         {/*<Route path="/verifyPhoneOTP" element={<VerifyPhoneOTP />} />*/}
-        <Route path="/forgotPasswordVerifyOTP" element={<ForgotPasswordVerifyOTP/>}/>
-        <Route path="/verifyPhoneNumber" element={<VerifyPhoneNumber/>}/>
-        <Route path="/forgotPassword" element={<ForgotPassword/>}/>
-        <Route path="/createNewPassword" element={<CreateNewPassword/>}/>
-        <Route path="/setupPayment" element={<SetupPayment/>}/>
-        <Route path="/selectBroker" element={<SelectBroker/>}/>
+        {/*<Route path="/forgotPasswordVerifyOTP" element={<ForgotPasswordVerifyOTP/>}/>*/}
+        {/*<Route path="/verifyPhoneNumber" element={<VerifyPhoneNumber/>}/>*/}
         <Route path="*" element={<Navigate to="/" replace/>}/>
       </Routes>
     </div>
@@ -42,3 +54,5 @@ function App() {
 }
 
 export default App;
+
+///confirm/:token
