@@ -1,14 +1,15 @@
-import * as React from "react";
-import { useState } from "react";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import "./style.css";
-import Credit from "./Credit";
-import Paypal from "./Paypal";
+import * as React from 'react';
+import {useState} from 'react';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import './style.css';
+import Credit from './Credit';
+import Paypal from './Paypal';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import MainPricingDashboard from "../MainPricingDashboard/MainPricingDashboard";
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
+import {useSelector} from 'react-redux';
 
 export default function SetupPayment(props) {
   const [credit, setCredit] = useState(true);
@@ -18,21 +19,21 @@ export default function SetupPayment(props) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      email: data.get('email'),
+      password: data.get('password'),
     });
   };
   return (
     <React.Fragment>
       <MainPricingDashboard>
-        <Grid sx={{ backgroundColor: "#0f0f11" }}>
+        <Grid sx={{backgroundColor: '#0f0f11'}}>
           {/* Hero unit */}
 
           {/* End hero unit */}
           <Container
             maxWidth="lg"
             component="main"
-            sx={{ backgroundColor: "none", height: "100vh" }}
+            sx={{backgroundColor: 'none', height: '100vh'}}
           >
             <Grid
               container
@@ -57,10 +58,26 @@ export default function SetupPayment(props) {
               justifyContent="center"
               alignItems="center"
             >
-                        <DoneRoundedIcon  sx={ {fontSize : '15px', margin :'10px' , padding : '2px' ,  color : 'white' ,  backgroundColor: 'rgb(39,39,41)' , border : 'none' , borderRadius : '50%'}}/>
+              <DoneRoundedIcon sx={{
+                fontSize: '15px',
+                margin: '10px',
+                padding: '2px',
+                color: 'white',
+                backgroundColor: 'rgb(39,39,41)',
+                border: 'none',
+                borderRadius: '50%'
+              }}/>
 
               <p>No commitments, cancel any time. </p>
-              <DoneRoundedIcon  sx={ {fontSize : '15px', margin :'10px' , padding : '2px' ,  color : 'white' ,  backgroundColor: 'rgb(39,39,41)' , border : 'none' , borderRadius : '50%'}}/>
+              <DoneRoundedIcon sx={{
+                fontSize: '15px',
+                margin: '10px',
+                padding: '2px',
+                color: 'white',
+                backgroundColor: 'rgb(39,39,41)',
+                border: 'none',
+                borderRadius: '50%'
+              }}/>
 
               <p> Cancel online any time</p>
             </Grid>
@@ -70,12 +87,12 @@ export default function SetupPayment(props) {
                 px={3}
                 sx={{
                   marginTop: 3,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  backgroundColor: "#141415",
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  backgroundColor: '#141415',
                   borderRadius: 2,
-                  border: "1px solid rgb(41, 41, 41 , 0.3)",
+                  border: '1px solid rgb(41, 41, 41 , 0.3)',
                 }}
               >
                 <Grid
@@ -86,16 +103,17 @@ export default function SetupPayment(props) {
                   spacing={1}
                 >
                   <Grid item md={6} sm={6} xs={6}>
-                    {" "}
+                    {' '}
                     <Button
                       fullWidth
-                      variant={credit ? "contained" : "outlined"}
-                      sx={{ fontSize: 12,
-                        border : credit ?null : 'none' ,
-                      color:'white',
-                    textTransform: 'none',
-                    fontWeight : 400
-                    }}
+                      variant={credit ? 'contained' : 'outlined'}
+                      sx={{
+                        fontSize: 12,
+                        border: credit ? null : 'none',
+                        color: 'white',
+                        textTransform: 'none',
+                        fontWeight: 400
+                      }}
                       onClick={() => {
                         setDebit(false);
                         setCredit(true);
@@ -105,15 +123,16 @@ export default function SetupPayment(props) {
                     </Button>
                   </Grid>
                   <Grid item md={6} sm={6} xs={6}>
-                    {" "}
+                    {' '}
                     <Button
                       fullWidth
-                      variant={debit ? "contained" : "outlined"}
-                      sx={{ fontSize: 12, m: 1 ,
-                      border : debit ?null : 'none' ,
-                      color:'white',
-                      textTransform: 'none',
-                    fontWeight : 400
+                      variant={debit ? 'contained' : 'outlined'}
+                      sx={{
+                        fontSize: 12, m: 1,
+                        border: debit ? null : 'none',
+                        color: 'white',
+                        textTransform: 'none',
+                        fontWeight: 400
 
                       }}
                       onClick={() => {
@@ -121,13 +140,13 @@ export default function SetupPayment(props) {
                         setCredit(false);
                       }}
                     >
-                      PayPal{" "}
+                      PayPal{' '}
                     </Button>
                   </Grid>
                 </Grid>
               </Box>
               {/* {props.children} */}
-              {credit ? <Credit /> : <Paypal />}
+              {credit ? <Credit/> : <Paypal/>}
             </Container>
           </Container>
         </Grid>

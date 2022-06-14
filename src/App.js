@@ -26,19 +26,22 @@ function App() {
         <Route path="/create-account" element={<SignUp/>}/>
         <Route path="/login" element={<SignIn/>}/>
         <Route path="/pricing" element={
-          <RequireAuth redirectTo="/login">
-            <Pricing/>
-          </RequireAuth>}
+          // <RequireAuth redirectTo="/login">
+          <Pricing/>
+          // </RequireAuth>
+        }
         />
         <Route path="/setup-payment" element={
-          <RequireAuth redirectTo="/login">
-            <SetupPayment/>
-          </RequireAuth>}
+          // <RequireAuth redirectTo="/login">
+          <SetupPayment/>
+          /*</RequireAuth>*/
+        }
         />
         <Route path="/select-broker" element={
-          <RequireAuth redirectTo="/login">
-            <SelectBroker/>
-          </RequireAuth>}
+          // <RequireAuth redirectTo="/login">
+          <SelectBroker/>
+          // </RequireAuth>
+        }
         />
         <Route path="/forgot-password" element={<ForgotPassword/>}/>
         <Route path="/create-password" element={<CreateNewPassword/>}/>
