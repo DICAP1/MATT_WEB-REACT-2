@@ -1,19 +1,20 @@
-import * as React from 'react'
-import { useState } from 'react'
-import Box from '@mui/material/Box'
-import Button from '@mui/material/Button'
-import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
-import Grid from '@mui/material/Grid'
-import Typography from '@mui/material/Typography'
-import Container from '@mui/material/Container'
-import Switch from '@mui/material/Switch'
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
-import { useNavigate } from 'react-router-dom'
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
-import { useDispatch, useSelector } from 'react-redux'
-import { setBilling } from '../../slices/billingSlice'
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardHeader from '@mui/material/CardHeader';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import Switch from '@mui/material/Switch';
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
+import { useNavigate } from 'react-router-dom';
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
+import { useDispatch, useSelector } from 'react-redux';
+import { setBilling } from '../../slices/billingSlice';
+import { getPlans } from '../../utils/stripe';
 
 const tiers = [
   {
@@ -61,28 +62,73 @@ const tiers = [
     buttonVariant: 'outlined',
     btn: 'Get Pro Plan',
   },
-]
+];
 
 export default function Pricing() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const isMonthlyInit = useSelector((state) => state.billing.isMonthly)
-  const [isMonthly, setIsMonthly] = useState(isMonthlyInit)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isMonthlyInit = useSelector((state) => state.billing.isMonthly);
+  const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
+  const [plans, setPlans] = useState([]);
 
   function handleTerm() {
-    setIsMonthly(!isMonthly)
+    setIsMonthly(!isMonthly);
   }
 
   function handleClick(planData) {
     return function (event) {
-      event.preventDefault()
+      event.preventDefault();
 
       dispatch(
-        setBilling({ price: planData.price, plan: planData.title, isMonthly })
-      )
-      navigate('../setup-payment')
-    }
+        setBilling({
+          price: planData.price,
+          plan: planData.title,
+          plan_id: planData.id,
+          isMonthly
+        })
+      );
+      navigate('../setup-payment');
+    };
   }
+
+  useEffect(() => {
+    getPlans()
+      .then((data) => {
+        if (Array.isArray(data.data)) {
+          const plansData = data.data;
+
+          setPlans(tiers.map((plan, ind) => {
+            if (plansData[ind]) {
+              return {
+                ...plan,
+                title: plansData[ind].nickname,
+                price: plansData[ind].amount / 100,
+                id: plansData[ind].id,
+              };
+            } else {
+              return plan;
+            }
+          }));
+
+          // plansData.forEach((plan, ind) => {
+          //   setPlans(prevPlans => {
+          //     console.log(prevPlans);
+          //     console.log(ind);
+          //     console.log(prevPlans[ind]);
+          //     prevPlans[ind].title = plan.nickname;
+          //     prevPlans[ind].price = plan.amount / 100;
+          //     prevPlans[ind].id = plan.id;
+          //   });
+          // });
+          // dispatch(setUser({
+          //   isAuthenticated: true,
+          //   auth_token: data.Authorization, ...userData, ...data.user
+          // }));
+          // navigate('../pricing');
+        }
+      })
+      .catch((err) => console.log(err)); // todo add logic;
+  }, []);
 
   return (
     <MainPricingDashboard>
@@ -93,7 +139,10 @@ export default function Pricing() {
         <Container
           maxWidth="xl"
           component="main"
-          sx={{ backgroundColor: 'none', height: '100vh' }}
+          sx={{
+            backgroundColor: 'none',
+            height: '100vh'
+          }}
         >
           <Grid
             container
@@ -156,7 +205,7 @@ export default function Pricing() {
             alignItems="center"
           >
             <h3>Monthly</h3>
-            <Switch checked={!isMonthly} onChange={handleTerm} />
+            <Switch checked={!isMonthly} onChange={handleTerm}/>
             <h3>Anually</h3>
           </Grid>
           <Grid
@@ -166,7 +215,7 @@ export default function Pricing() {
             alignItems="center"
             spacing={5}
           >
-            {tiers.map((tier) => (
+            {plans.map((tier) => (
               // Enterprise card is full width at sm breakpoint
               <Grid
                 item
@@ -242,7 +291,10 @@ export default function Pricing() {
                           >
                             {tier.title}
                           </h2>
-                          <p style={{ marginTop: 0, fontSize: '17px' }}>
+                          <p style={{
+                            marginTop: 0,
+                            fontSize: '17px'
+                          }}>
                             Free to use for 14 days
                           </p>
                         </Grid>
@@ -335,5 +387,5 @@ export default function Pricing() {
         </Container>
       </Grid>
     </MainPricingDashboard>
-  )
+  );
 }
