@@ -1,19 +1,19 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 export const billingSlice = createSlice({
   name: 'billing',
   initialState: {
     isMonthly: true,
     plan: '',
-    price: ''
+    price: '',
   },
   reducers: {
-    setBilling: (state, {payload}) => {
-      return {...payload};
-    }
-  }
-});
+    setBilling: (state, { payload }) => {
+      return { ...payload }
+    },
+  },
+})
 
-export const {setBilling} = billingSlice.actions;
+export const { setBilling } = billingSlice.actions
 
-export default billingSlice.reducer;
+export default billingSlice.reducer

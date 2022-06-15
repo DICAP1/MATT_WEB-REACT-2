@@ -1,9 +1,8 @@
-import {Navigate} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import { Navigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
-export const RequireAuth = ({children, redirectTo}) => {
+export const RequireAuth = ({ children, redirectTo }) => {
+  let isAuthenticated = useSelector((state) => state.auth.user.isAuthenticated)
 
-  let isAuthenticated = useSelector(state => state.auth.user.isAuthenticated);
-
-  return isAuthenticated ? children : <Navigate to={redirectTo} />;
+  return isAuthenticated ? children : <Navigate to={redirectTo} />
 }

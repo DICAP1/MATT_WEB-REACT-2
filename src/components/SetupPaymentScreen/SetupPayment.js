@@ -1,39 +1,39 @@
-import * as React from 'react';
-import {useState} from 'react';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import './style.css';
-import Credit from './Credit';
-import Paypal from './Paypal';
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import {useSelector} from 'react-redux';
+import * as React from 'react'
+import { useState } from 'react'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import './style.css'
+import Credit from './Credit'
+import Paypal from './Paypal'
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
+import { useSelector } from 'react-redux'
 
 export default function SetupPayment(props) {
-  const [credit, setCredit] = useState(true);
-  const [debit, setDebit] = useState(false);
+  const [credit, setCredit] = useState(true)
+  const [debit, setDebit] = useState(false)
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
-    });
-  };
+    })
+  }
   return (
     <React.Fragment>
       <MainPricingDashboard>
-        <Grid sx={{backgroundColor: '#0f0f11'}}>
+        <Grid sx={{ backgroundColor: '#0f0f11' }}>
           {/* Hero unit */}
 
           {/* End hero unit */}
           <Container
             maxWidth="lg"
             component="main"
-            sx={{backgroundColor: 'none', height: '100vh'}}
+            sx={{ backgroundColor: 'none', height: '100vh' }}
           >
             <Grid
               container
@@ -58,26 +58,30 @@ export default function SetupPayment(props) {
               justifyContent="center"
               alignItems="center"
             >
-              <DoneRoundedIcon sx={{
-                fontSize: '15px',
-                margin: '10px',
-                padding: '2px',
-                color: 'white',
-                backgroundColor: 'rgb(39,39,41)',
-                border: 'none',
-                borderRadius: '50%'
-              }}/>
+              <DoneRoundedIcon
+                sx={{
+                  fontSize: '15px',
+                  margin: '10px',
+                  padding: '2px',
+                  color: 'white',
+                  backgroundColor: 'rgb(39,39,41)',
+                  border: 'none',
+                  borderRadius: '50%',
+                }}
+              />
 
               <p>No commitments, cancel any time. </p>
-              <DoneRoundedIcon sx={{
-                fontSize: '15px',
-                margin: '10px',
-                padding: '2px',
-                color: 'white',
-                backgroundColor: 'rgb(39,39,41)',
-                border: 'none',
-                borderRadius: '50%'
-              }}/>
+              <DoneRoundedIcon
+                sx={{
+                  fontSize: '15px',
+                  margin: '10px',
+                  padding: '2px',
+                  color: 'white',
+                  backgroundColor: 'rgb(39,39,41)',
+                  border: 'none',
+                  borderRadius: '50%',
+                }}
+              />
 
               <p> Cancel online any time</p>
             </Grid>
@@ -112,11 +116,11 @@ export default function SetupPayment(props) {
                         border: credit ? null : 'none',
                         color: 'white',
                         textTransform: 'none',
-                        fontWeight: 400
+                        fontWeight: 400,
                       }}
                       onClick={() => {
-                        setDebit(false);
-                        setCredit(true);
+                        setDebit(false)
+                        setCredit(true)
                       }}
                     >
                       Credit or Debit Card
@@ -128,16 +132,16 @@ export default function SetupPayment(props) {
                       fullWidth
                       variant={debit ? 'contained' : 'outlined'}
                       sx={{
-                        fontSize: 12, m: 1,
+                        fontSize: 12,
+                        m: 1,
                         border: debit ? null : 'none',
                         color: 'white',
                         textTransform: 'none',
-                        fontWeight: 400
-
+                        fontWeight: 400,
                       }}
                       onClick={() => {
-                        setDebit(true);
-                        setCredit(false);
+                        setDebit(true)
+                        setCredit(false)
                       }}
                     >
                       PayPal{' '}
@@ -146,12 +150,11 @@ export default function SetupPayment(props) {
                 </Grid>
               </Box>
               {/* {props.children} */}
-              {credit ? <Credit/> : <Paypal/>}
+              {credit ? <Credit /> : <Paypal />}
             </Container>
           </Container>
         </Grid>
       </MainPricingDashboard>
     </React.Fragment>
-  );
+  )
 }
-
