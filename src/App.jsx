@@ -63,5 +63,3 @@ function App() {
 }
 
 export default App;
-
-/// confirm/:token
