@@ -1,44 +1,43 @@
-import * as React from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Logo from '../Logo/Logo';
-import MainScreen from "../MainScreen/MainScreen";
-import { Link } from "react-router-dom";
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Logo from '../Logo/Logo'
+import MainScreen from '../MainScreen/MainScreen'
+import { Link } from 'react-router-dom'
 
 // const theme = createTheme();
 
 export default function VerifyPhoneNumber() {
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
-      phoneNumber: data.get("phoneNumber"),
-    });
-  };
+      phoneNumber: data.get('phoneNumber'),
+    })
+  }
 
   return (
     <MainScreen>
       <Grid
         className="leftSide"
-
         xs={12}
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
+        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
         square
         container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {/* </Grid> */}
@@ -47,17 +46,17 @@ export default function VerifyPhoneNumber() {
             container
             direction="column"
             justifyContent="space-between"
-            sx={{ height: "88vh" }}
+            sx={{ height: '88vh' }}
           >
             <Grid>
-              {" "}
-             <Box
+              {' '}
+              <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
+                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Verify phone number</h1>
                 <p style={{ marginBottom: 20 }}>
                   Verify your phone number for your KYC
@@ -68,20 +67,20 @@ export default function VerifyPhoneNumber() {
                 </Grid>
                 <TextField
                   sx={{
-                    "& .MuiOutlinedInput-root": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
-                    "& .MuiOutlinedInput-root:hover": {
-                      "& > fieldset": {
-                        borderColor: "rgb(39, 39, 39)",
+                    '& .MuiOutlinedInput-root:hover': {
+                      '& > fieldset': {
+                        borderColor: 'rgb(39, 39, 39)',
                       },
                     },
                   }}
-                    inputProps={{ style: { color: "white",fontSize: 15 , height:30 } }}
-
-
+                  inputProps={{
+                    style: { color: 'white', fontSize: 15, height: 30 },
+                  }}
                   className="inputField"
                   margin="normal"
                   placeholder="10 digit number"
@@ -94,18 +93,24 @@ export default function VerifyPhoneNumber() {
                   // autoComplete="email"
                 />
                 <Link
-                  to={"/verifyPhoneOTP"}
+                  to={'/verifyPhoneOTP'}
                   style={{
-                    color: "#ee6535",
+                    color: '#ee6535',
                     fontSize: 13,
-                    textDecoration: "none",
+                    textDecoration: 'none',
                   }}
                 >
                   <Button
                     type="submit"
                     fullWidth
                     variant="contained"
-                    sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: '#ff6838',
+                      textTransform: 'none',
+                      fontWeight: 'normal',
+                    }}
                   >
                     Continue
                   </Button>
@@ -126,5 +131,5 @@ export default function VerifyPhoneNumber() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }

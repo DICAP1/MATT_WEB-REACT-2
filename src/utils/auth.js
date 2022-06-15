@@ -1,4 +1,4 @@
-const BASE_URL = 'https://demotraider.divergencecapital.com:5000/api/v1';
+const BASE_URL = 'https://demotraider.divergencecapital.com:5000/api/v1'
 
 export function register(userData) {
   return fetch(`${BASE_URL}/users/`, {
@@ -7,8 +7,9 @@ export function register(userData) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(userData),
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))));
+  }).then((res) =>
+    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
+  )
 }
 
 export function confirmEmail(token) {
@@ -17,8 +18,9 @@ export function confirmEmail(token) {
     headers: {
       'Content-Type': 'application/json',
     },
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))));
+  }).then((res) =>
+    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
+  )
 }
 
 export function signIn(userData) {
@@ -28,8 +30,9 @@ export function signIn(userData) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(userData),
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))));
+  }).then((res) =>
+    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
+  )
 }
 
 export function resetPassword(email) {
@@ -38,8 +41,9 @@ export function resetPassword(email) {
     headers: {
       'Content-Type': 'application/json',
     },
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))));
+  }).then((res) =>
+    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
+  )
 }
 
 export function setPassword(token, password) {
@@ -49,6 +53,7 @@ export function setPassword(token, password) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(password),
-  })
-    .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))));
+  }).then((res) =>
+    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
+  )
 }

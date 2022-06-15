@@ -1,48 +1,46 @@
-import * as React from "react";
-import { useState } from "react";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import * as React from 'react'
+import { useState } from 'react'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
-import Logo from '../Logo/Logo';
-import edit from "../../assets/Icons/write.png";
-import OtpInput from "react-otp-input";
-import MainScreen from "../MainScreen/MainScreen";
-import { Link } from "react-router-dom";
-
+import Logo from '../Logo/Logo'
+import edit from '../../assets/Icons/write.png'
+import OtpInput from 'react-otp-input'
+import MainScreen from '../MainScreen/MainScreen'
+import { Link } from 'react-router-dom'
 
 export default function VerifyPhoneOTP() {
-  const [otp, setOtp] = useState("");
-  const handleChange = (otp) => setOtp(otp);
+  const [otp, setOtp] = useState('')
+  const handleChange = (otp) => setOtp(otp)
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
       otp: otp,
-    });
-  };
+    })
+  }
 
   return (
     <MainScreen>
       <Grid
         className="leftSide"
-
         xs={12}
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
+        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
         square
         container
-  direction="row"
-  justifyContent="center"
-  alignItems="center"
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
             mx: 4,
-            display: "flex",
-            flexDirection: "column",
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
           {/* </Grid> */}
@@ -51,15 +49,15 @@ export default function VerifyPhoneOTP() {
             container
             direction="column"
             justifyContent="space-between"
-            sx={{ height: "88vh" }}
+            sx={{ height: '88vh' }}
           >
             <Grid>
-              {" "}
-             <Box
+              {' '}
+              <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
+                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
               >
                 <Grid
                   container
@@ -68,7 +66,12 @@ export default function VerifyPhoneOTP() {
                   alignItems="center"
                 >
                   <span style={{ marginRight: 10 }}>
-                    <img src={logo} width="30px" height="30px" style={{ border : '5px solid #ff6838' , borderRadius: 3}}/>{" "}
+                    <img
+                      src={logo}
+                      width="30px"
+                      height="30px"
+                      style={{ border: '5px solid #ff6838', borderRadius: 3 }}
+                    />{' '}
                   </span>
                   <h2> Traider</h2>
                 </Grid>
@@ -81,20 +84,20 @@ export default function VerifyPhoneOTP() {
                     // justifyContent="center"
                     alignItems="center"
                   >
-                    <p style={{ color: "#ee6535", margin: 0 }}>
+                    <p style={{ color: '#ee6535', margin: 0 }}>
                       +92 340 2745818 &nbsp;
                     </p>
 
                     <Link
-                      to={"/verifyPhoneNumber"}
+                      to={'/verifyPhoneNumber'}
                       style={{
-                        color: "#ee6535",
+                        color: '#ee6535',
                         fontSize: 13,
-                        textDecoration: "none",
+                        textDecoration: 'none',
                       }}
                     >
                       <span>
-                        <img src={edit} width="12px" height="12px" />{" "}
+                        <img src={edit} width="12px" height="12px" />{' '}
                       </span>
                     </Link>
                   </Grid>
@@ -107,8 +110,8 @@ export default function VerifyPhoneOTP() {
                 >
                   <p
                     style={{
-                      color: "rgb(196, 194, 194)",
-                      fontSize: "12px",
+                      color: 'rgb(196, 194, 194)',
+                      fontSize: '12px',
                       marginBottom: 5,
                     }}
                   >
@@ -124,67 +127,70 @@ export default function VerifyPhoneOTP() {
                     }
                     inputStyle={{
                       // padding: "22px 26px",
-                      border: "1px solid rgb(61, 61, 61)",
-                      backgroundColor: "#141415",
-                      borderRadius: "3px",
-                      color: "white",
+                      border: '1px solid rgb(61, 61, 61)',
+                      backgroundColor: '#141415',
+                      borderRadius: '3px',
+                      color: 'white',
                       // textColor: "white",
                       // fontSize: "45px",
-                      outline: "#ee6535",
+                      outline: '#ee6535',
 
-                      width: "3.5rem",
-                      height: "3.8rem",
-                      margin: "-1px",
-                      fontSize: "2rem",
+                      width: '3.5rem',
+                      height: '3.8rem',
+                      margin: '-1px',
+                      fontSize: '2rem',
                       borderRadius: 6,
-                      border: "1px solid rgb(61, 61, 61 , 0.3)"
+                      border: '1px solid rgb(61, 61, 61 , 0.3)',
                     }}
                     focusStyle={{
                       // border: "1px solid rgb(61, 61, 61)",,
                       // border:'none'
-                      outline: "#ee6535",
+                      outline: '#ee6535',
                     }}
                     isInputNum={true}
                   />
                 </Grid>
                 <Link
-                      to={"/pricing"}
-                      style={{
-                        color: "#ee6535",
-                        fontSize: 13,
-                        textDecoration: "none",
-                      }}
-                    >
-                       <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
+                  to={'/pricing'}
+                  style={{
+                    color: '#ee6535',
+                    fontSize: 13,
+                    textDecoration: 'none',
+                  }}
                 >
-                  Continue
-                </Button>
-                    </Link>
-
-
-              </Box>
-              <Grid
-                   container
-                   direction="row"
-                   justifyContent="center"
-                   alignItems="center"
-
-                >
-                  <Link
-                    to={""}
-                    style={{
-                      textDecoration: "none",
-                      color: "#ee6535",
-                      fontSize: 13,
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: '#ff6838',
+                      textTransform: 'none',
+                      fontWeight: 'normal',
                     }}
                   >
-                    Resend OTP
-                  </Link>
-                </Grid>
+                    Continue
+                  </Button>
+                </Link>
+              </Box>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Link
+                  to={''}
+                  style={{
+                    textDecoration: 'none',
+                    color: '#ee6535',
+                    fontSize: 13,
+                  }}
+                >
+                  Resend OTP
+                </Link>
+              </Grid>
             </Grid>
 
             <Grid>
@@ -201,5 +207,5 @@ export default function VerifyPhoneOTP() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }

@@ -1,19 +1,19 @@
-import * as React from 'react';
-import {useState} from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Switch from '@mui/material/Switch';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import {useNavigate} from 'react-router-dom';
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import {useDispatch, useSelector} from 'react-redux';
-import {setBilling} from '../../slices/billingSlice';
+import * as React from 'react'
+import { useState } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import Switch from '@mui/material/Switch'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
+import { useNavigate } from 'react-router-dom'
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBilling } from '../../slices/billingSlice'
 
 const tiers = [
   {
@@ -61,39 +61,39 @@ const tiers = [
     buttonVariant: 'outlined',
     btn: 'Get Pro Plan',
   },
-];
-
+]
 
 export default function Pricing() {
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isMonthlyInit = useSelector(state => state.billing.isMonthly);
-  const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const isMonthlyInit = useSelector((state) => state.billing.isMonthly)
+  const [isMonthly, setIsMonthly] = useState(isMonthlyInit)
 
   function handleTerm() {
-    setIsMonthly(!isMonthly);
+    setIsMonthly(!isMonthly)
   }
 
   function handleClick(planData) {
     return function (event) {
-      event.preventDefault();
+      event.preventDefault()
 
-      dispatch(setBilling({price: planData.price, plan: planData.title, isMonthly}));
-      navigate('../setup-payment');
-    };
+      dispatch(
+        setBilling({ price: planData.price, plan: planData.title, isMonthly })
+      )
+      navigate('../setup-payment')
+    }
   }
 
   return (
     <MainPricingDashboard>
-      <Grid sx={{backgroundColor: '#0f0f11'}}>
+      <Grid sx={{ backgroundColor: '#0f0f11' }}>
         {/* Hero unit */}
 
         {/* End hero unit */}
         <Container
           maxWidth="xl"
           component="main"
-          sx={{backgroundColor: 'none', height: '100vh'}}
+          sx={{ backgroundColor: 'none', height: '100vh' }}
         >
           <Grid
             container
@@ -109,38 +109,43 @@ export default function Pricing() {
             justifyContent="center"
             alignItems="center"
           >
-
-            <DoneRoundedIcon sx={{
-              fontSize: '15px',
-              margin: '10px',
-              padding: '2px',
-              color: 'white',
-              backgroundColor: 'rgb(39,39,41)',
-              border: 'none',
-              borderRadius: '50%'
-            }}/>
+            <DoneRoundedIcon
+              sx={{
+                fontSize: '15px',
+                margin: '10px',
+                padding: '2px',
+                color: 'white',
+                backgroundColor: 'rgb(39,39,41)',
+                border: 'none',
+                borderRadius: '50%',
+              }}
+            />
 
             <p>No commitments, cancel any time. </p>
-            <DoneRoundedIcon sx={{
-              fontSize: '15px',
-              margin: '10px',
-              padding: '2px',
-              color: 'white',
-              backgroundColor: 'rgb(39,39,41)',
-              border: 'none',
-              borderRadius: '50%'
-            }}/>
+            <DoneRoundedIcon
+              sx={{
+                fontSize: '15px',
+                margin: '10px',
+                padding: '2px',
+                color: 'white',
+                backgroundColor: 'rgb(39,39,41)',
+                border: 'none',
+                borderRadius: '50%',
+              }}
+            />
 
             <p>No charges or extra fees. Ever. </p>
-            <DoneRoundedIcon sx={{
-              fontSize: '15px',
-              margin: '10px',
-              padding: '2px',
-              color: 'white',
-              backgroundColor: 'rgb(39,39,41)',
-              border: 'none',
-              borderRadius: '50%'
-            }}/>
+            <DoneRoundedIcon
+              sx={{
+                fontSize: '15px',
+                margin: '10px',
+                padding: '2px',
+                color: 'white',
+                backgroundColor: 'rgb(39,39,41)',
+                border: 'none',
+                borderRadius: '50%',
+              }}
+            />
 
             <p>Switch plans or cancel any time. </p>
           </Grid>
@@ -151,10 +156,7 @@ export default function Pricing() {
             alignItems="center"
           >
             <h3>Monthly</h3>
-            <Switch
-              checked={!isMonthly}
-              onChange={handleTerm}
-            />
+            <Switch checked={!isMonthly} onChange={handleTerm} />
             <h3>Anually</h3>
           </Grid>
           <Grid
@@ -174,12 +176,18 @@ export default function Pricing() {
                 sm={12}
                 md={4}
               >
-                <Card sx={{backgroundColor: '#141415', mt: 5, borderRadius: '15px 15px 15px 15px',}}>
+                <Card
+                  sx={{
+                    backgroundColor: '#141415',
+                    mt: 5,
+                    borderRadius: '15px 15px 15px 15px',
+                  }}
+                >
                   {tier.subheader === 'Most popular' ? (
                     <CardHeader
                       // title={tier.title}
                       subheader={tier.subheader}
-                      titleTypographyProps={{align: 'center'}}
+                      titleTypographyProps={{ align: 'center' }}
                       subheaderTypographyProps={{
                         align: 'center',
                         color: 'white',
@@ -197,13 +205,17 @@ export default function Pricing() {
                       minHeight: 450,
                       backgroundColor:
                         tier.subheader === 'Most popular' ? '#181212' : null,
-                      borderRadius: tier.subheader === 'Most popular' ? '0px 0px 15px 15px' : '15px 15px 15px 15px',
-                      border: tier.subheader === 'Most popular' ? '2px solid #ee6535' : '2px solid rgb(30,30,30)',
+                      borderRadius:
+                        tier.subheader === 'Most popular'
+                          ? '0px 0px 15px 15px'
+                          : '15px 15px 15px 15px',
+                      border:
+                        tier.subheader === 'Most popular'
+                          ? '2px solid #ee6535'
+                          : '2px solid rgb(30,30,30)',
                       // width :400
-
                     }}
                   >
-
                     <Box
                       sx={{
                         display: 'flex',
@@ -224,8 +236,13 @@ export default function Pricing() {
                       >
                         {' '}
                         <Grid item xs={6} md={6}>
-                          <h2 className="plan-name" style={{fontSize: '35px'}}>{tier.title}</h2>
-                          <p style={{marginTop: 0, fontSize: '17px'}}>
+                          <h2
+                            className="plan-name"
+                            style={{ fontSize: '35px' }}
+                          >
+                            {tier.title}
+                          </h2>
+                          <p style={{ marginTop: 0, fontSize: '17px' }}>
                             Free to use for 14 days
                           </p>
                         </Grid>
@@ -239,8 +256,7 @@ export default function Pricing() {
                         >
                           <h1 className="head price">${tier.price}</h1>
                           <p>/{isMonthly ? 'mo' : 'year'}</p>
-                        </Grid>
-                        {' '}
+                        </Grid>{' '}
                         <Button
                           type="button"
                           onClick={handleClick(tier)}
@@ -258,11 +274,17 @@ export default function Pricing() {
                           sx={{
                             mt: 1,
                             mb: 2,
-                            backgroundColor: tier.subheader === 'Most popular' ? 'none' : 'rgb(30,30,30)',
+                            backgroundColor:
+                              tier.subheader === 'Most popular'
+                                ? 'none'
+                                : 'rgb(30,30,30)',
                             color: 'white',
-                            border: tier.subheader === 'Most popular' ? 'none' : 'rgb(30,30,30)',
+                            border:
+                              tier.subheader === 'Most popular'
+                                ? 'none'
+                                : 'rgb(30,30,30)',
                             // fontSize: 12,
-                            textDecoration: 'none'
+                            textDecoration: 'none',
                           }}
                         >
                           {tier.btn}
@@ -277,15 +299,17 @@ export default function Pricing() {
                           justifyContent="flex-start"
                           alignItems="center"
                         >
-                          <DoneRoundedIcon sx={{
-                            fontSize: '15px',
-                            margin: '10px',
-                            padding: '2px',
-                            color: 'rgb(255,104,56)',
-                            backgroundColor: 'rgb(44,29,25)',
-                            border: 'none',
-                            borderRadius: '50%'
-                          }}/>
+                          <DoneRoundedIcon
+                            sx={{
+                              fontSize: '15px',
+                              margin: '10px',
+                              padding: '2px',
+                              color: 'rgb(255,104,56)',
+                              backgroundColor: 'rgb(44,29,25)',
+                              border: 'none',
+                              borderRadius: '50%',
+                            }}
+                          />
 
                           <Typography
                             component="li"
@@ -298,12 +322,9 @@ export default function Pricing() {
                               lineHeight: 0.5,
                             }}
                           >
-
                             {line}
                           </Typography>
                         </Grid>
-
-
                       ))}
                     </ul>
                   </CardContent>
@@ -314,5 +335,5 @@ export default function Pricing() {
         </Container>
       </Grid>
     </MainPricingDashboard>
-  );
+  )
 }

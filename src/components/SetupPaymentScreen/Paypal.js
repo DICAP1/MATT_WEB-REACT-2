@@ -1,31 +1,28 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import './style.css';
-import {Link} from 'react-router-dom';
-import visa from '../../assets/Images/credit.png';
-import InputAdornment from '@mui/material/InputAdornment';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
-import {useSelector} from 'react-redux';
-
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import './style.css'
+import { Link } from 'react-router-dom'
+import visa from '../../assets/Images/credit.png'
+import InputAdornment from '@mui/material/InputAdornment'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
+import { useSelector } from 'react-redux'
 
 export default function Paypal() {
-
-  const billing = useSelector(state => state.billing);
+  const billing = useSelector((state) => state.billing)
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
-    });
-  };
-
+    })
+  }
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -33,26 +30,26 @@ export default function Paypal() {
     weight: '',
     weightRange: '',
     showPassword: false,
-  });
+  })
 
   const handleChange = (prop) => (event) => {
-    setValues({...values, [prop]: event.target.value});
-  };
+    setValues({ ...values, [prop]: event.target.value })
+  }
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
-    });
-  };
+    })
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <React.Fragment>
-      <Grid sx={{backgroundColor: '#0f0f11'}}>
+      <Grid sx={{ backgroundColor: '#0f0f11' }}>
         <Box
           sx={{
             marginTop: 3,
@@ -68,7 +65,7 @@ export default function Paypal() {
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{mt: 1}}
+            sx={{ mt: 1 }}
           >
             <Grid>
               <Grid
@@ -77,10 +74,13 @@ export default function Paypal() {
                 justifyContent="flex-start"
                 alignItems="center"
               >
-
                 <h3>Paypal</h3>
-                <img src={visa} width="40px" height="25px" style={{borderRadius: 3, margin: '5px'}}/>{' '}
-
+                <img
+                  src={visa}
+                  width="40px"
+                  height="25px"
+                  style={{ borderRadius: 3, margin: '5px' }}
+                />{' '}
               </Grid>
 
               <hr
@@ -113,7 +113,7 @@ export default function Paypal() {
                     },
                   }}
                   inputProps={{
-                    style: {color: 'white', fontSize: 15, height: 30},
+                    style: { color: 'white', fontSize: 15, height: 30 },
                   }}
                   className="inputField"
                   margin="normal"
@@ -131,7 +131,6 @@ export default function Paypal() {
                   <h5>Password</h5>
                 </Grid>
                 <TextField
-
                   sx={{
                     '& .MuiOutlinedInput-root ': {
                       '& > fieldset': {
@@ -144,9 +143,9 @@ export default function Paypal() {
                       },
                     },
                   }}
-                  inputProps={{style: {color: 'white', fontSize: 15, height: 30}}}
-
-
+                  inputProps={{
+                    style: { color: 'white', fontSize: 15, height: 30 },
+                  }}
                   className="inputField"
                   margin="normal"
                   placeholder="Enter password"
@@ -168,13 +167,15 @@ export default function Paypal() {
                           onMouseDown={handleMouseDownPassword}
                           edge="end"
                         >
-                          {values.showPassword ? <VisibilityOff sx={{color: 'gray'}}/> :
-                            <Visibility sx={{color: 'gray'}}/>}
+                          {values.showPassword ? (
+                            <VisibilityOff sx={{ color: 'gray' }} />
+                          ) : (
+                            <Visibility sx={{ color: 'gray' }} />
+                          )}
                         </IconButton>
                       </InputAdornment>
                     ),
                   }}
-
                 />
               </Grid>
             </Grid>
@@ -206,10 +207,12 @@ export default function Paypal() {
                 alignItems="baseline"
               >
                 <h4>${billing.price}</h4>
-                <p style={{margin: 0}}>/{billing.isMonthly ? 'month' : 'year'}</p>
+                <p style={{ margin: 0 }}>
+                  /{billing.isMonthly ? 'month' : 'year'}
+                </p>
               </Grid>
               <Grid>
-                <p style={{margin: 0}}>{billing.plan} plan</p>
+                <p style={{ margin: 0 }}>{billing.plan} plan</p>
               </Grid>
             </Grid>
             <Link
@@ -248,13 +251,12 @@ export default function Paypal() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{mt: 3, mb: 2, backgroundColor: '#ee6535'}}
-
+            sx={{ mt: 3, mb: 2, backgroundColor: '#ee6535' }}
           >
             Next
           </Button>
         </Link>
       </Grid>
     </React.Fragment>
-  );
+  )
 }

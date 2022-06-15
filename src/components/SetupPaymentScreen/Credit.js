@@ -1,30 +1,29 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import './style.css';
-import {Link} from 'react-router-dom';
-import visa from '../../assets/Images/credit.png';
-import master from '../../assets/Images/mm.jpg';
-import british from '../../assets/Images/british.png';
-import {useSelector} from 'react-redux';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import './style.css'
+import { Link } from 'react-router-dom'
+import visa from '../../assets/Images/credit.png'
+import master from '../../assets/Images/mm.jpg'
+import british from '../../assets/Images/british.png'
+import { useSelector } from 'react-redux'
 
 export default function Credit() {
-
-  const billing = useSelector(state => state.billing);
+  const billing = useSelector((state) => state.billing)
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
       email: data.get('email'),
       password: data.get('password'),
-    });
-  };
+    })
+  }
   return (
     <React.Fragment>
-      <Grid sx={{backgroundColor: '#0f0f11'}}>
+      <Grid sx={{ backgroundColor: '#0f0f11' }}>
         <Box
           sx={{
             marginTop: 3,
@@ -40,7 +39,7 @@ export default function Credit() {
             component="form"
             onSubmit={handleSubmit}
             noValidate
-            sx={{mt: 1}}
+            sx={{ mt: 1 }}
           >
             <Grid>
               <Grid
@@ -49,14 +48,28 @@ export default function Credit() {
                 justifyContent="flex-start"
                 alignItems="center"
               >
-
                 <h3>Credit or Debit Card</h3>
-                <img src={visa} width="40px" height="25px" style={{borderRadius: 3, margin: '5px'}}
-                     alt="visa logo"/>{' '}
-                <img src={master} width="40px" height="25px" style={{borderRadius: 3, margin: '5px'}}
-                     alt="mastercard logo"/>{' '}
-                <img src={british} width="40px" height="25px" style={{borderRadius: 3, margin: '5px'}}
-                     alt="british business bank logo"/>{' '}
+                <img
+                  src={visa}
+                  width="40px"
+                  height="25px"
+                  style={{ borderRadius: 3, margin: '5px' }}
+                  alt="visa logo"
+                />{' '}
+                <img
+                  src={master}
+                  width="40px"
+                  height="25px"
+                  style={{ borderRadius: 3, margin: '5px' }}
+                  alt="mastercard logo"
+                />{' '}
+                <img
+                  src={british}
+                  width="40px"
+                  height="25px"
+                  style={{ borderRadius: 3, margin: '5px' }}
+                  alt="british business bank logo"
+                />{' '}
               </Grid>
               <hr
                 style={{
@@ -71,7 +84,6 @@ export default function Credit() {
                 justifyContent="space-between"
                 alignItems="center"
                 spacing={1}
-
               >
                 <Grid item xs={6}>
                   <Grid>
@@ -92,7 +104,7 @@ export default function Credit() {
                       },
                     }}
                     inputProps={{
-                      style: {color: 'white', fontSize: 15, height: 30},
+                      style: { color: 'white', fontSize: 15, height: 30 },
                     }}
                     className="inputField"
                     margin="normal"
@@ -123,7 +135,7 @@ export default function Credit() {
                       },
                     }}
                     inputProps={{
-                      style: {color: 'white', fontSize: 15, height: 30},
+                      style: { color: 'white', fontSize: 15, height: 30 },
                     }}
                     className="inputField"
                     margin="normal"
@@ -154,7 +166,7 @@ export default function Credit() {
                       },
                     }}
                     inputProps={{
-                      style: {color: 'white', fontSize: 15, height: 30},
+                      style: { color: 'white', fontSize: 15, height: 30 },
                     }}
                     className="inputField"
                     margin="normal"
@@ -167,7 +179,6 @@ export default function Credit() {
                     // autoComplete="email"
                   />
                 </Grid>
-
                 <Grid item xs={6}>
                   <Grid>
                     <h5>Expiration Date</h5>
@@ -187,7 +198,7 @@ export default function Credit() {
                       },
                     }}
                     inputProps={{
-                      style: {color: 'white', fontSize: 15, height: 30},
+                      style: { color: 'white', fontSize: 15, height: 30 },
                     }}
                     className="inputField"
                     margin="normal"
@@ -219,7 +230,7 @@ export default function Credit() {
                       },
                     }}
                     inputProps={{
-                      style: {color: 'white', fontSize: 15, height: 30},
+                      style: { color: 'white', fontSize: 15, height: 30 },
                     }}
                     className="inputField"
                     margin="normal"
@@ -262,10 +273,12 @@ export default function Credit() {
                 alignItems="baseline"
               >
                 <h4>${billing.price}</h4>
-                <p style={{margin: 0}}>/{billing.isMonthly ? 'month' : 'year'}</p>
+                <p style={{ margin: 0 }}>
+                  /{billing.isMonthly ? 'month' : 'year'}
+                </p>
               </Grid>
               <Grid>
-                <p style={{margin: 0}}>{billing.plan} plan</p>
+                <p style={{ margin: 0 }}>{billing.plan} plan</p>
               </Grid>
             </Grid>
             <Link
@@ -304,12 +317,12 @@ export default function Credit() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{mt: 3, mb: 2, backgroundColor: '#ee6535'}}
+            sx={{ mt: 3, mb: 2, backgroundColor: '#ee6535' }}
           >
             Start Membership
           </Button>
         </Link>
       </Grid>
     </React.Fragment>
-  );
+  )
 }

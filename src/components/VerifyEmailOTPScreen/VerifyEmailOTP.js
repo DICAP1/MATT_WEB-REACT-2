@@ -1,69 +1,68 @@
-import * as React from "react";
-import { useState } from "react";
+import * as React from 'react'
+import { useState } from 'react'
 // import Link from "@mui/material/Link";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
 
-import Logo from '../Logo/Logo';
-import edit from "../../assets/Icons/write.png";
-import OtpInput from "react-otp-input";
-import { Link } from "react-router-dom";
-import MainScreen from "../MainScreen/MainScreen";
+import Logo from '../Logo/Logo'
+import edit from '../../assets/Icons/write.png'
+import OtpInput from 'react-otp-input'
+import { Link } from 'react-router-dom'
+import MainScreen from '../MainScreen/MainScreen'
 
 // const theme = createTheme();
 
 export default function VerifyEmailOTP() {
-  const [otp, setOtp] = useState("");
-  const handleChange = (otp) => setOtp(otp);
+  const [otp, setOtp] = useState('')
+  const handleChange = (otp) => setOtp(otp)
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    event.preventDefault()
+    const data = new FormData(event.currentTarget)
     console.log({
       otp: otp,
-    });
-  };
+    })
+  }
 
   return (
     <MainScreen>
-    <Grid
-      className="leftSide"
-
-      xs={12}
-      sm={12}
-      md={6}
-      lg={5.5}
-      sx={{ padding: 5, paddingRight: {lg: 15 ,md : 0, sm : 0 }}}
-      square
-      container
-direction="row"
-justifyContent="center"
-alignItems="center"
-    >
-      <Box
-        sx={{
-          mx: 4,
-          display: "flex",
-          flexDirection: "column",
-        }}
+      <Grid
+        className="leftSide"
+        xs={12}
+        sm={12}
+        md={6}
+        lg={5.5}
+        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
+        square
+        container
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
-        {/* </Grid> */}
-
-        <Grid
-          container
-          direction="column"
-          justifyContent="space-between"
-          sx={{ height: "88vh" }}
+        <Box
+          sx={{
+            mx: 4,
+            display: 'flex',
+            flexDirection: 'column',
+          }}
         >
-          <Grid>
-            {" "}
-            <Box
-              component="form"
-              noValidate
-              onSubmit={handleSubmit}
-              sx={{ mt: 1 , width : { md: 450 , sm : 450 , xs : 450} , }}
-            >
-              <Logo/>
+          {/* </Grid> */}
+
+          <Grid
+            container
+            direction="column"
+            justifyContent="space-between"
+            sx={{ height: '88vh' }}
+          >
+            <Grid>
+              {' '}
+              <Box
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
+              >
+                <Logo />
                 <h1>Verify OTP</h1>
                 <p style={{ marginBottom: 20 }}>
                   Enter the OTP sent to this email address
@@ -73,13 +72,13 @@ alignItems="center"
                     // justifyContent="center"
                     alignItems="center"
                   >
-                    <p style={{ color: "#ee6535", margin: 0 }}>
+                    <p style={{ color: '#ee6535', margin: 0 }}>
                       sumairzahid123@gmail.com &nbsp;
                     </p>
-                    <Link to={"/preSignUp"}>
-                      {" "}
+                    <Link to={'/preSignUp'}>
+                      {' '}
                       <span>
-                        <img src={edit} width="12px" height="12px" />{" "}
+                        <img src={edit} width="12px" height="12px" />{' '}
                       </span>
                     </Link>
                   </Grid>
@@ -92,86 +91,89 @@ alignItems="center"
                 >
                   <p
                     style={{
-                      color: "rgb(196, 194, 194)",
-                      fontSize: "12px",
+                      color: 'rgb(196, 194, 194)',
+                      fontSize: '12px',
                       marginBottom: 5,
                     }}
                   >
                     Verify OTP
                   </p>
                   <div>
-                  <OtpInput
-                    value={otp}
-                    onChange={handleChange}
-                    numInputs={6}
-                    color="white"
-                    separator={
-                      <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                    }
-                    inputStyle={{
-                      // padding: "22px 26px",
-                      border: "1px solid rgb(61, 61, 61)",
-                      backgroundColor: "#141415",
-                      borderRadius: "3px",
-                      color: "white",
-                      // textColor: "white",
-                      // fontSize: "45px",
-                      outline: "#ee6535",
+                    <OtpInput
+                      value={otp}
+                      onChange={handleChange}
+                      numInputs={6}
+                      color="white"
+                      separator={
+                        <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                      }
+                      inputStyle={{
+                        // padding: "22px 26px",
+                        border: '1px solid rgb(61, 61, 61)',
+                        backgroundColor: '#141415',
+                        borderRadius: '3px',
+                        color: 'white',
+                        // textColor: "white",
+                        // fontSize: "45px",
+                        outline: '#ee6535',
 
-                      width: "3.5rem",
-                      height: "3.8rem",
-                      margin: "-1px",
-                      fontSize: "2rem",
-                      borderRadius: 6,
-                      border: "1px solid rgb(61, 61, 61 , 0.3)"
-                    }}
-                    focusStyle={{
-                      // border: "1px solid rgb(61, 61, 61)",,
-                      // border:'none'
-                      outline: "#ee6535",
-                    }}
-                    isInputNum={true}
-                  />
+                        width: '3.5rem',
+                        height: '3.8rem',
+                        margin: '-1px',
+                        fontSize: '2rem',
+                        borderRadius: 6,
+                        border: '1px solid rgb(61, 61, 61 , 0.3)',
+                      }}
+                      focusStyle={{
+                        // border: "1px solid rgb(61, 61, 61)",,
+                        // border:'none'
+                        outline: '#ee6535',
+                      }}
+                      isInputNum={true}
+                    />
                   </div>
-
                 </Grid>
                 <Link
-                      to={"/signUp"}
-                      style={{
-                        color: "#ee6535",
-                        fontSize: 13,
-                        textDecoration: "none",
-                      }}
-                    >
-                       <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2, backgroundColor: "#ff6838" , textTransform:'none' , fontWeight :'normal'}}
+                  to={'/signUp'}
+                  style={{
+                    color: '#ee6535',
+                    fontSize: 13,
+                    textDecoration: 'none',
+                  }}
                 >
-                  Continue
-                </Button>
-                    </Link>
-              </Box>
-
-              <Grid
-                   container
-                   direction="row"
-                   justifyContent="center"
-                   alignItems="center"
-
-                >
-                  <Link
-                    to={""}
-                    style={{
-                      textDecoration: "none",
-                      color: "#ee6535",
-                      fontSize: 13,
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: '#ff6838',
+                      textTransform: 'none',
+                      fontWeight: 'normal',
                     }}
                   >
-                    Resend OTP
-                  </Link>
-                </Grid>
+                    Continue
+                  </Button>
+                </Link>
+              </Box>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+              >
+                <Link
+                  to={''}
+                  style={{
+                    textDecoration: 'none',
+                    color: '#ee6535',
+                    fontSize: 13,
+                  }}
+                >
+                  Resend OTP
+                </Link>
+              </Grid>
             </Grid>
 
             <Grid>
@@ -188,5 +190,5 @@ alignItems="center"
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }
