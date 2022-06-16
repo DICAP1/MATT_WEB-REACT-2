@@ -4,7 +4,7 @@ import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import './style.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import visa from '../../assets/Images/credit.png';
 import master from '../../assets/Images/mm.jpg';
 import british from '../../assets/Images/british.png';
@@ -22,9 +22,9 @@ export default function Credit() {
 
   const billing = useSelector((state) => state.billing);
   const auth = useSelector((state) => state.auth);
-
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
 
   const inputStyles = {
     style: {
@@ -70,6 +70,7 @@ export default function Credit() {
       )
         .then((res) => {
           console.log(res);
+          navigate('../select-broker');
         })
         .catch((err) => console.log(err)); // todo add logic;;
     }
