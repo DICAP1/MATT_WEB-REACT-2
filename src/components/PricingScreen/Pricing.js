@@ -71,6 +71,8 @@ export default function Pricing() {
   const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
   const [plans, setPlans] = useState([]);
 
+  console.log('global state: ', useSelector(state => state));
+
   function handleTerm() {
     setIsMonthly(!isMonthly);
   }
@@ -96,7 +98,7 @@ export default function Pricing() {
       .then((data) => {
         if (Array.isArray(data.data)) {
           const plansData = data.data;
-
+          console.log(plansData);
           setPlans(tiers.map((plan, ind) => {
             if (plansData[ind]) {
               return {
@@ -109,22 +111,6 @@ export default function Pricing() {
               return plan;
             }
           }));
-
-          // plansData.forEach((plan, ind) => {
-          //   setPlans(prevPlans => {
-          //     console.log(prevPlans);
-          //     console.log(ind);
-          //     console.log(prevPlans[ind]);
-          //     prevPlans[ind].title = plan.nickname;
-          //     prevPlans[ind].price = plan.amount / 100;
-          //     prevPlans[ind].id = plan.id;
-          //   });
-          // });
-          // dispatch(setUser({
-          //   isAuthenticated: true,
-          //   auth_token: data.Authorization, ...userData, ...data.user
-          // }));
-          // navigate('../pricing');
         }
       })
       .catch((err) => console.log(err)); // todo add logic;

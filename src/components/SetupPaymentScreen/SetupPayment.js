@@ -9,22 +9,11 @@ import Credit from './Credit';
 import Paypal from './Paypal';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import { useSelector } from 'react-redux';
 
 export default function SetupPayment(props) {
   const [credit, setCredit] = useState(true);
   const [debit, setDebit] = useState(false);
 
-  console.log(useSelector(state => state));
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-  };
   return (
     <React.Fragment>
       <MainPricingDashboard>

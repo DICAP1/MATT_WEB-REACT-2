@@ -11,3 +11,9 @@ export function getPlans() {
     );
 }
 
+export function postSubscription(data, config) {
+  return StripeAPI.post('/subscriptions', data, config)
+    .then((res) =>
+      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
+    );
+}
