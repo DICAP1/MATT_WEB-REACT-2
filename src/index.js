@@ -8,8 +8,16 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
+import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const stripePromise = loadStripe('pk_test_K64YglIBCsxehcEwZ55U7WUE00hsQHZORD');
+const payPalConfig = {
+  'client-id': 'test',
+  components: 'buttons',
+  intent: 'subscription',
+  vault: true,
+  // 'disable-funding': 'card'
+};
 
 const theme = createTheme({
   palette: {
@@ -28,7 +36,9 @@ root.render(
       <BrowserRouter>
         <ThemeProvider theme={theme}>
           <Elements stripe={stripePromise}>
-            <App/>
+            <PayPalScriptProvider options={payPalConfig}>
+              <App/>
+            </PayPalScriptProvider>
           </Elements>
         </ThemeProvider>
       </BrowserRouter>

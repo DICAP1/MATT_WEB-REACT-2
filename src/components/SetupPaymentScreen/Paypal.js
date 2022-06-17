@@ -1,28 +1,19 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import './style.css'
-import { Link } from 'react-router-dom'
-import visa from '../../assets/Images/credit.png'
-import InputAdornment from '@mui/material/InputAdornment'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import IconButton from '@mui/material/IconButton'
-import { useSelector } from 'react-redux'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import './style.css';
+import { Link } from 'react-router-dom';
+import visa from '../../assets/Images/credit.png';
+import { useSelector } from 'react-redux';
+import { PayPalButtons } from '@paypal/react-paypal-js';
 
 export default function Paypal() {
-  const billing = useSelector((state) => state.billing)
+  const billing = useSelector((state) => state.billing);
 
   const handleSubmit = (event) => {
-    event.preventDefault()
-    const data = new FormData(event.currentTarget)
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-  }
+
+  };
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -30,26 +21,56 @@ export default function Paypal() {
     weight: '',
     weightRange: '',
     showPassword: false,
-  })
+  });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+    setValues({
+      ...values,
+      [prop]: event.target.value
+    });
+  };
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
-    })
-  }
+    });
+  };
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
+
+  const payPalButtonsConfig = {
+    label: 'subscribe',
+  };
+
+  const onSubscribe = (data, actions) => {
+    return actions.subscription
+      .create({
+        plan_id: 'P-3RX065706M3469222L5IFM4I',
+      })
+      .then((orderId) => {
+        // Your code here after create the order
+        console.log('orderId: ', orderId, 'data: ', data);
+        return orderId;
+      });
+  };
+
+  const handleApprove = (data, actions) => {
+    return actions.order.capture()
+      .then(function () {
+        console.log('got approve', data);
+        // Your code here after capture the order
+      });
+  };
 
   return (
     <React.Fragment>
-      <Grid sx={{ backgroundColor: '#0f0f11' }}>
+      <Grid sx={{ backgroundColor: '#0f0f11' }}
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate>
         <Box
           sx={{
             marginTop: 3,
@@ -62,9 +83,6 @@ export default function Paypal() {
           }}
         >
           <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
             sx={{ mt: 1 }}
           >
             <Grid>
@@ -79,7 +97,10 @@ export default function Paypal() {
                   src={visa}
                   width="40px"
                   height="25px"
-                  style={{ borderRadius: 3, margin: '5px' }}
+                  style={{
+                    borderRadius: 3,
+                    margin: '5px'
+                  }}
                 />{' '}
               </Grid>
 
@@ -88,99 +109,112 @@ export default function Paypal() {
                   border: '1px solid rgb(41, 40, 40)',
                 }}
               />
-              <Grid
-                px={3}
-                pb={3}
-                container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Grid>
-                  <h5>Email</h5>
-                </Grid>
-                <TextField
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '& > fieldset': {
-                        borderColor: 'rgb(39, 39, 39)',
-                      },
-                    },
-                    '& .MuiOutlinedInput-root:hover': {
-                      '& > fieldset': {
-                        borderColor: 'rgb(39, 39, 39)',
-                      },
-                    },
-                  }}
-                  inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
-                  }}
-                  className="inputField"
-                  margin="normal"
-                  placeholder="Enter email"
-                  required
-                  fullWidth
-                  id="email"
-                  type="email"
-                  size="small"
-                  name="email"
-                  // autoComplete="email"
-                />
+              {/*   <Grid */}
+              {/*     px={3} */}
+              {/*     pb={3} */}
+              {/*     container */}
+              {/*     direction="row" */}
+              {/*     justifyContent="space-between" */}
+              {/*     alignItems="center" */}
+              {/*   > */}
+              {/*     <Grid> */}
+              {/*       <h5>Email</h5> */}
+              {/*     </Grid> */}
+              {/*     <TextField */}
+              {/*       sx={{ */}
+              {/*         '& .MuiOutlinedInput-root': { */}
+              {/*           '& > fieldset': { */}
+              {/*             borderColor: 'rgb(39, 39, 39)', */}
+              {/*           }, */}
+              {/*         }, */}
+              {/*         '& .MuiOutlinedInput-root:hover': { */}
+              {/*           '& > fieldset': { */}
+              {/*             borderColor: 'rgb(39, 39, 39)', */}
+              {/*           }, */}
+              {/*         }, */}
+              {/*       }} */}
+              {/*       inputProps={{ */}
+              {/*         style: { */}
+              {/*           color: 'white', */}
+              {/*           fontSize: 15, */}
+              {/*           height: 30 */}
+              {/*         }, */}
+              {/*       }} */}
+              {/*       className="inputField" */}
+              {/*       margin="normal" */}
+              {/*       placeholder="Enter email" */}
+              {/*       required */}
+              {/*       fullWidth */}
+              {/*       id="email" */}
+              {/*       type="email" */}
+              {/*       size="small" */}
+              {/*       name="email" */}
+              {/*       // autoComplete="email" */}
+              {/*     /> */}
 
-                <Grid>
-                  <h5>Password</h5>
-                </Grid>
-                <TextField
-                  sx={{
-                    '& .MuiOutlinedInput-root ': {
-                      '& > fieldset': {
-                        borderColor: 'rgb(39, 39, 39)',
-                      },
-                    },
-                    '& .MuiOutlinedInput-root:hover': {
-                      '& > fieldset': {
-                        borderColor: 'rgb(39, 39, 39)',
-                      },
-                    },
-                  }}
-                  inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
-                  }}
-                  className="inputField"
-                  margin="normal"
-                  placeholder="Enter password"
-                  required
-                  fullWidth
-                  size="small"
-                  name="password"
-                  type={values.showPassword ? 'text' : 'password'}
-                  value={values.password}
-                  onChange={handleChange('password')}
-                  id="password"
-                  autoComplete="current-password"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
-                          ) : (
-                            <Visibility sx={{ color: 'gray' }} />
-                          )}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </Grid>
+              {/*     <Grid> */}
+              {/*       <h5>Password</h5> */}
+              {/*     </Grid> */}
+              {/*     <TextField */}
+              {/*       sx={{ */}
+              {/*         '& .MuiOutlinedInput-root ': { */}
+              {/*           '& > fieldset': { */}
+              {/*             borderColor: 'rgb(39, 39, 39)', */}
+              {/*           }, */}
+              {/*         }, */}
+              {/*         '& .MuiOutlinedInput-root:hover': { */}
+              {/*           '& > fieldset': { */}
+              {/*             borderColor: 'rgb(39, 39, 39)', */}
+              {/*           }, */}
+              {/*         }, */}
+              {/*       }} */}
+              {/*       inputProps={{ */}
+              {/*         style: { */}
+              {/*           color: 'white', */}
+              {/*           fontSize: 15, */}
+              {/*           height: 30 */}
+              {/*         }, */}
+              {/*       }} */}
+              {/*       className="inputField" */}
+              {/*       margin="normal" */}
+              {/*       placeholder="Enter password" */}
+              {/*       required */}
+              {/*       fullWidth */}
+              {/*       size="small" */}
+              {/*       name="password" */}
+              {/*       type={values.showPassword ? 'text' : 'password'} */}
+              {/*       value={values.password} */}
+              {/*       onChange={handleChange('password')} */}
+              {/*       id="password" */}
+              {/*       autoComplete="current-password" */}
+              {/*       InputProps={{ */}
+              {/*         endAdornment: ( */}
+              {/*           <InputAdornment position="end"> */}
+              {/*             <IconButton */}
+              {/*               aria-label="toggle password visibility" */}
+              {/*               onClick={handleClickShowPassword} */}
+              {/*               onMouseDown={handleMouseDownPassword} */}
+              {/*               edge="end" */}
+              {/*             > */}
+              {/*               {values.showPassword ? ( */}
+              {/*                 <VisibilityOff sx={{ color: 'gray' }}/> */}
+              {/*               ) : ( */}
+              {/*                 <Visibility sx={{ color: 'gray' }}/> */}
+              {/*               )} */}
+              {/*             </IconButton> */}
+              {/*           </InputAdornment> */}
+              {/*         ), */}
+              {/*       }} */}
+              {/*     /> */}
+              {/*   </Grid> */}
             </Grid>
           </Box>
         </Box>
+        <PayPalButtons
+          createSubscription={onSubscribe}
+          onApprove={handleApprove}
+          style={payPalButtonsConfig}
+        />
         <Box
           px={3}
           sx={{
@@ -223,7 +257,6 @@ export default function Paypal() {
                 textDecoration: 'none',
               }}
             >
-              {' '}
               <Grid>
                 <p
                   style={{
@@ -238,25 +271,19 @@ export default function Paypal() {
             </Link>
           </Grid>
         </Box>
-        <Link
-          to={'/select-broker'}
-          style={{
-            color: '#ee6535',
-            fontSize: 13,
-            textDecoration: 'none',
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          sx={{
+            mt: 3,
+            mb: 2,
+            backgroundColor: '#ee6535'
           }}
         >
-          {' '}
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            sx={{ mt: 3, mb: 2, backgroundColor: '#ee6535' }}
-          >
-            Next
-          </Button>
-        </Link>
+          Next
+        </Button>
       </Grid>
     </React.Fragment>
-  )
+  );
 }

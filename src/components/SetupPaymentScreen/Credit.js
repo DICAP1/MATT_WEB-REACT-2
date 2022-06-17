@@ -38,16 +38,11 @@ export default function Credit() {
     }
   };
 
-  if (!stripe || !elements) {
-    return;
-  }
-
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const data = new FormData(event.currentTarget);
-    for (let pair of data.entries()) {
-      console.log(pair[0] + ': ' + pair[1]);
+    if (!stripe || !elements) {
+      return;
     }
 
     const cardElement = elements.getElement('cardNumber');
@@ -58,7 +53,7 @@ export default function Credit() {
     } = await stripe.createToken(cardElement);
 
     if (error) {
-      console.log(error.message);
+      console.log('Error: ', error.message);
     } else {
       console.log(token);
       postSubscription({
@@ -72,9 +67,8 @@ export default function Credit() {
           console.log(res);
           navigate('../select-broker');
         })
-        .catch((err) => console.log(err)); // todo add logic;;
+        .catch((err) => console.log(err)); // todo add logic
     }
-
   };
 
   return (
@@ -332,4 +326,4 @@ export default function Credit() {
       </Grid>
     </React.Fragment>
   );
-}
+};
