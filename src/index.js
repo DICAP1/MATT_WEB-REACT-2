@@ -12,7 +12,7 @@ import { PayPalScriptProvider } from '@paypal/react-paypal-js';
 
 const stripePromise = loadStripe('pk_test_K64YglIBCsxehcEwZ55U7WUE00hsQHZORD');
 const payPalConfig = {
-  'client-id': 'test',
+  'client-id': 'AXglX6BQgUyfXJc0HBO326yx_JMrzG2htAtvFYa7Sj49iGMzi8xuy1gSYPCaRDQ8S6jtc4lmM9T2Apce',
   components: 'buttons',
   intent: 'subscription',
   vault: true,

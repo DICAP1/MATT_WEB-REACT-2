@@ -16,7 +16,7 @@ import {
   useElements,
   useStripe
 } from '@stripe/react-stripe-js';
-import { postSubscription } from '../../utils/stripe';
+import { getSubscription, postSubscription } from '../../utils/stripe';
 
 export default function Credit() {
 
@@ -63,8 +63,9 @@ export default function Credit() {
           plans: [billing.plan_id]
         }
       )
-        .then((res) => {
-          console.log(res);
+        .then(() => {
+          getSubscription(auth.user.public_id, auth.user.auth_token)
+            .then(data => console.log(data)); // todo for dev needs
           navigate('../select-broker');
         })
         .catch((err) => console.log(err)); // todo add logic

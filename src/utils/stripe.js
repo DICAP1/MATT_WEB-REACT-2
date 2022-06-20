@@ -17,3 +17,10 @@ export function postSubscription(data, config) {
       res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
     );
 }
+
+export function getSubscription(publicId, authToken) {
+  return StripeAPI.get(`/subscriptions/${publicId}`, { headers: { 'Authorization': authToken } })
+    .then((res) =>
+      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
+    );
+}

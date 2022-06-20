@@ -48,20 +48,20 @@ export default function Paypal() {
   const onSubscribe = (data, actions) => {
     return actions.subscription
       .create({
-        plan_id: 'P-3RX065706M3469222L5IFM4I',
+        plan_id: 'P-0U167166VC656871FMKYEYQA',
       })
       .then((orderId) => {
         // Your code here after create the order
-        console.log('orderId: ', orderId, 'data: ', data);
+        console.log('orderId: ', orderId, '\nPaymentSource: ', data.paymentSource);
         return orderId;
       });
   };
 
   const handleApprove = (data, actions) => {
-    return actions.order.capture()
-      .then(function () {
-        console.log('got approve', data);
-        // Your code here after capture the order
+    return actions.subscription
+      .get()
+      .then(data => {
+        console.log('SubscriptionInfo', data);
       });
   };
 
