@@ -8,12 +8,19 @@ import './style.css';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
 import oanda from '../../assets/Images/oanda-100.png';
 import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
-import { getAllBrokers } from '../../api/brokers';
+import { getAllBrokers, getUserBrokers } from '../../api/brokers';
+import { useSelector } from 'react-redux';
+import { selectUserCredentials } from '../../slices/authSlice';
 
 export default function SelectBroker() {
   const [isOpen, setIsOpen] = useState(false);
   const [brokers, setBrokers] = useState([]);
   const [done, setDone] = useState(false);
+
+  const {
+    publicId,
+    authToken
+  } = useSelector(selectUserCredentials);
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
@@ -21,12 +28,16 @@ export default function SelectBroker() {
   useEffect(() => {
     (async () => {
       const allBrokers = await getAllBrokers();
+      const userBrokers = await getUserBrokers(publicId, authToken);
+
       setBrokers(allBrokers);
+      console.log('User brokers: ', userBrokers);
     })();
-  }, []);
+
+  }, [publicId, authToken]);
 
   const renderBrokers = () => {
-    console.log(brokers);
+    console.log('All brokers: ', brokers);
     return brokers.map(broker => {
       const isOanda = broker.name
         .toLowerCase()

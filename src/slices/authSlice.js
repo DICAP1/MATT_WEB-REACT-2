@@ -24,3 +24,10 @@ export const authSlice = createSlice({
 export const { setUser } = authSlice.actions;
 
 export default authSlice.reducer;
+
+export const selectUserCredentials = state => {
+  return {
+    publicId: state.auth.user.public_id,
+    authToken: state.auth.user.auth_token
+  };
+};
