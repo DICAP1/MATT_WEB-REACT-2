@@ -1,56 +1,62 @@
-import * as React from 'react'
-import { useEffect } from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import './style.css'
-import InputAdornment from '@mui/material/InputAdornment'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import IconButton from '@mui/material/IconButton'
-import { useDispatch } from 'react-redux'
-import facebook from '../../assets/Icons/facebook.png'
-import google from '../../assets/Icons/google.png'
-import linkedin from '../../assets/Icons/linkedin.png'
-import Logo from '../Logo/Logo'
-import MainScreen from '../MainScreen/MainScreen'
-import { confirmEmail, signIn } from '../../utils/auth'
-import { setUser } from '../../slices/authSlice'
+import * as React from 'react';
+import { useEffect } from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import './style.css';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import { useDispatch } from 'react-redux';
+import facebook from '../../assets/Icons/facebook.png';
+import google from '../../assets/Icons/google.png';
+import linkedin from '../../assets/Icons/linkedin.png';
+import Logo from '../Logo/Logo';
+import MainScreen from '../MainScreen/MainScreen';
+import { confirmEmail, signIn } from '../../utils/auth';
+import { setUser } from '../../slices/authSlice';
 
 // const theme = createTheme();
 
 export default function SignIn() {
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const form = event.currentTarget
-    const isValid = form.checkValidity()
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
 
     if (isValid) {
-      const formData = new FormData(form)
-      const email = formData.get('email')
-      const password = formData.get('password')
-      const userData = { email, password }
+      const formData = new FormData(form);
+      const email = formData.get('email');
+      const password = formData.get('password');
+      const userData = {
+        email,
+        password
+      };
 
       signIn(userData)
         .then((data) => {
           if (data.status === 'success') {
-            console.log(data)
-            dispatch(setUser({ isAuthenticated: true, ...userData })) // todo put only what really need
-            navigate('../pricing')
+            console.log(data);
+            dispatch(setUser({
+              isAuthenticated: true,
+              auth_token: data.Authorization, ...userData, ...data.user
+            })); // todo put only what really need
+            navigate('../pricing');
           }
         })
-        .catch((err) => console.log(err)) // todo add logic
+        .catch((err) => console.log(err)); // todo add logic
     } else {
-      console.log('not valid inputs') // todo add logic
+      console.log('not valid inputs'); // todo add logic
     }
-  }
+  };
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -58,36 +64,39 @@ export default function SignIn() {
     weight: '',
     weightRange: '',
     showPassword: false,
-  })
+  });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+    setValues({
+      ...values,
+      [prop]: event.target.value
+    });
+  };
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
-    })
-  }
+    });
+  };
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   useEffect(() => {
     if (searchParams.has('confirm')) {
-      const token = searchParams.get('confirm')
+      const token = searchParams.get('confirm');
 
       confirmEmail(token)
         .then((data) => {
           if (data) {
-            setSearchParams('', { replace: true })
+            setSearchParams('', { replace: true });
           }
         })
-        .catch((err) => console.log(err)) // todo add logic
+        .catch((err) => console.log(err)); // todo add logic
     }
-  }, [])
+  }, []);
 
   return (
     <MainScreen>
@@ -97,7 +106,14 @@ export default function SignIn() {
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
+        sx={{
+          padding: 5,
+          paddingRight: {
+            lg: 15,
+            md: 0,
+            sm: 0
+          }
+        }}
         square
         container
         direction="row"
@@ -125,9 +141,16 @@ export default function SignIn() {
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
+                sx={{
+                  mt: 1,
+                  width: {
+                    md: 450,
+                    sm: 450,
+                    xs: 450
+                  }
+                }}
               >
-                <Logo />
+                <Logo/>
                 <h1>Welcome Back!</h1>
                 <p style={{ marginBottom: 20 }}>
                   Stocks, Forex, Indices, Bonds, Equities
@@ -150,7 +173,11 @@ export default function SignIn() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -180,7 +207,11 @@ export default function SignIn() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -204,9 +235,9 @@ export default function SignIn() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
+                            <VisibilityOff sx={{ color: 'gray' }}/>
                           ) : (
-                            <Visibility sx={{ color: 'gray' }} />
+                            <Visibility sx={{ color: 'gray' }}/>
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -255,13 +286,13 @@ export default function SignIn() {
                 </Grid>
                 <Grid container direction="row" justifyContent="center">
                   <span className="icon">
-                    <img src={google} width="25px" height="25px" />
+                    <img src={google} width="25px" height="25px"/>
                   </span>
                   <span className="icon">
-                    <img src={facebook} width="25px" height="25px" />
+                    <img src={facebook} width="25px" height="25px"/>
                   </span>
                   <span className="icon">
-                    <img src={linkedin} width="25px" height="25px" />{' '}
+                    <img src={linkedin} width="25px" height="25px"/>{' '}
                   </span>
                 </Grid>
               </Box>
@@ -301,5 +332,5 @@ export default function SignIn() {
         </Box>
       </Grid>
     </MainScreen>
-  )
+  );
 }
