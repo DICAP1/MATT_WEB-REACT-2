@@ -16,7 +16,7 @@ import {
   useElements,
   useStripe
 } from '@stripe/react-stripe-js';
-import { getSubscription, postSubscription } from '../../utils/stripe';
+import { getSubscription, postSubscription } from '../../api/stripe';
 
 export default function Credit() {
 

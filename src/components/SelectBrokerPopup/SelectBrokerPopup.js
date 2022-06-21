@@ -15,7 +15,7 @@ const SelectBrokerPopup = ({
   open,
   handleClose
 }) => {
-  // const [isOpen, setIsOpen] = React.useState(false);
+ 
   const [values, setValues] = React.useState({
     amount: '',
     password: '',
@@ -220,7 +220,6 @@ const SelectBrokerPopup = ({
                 }}
                 style={{
                   // color: "#ee6535",
-                  fontSize: 13,
                   textDecoration: 'none',
                   fontSize: '12px',
                   height: '40px',

@@ -1,45 +1,43 @@
-import * as React from 'react'
-import { useState } from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Checkbox from '@mui/material/Checkbox'
-import { Link } from 'react-router-dom'
-import MainScreen from '../MainScreen/MainScreen'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
-import Logo from '../Logo/Logo'
-import { useDispatch, useSelector } from 'react-redux'
-import { setUser } from '../../slices/authSlice'
-import { useNavigate } from 'react-router-dom'
-import { register } from '../../utils/auth'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Checkbox from '@mui/material/Checkbox';
+import { useNavigate } from 'react-router-dom';
+import MainScreen from '../MainScreen/MainScreen';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Logo from '../Logo/Logo';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../../slices/authSlice';
+import { register } from '../../api/auth';
 
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 // const theme = createTheme();
 
 export default function SignUp() {
-  const email = useSelector((state) => state.auth.user.email)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
+  const email = useSelector((state) => state.auth.user.email);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const form = event.currentTarget
-    const isValid = form.checkValidity()
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
 
     if (isValid) {
-      const data = new FormData(form)
-      const name = data.get('firstName')
-      const lastName = data.get('lastName')
-      const password = data.get('password')
-      const retypePassword = data.get('confirmPassword')
+      const data = new FormData(form);
+      const name = data.get('firstName');
+      const lastName = data.get('lastName');
+      const password = data.get('password');
+      const retypePassword = data.get('confirmPassword');
 
-      const isPasswordEqual = password === retypePassword
+      const isPasswordEqual = password === retypePassword;
 
       if (isPasswordEqual) {
         const userData = {
@@ -48,23 +46,27 @@ export default function SignUp() {
           last_name: lastName,
           password,
           retypePassword: password,
-        }
+        };
 
-        dispatch(setUser({ name, lastName, password }))
+        dispatch(setUser({
+          name,
+          lastName,
+          password
+        }));
         register(userData)
           .then((data) => {
             if (data) {
-              navigate('../login')
+              navigate('../login');
             }
           })
-          .catch((err) => console.log(err)) // todo add logic
+          .catch((err) => console.log(err)); // todo add logic
       } else {
-        console.log('passwords are not the same') // todo add logic
+        console.log('passwords are not the same'); // todo add logic
       }
     } else {
-      console.log('not valid fields') // todo add logic
+      console.log('not valid fields'); // todo add logic
     }
-  }
+  };
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -74,23 +76,26 @@ export default function SignUp() {
     weightRange: '',
     showPassword: false,
     showConfirmPassword: false,
-  })
+  });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+    setValues({
+      ...values,
+      [prop]: event.target.value
+    });
+  };
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
       showConfirmPassword: !values.showConfirmPassword,
-    })
-  }
+    });
+  };
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   return (
     <MainScreen>
@@ -100,7 +105,14 @@ export default function SignUp() {
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
+        sx={{
+          padding: 5,
+          paddingRight: {
+            lg: 15,
+            md: 0,
+            sm: 0
+          }
+        }}
         square
         container
         direction="row"
@@ -128,9 +140,16 @@ export default function SignUp() {
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
+                sx={{
+                  mt: 1,
+                  width: {
+                    md: 450,
+                    sm: 450,
+                    xs: 450
+                  }
+                }}
               >
-                <Logo />
+                <Logo/>
                 <h1>Create an account</h1>
                 <p style={{ marginBottom: 20 }}>
                   Stocks, Forex, Indices, Bonds, Equities
@@ -160,7 +179,11 @@ export default function SignUp() {
                         },
                       }}
                       inputProps={{
-                        style: { color: 'white', fontSize: 15, height: 30 },
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30
+                        },
                       }}
                       className="inputField"
                       margin="normal"
@@ -191,7 +214,11 @@ export default function SignUp() {
                         },
                       }}
                       inputProps={{
-                        style: { color: 'white', fontSize: 15, height: 30 },
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30
+                        },
                       }}
                       className="inputField"
                       margin="normal"
@@ -223,7 +250,11 @@ export default function SignUp() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -247,9 +278,9 @@ export default function SignUp() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
+                            <VisibilityOff sx={{ color: 'gray' }}/>
                           ) : (
-                            <Visibility sx={{ color: 'gray' }} />
+                            <Visibility sx={{ color: 'gray' }}/>
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -274,7 +305,11 @@ export default function SignUp() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -298,9 +333,9 @@ export default function SignUp() {
                           edge="end"
                         >
                           {values.showConfirmPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
+                            <VisibilityOff sx={{ color: 'gray' }}/>
                           ) : (
-                            <Visibility sx={{ color: 'gray' }} />
+                            <Visibility sx={{ color: 'gray' }}/>
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -350,5 +385,5 @@ export default function SignUp() {
         </Box>
       </Grid>
     </MainScreen>
-  )
+  );
 }

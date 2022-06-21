@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -8,22 +8,90 @@ import './style.css';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
 import oanda from '../../assets/Images/oanda-100.png';
 import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
+import { getAllBrokers } from '../../api/brokers';
 
 export default function SelectBroker() {
   const [isOpen, setIsOpen] = useState(false);
+  const [brokers, setBrokers] = useState([]);
   const [done, setDone] = useState(false);
 
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
+
+  useEffect(() => {
+    (async () => {
+      const allBrokers = await getAllBrokers();
+      setBrokers(allBrokers);
+    })();
+  }, []);
+
+  const renderBrokers = () => {
+    console.log(brokers);
+    return brokers.map(broker => {
+      const isOanda = broker.name
+        .toLowerCase()
+        .includes('oanda');
+      return (
+        <Grid className={isOanda ? 'hover1' : 'hover2'}
+              item xs={5} sm={5} md={5} m={1}
+              sx={{ cursor: 'pointer' }}
+              onClick={handleOpen}
+              key={broker.id}>
+          <p
+            style={{
+              border: '1px solid rgb(41, 40, 40 , 0.5)',
+              padding: '0px 0px',
+              borderRadius: 5,
+              backgroundColor: done ? '#ee6535' : null,
+            }}
+          >
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+            >
+              {isOanda
+                ? <img
+                  src={oanda}
+                  width="150px"
+                  height="50px"
+                  style={{
+                    borderRadius: 3,
+                    margin: '20px'
+                  }}
+                  tintColor="blue"
+                />
+                : <h1 className="h">IG</h1>}
+            </Grid>
+            <hr
+              style={{
+                height: 0.1,
+                borderColor: 'rgb(41, 41, 41 , 0.5)',
+              }}
+            />
+            <Grid
+              className="in"
+              container
+              p={1}
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              color="white"
+            >
+              {broker.title}
+            </Grid>
+          </p>
+        </Grid>
+      );
+    });
+  };
 
   return (
     <React.Fragment>
       <MainPricingDashboard>
         <SelectBrokerPopup open={isOpen} handleClose={handleClose}/>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
-          {/* Hero unit */}
-
-          {/* End hero unit */}
           <Container
             maxWidth="lg"
             component="main"
@@ -49,7 +117,6 @@ export default function SelectBroker() {
             >
               <p>Your membership starts as soon as you set up payment. </p>
             </Grid>
-
             <Container component="main" maxWidth="sm">
               <Grid sx={{ backgroundColor: '#0f0f11' }}>
                 <Box
@@ -70,98 +137,9 @@ export default function SelectBroker() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <Grid className="hover1" item xs={5} sm={5} md={5} m={1}
-                          sx={{ cursor: 'pointer' }} onClick={handleOpen}>
-                      <p
-                        style={{
-                          border: '1px solid rgb(41, 40, 40 , 0.5)',
-                          padding: '0px 0px',
-                          // width :'100%',
-                          borderRadius: 5,
-                          backgroundColor: done ? '#ee6535' : null,
-                        }}
-                      >
-                        <Grid
-                          // p={2}
-                          container
-                          direction="row"
-                          justifyContent="center"
-                          alignItems="center"
-
-
-                        >
-                          {/* <h1 onClick={handleOpen}>Oanda</h1> */}
-                          <img
-                            src={oanda}
-                            width="150px"
-                            height="50px"
-                            style={{
-                              borderRadius: 3,
-                              margin: '20px'
-                            }}
-                            tintColor="blue"
-                          />{' '}
-                        </Grid>
-                        <hr
-                          style={{
-                            height: 0.1,
-                            borderColor: 'rgb(41, 41, 41 , 0.5)',
-                          }}
-                        />
-                        <Grid
-                          className="in"
-                          container
-                          p={1}
-                          direction="row"
-                          justifyContent="center"
-                          alignItems="center"
-                          color="white"
-                        >
-                          Oanda
-                        </Grid>
-                      </p>
-                    </Grid>
-                    <Grid className="hover2" xs={5} sm={5} md={5} m={1}
-                          sx={{ cursor: 'pointer' }} onClick={handleOpen}>
-                      <p
-                        style={{
-                          border: '1px solid rgb(41, 40, 40 ,0.5)',
-                          padding: '0px 0px',
-                          // width :'100%',
-                          borderRadius: 5,
-                        }}
-                      >
-                        <Grid
-                          // p={2}
-                          container
-                          direction="row"
-                          justifyContent="center"
-                          alignItems="center"
-                        >
-                          <h1 className="h">IG</h1>
-                        </Grid>
-                        <hr
-                          style={{
-                            height: 0.1,
-                            borderColor: 'rgb(41, 41, 41 , 0.5)',
-                          }}
-                        />
-                        <Grid
-                          container
-                          p={1}
-                          direction="row"
-                          justifyContent="center"
-                          alignItems="center"
-                          color="white"
-                          className="in"
-                        >
-                          IG
-                        </Grid>
-                      </p>
-                    </Grid>
+                    {renderBrokers()}
                   </Grid>
                 </Box>
-
                 <Box
                   px={3}
                   sx={{
@@ -208,8 +186,6 @@ export default function SelectBroker() {
                       textTransform: 'capitalize',
                     }}
                     style={{
-                      // color: "#ee6535",
-                      fontSize: 13,
                       textDecoration: 'none',
                       fontSize: '12px',
                       height: '40px',
@@ -220,9 +196,6 @@ export default function SelectBroker() {
                   </Button>
                 ) : null}
               </Grid>
-
-              {/* <Credit /> */}
-              {/* <Paypal/> */}
             </Container>
           </Container>
         </Grid>
