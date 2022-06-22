@@ -4,10 +4,8 @@ import oanda from '../../assets/Images/oanda-100.png';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
 import { getAllBrokers, getUserBrokers } from '../../api/brokers';
-import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
 
-const RenderBrokers = () => {
-  const [isOpen, setIsOpen] = useState(false);
+const RenderBrokers = ({ handleOpen }) => {
   const [brokers, setBrokers] = useState([]);
   const [userBrokers, setUserBrokers] = useState([]);
 
@@ -15,9 +13,6 @@ const RenderBrokers = () => {
     publicId,
     authToken
   } = useSelector(selectUserCredentials);
-
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
 
   useEffect(() => {
     (async () => {
@@ -37,15 +32,18 @@ const RenderBrokers = () => {
       .toLowerCase()
       .includes('oanda');
 
+    const handleClick = () => {
+      handleOpen(broker);
+    };
+
     const choosenBroker = userBrokers.some(userBroker => userBroker.broker_id === broker.id);
 
     return (
       <>
-        <SelectBrokerPopup open={isOpen} handleClose={handleClose}/>
         <Grid className={isOanda ? 'hover1' : 'hover2'}
               item xs={5} sm={5} md={5} m={1}
               sx={{ cursor: 'pointer' }}
-              onClick={handleOpen}
+              onClick={handleClick}
               key={broker.id}>
           <p
             style={{

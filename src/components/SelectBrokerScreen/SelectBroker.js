@@ -10,14 +10,26 @@ import RenderBrokers from '../RenderBrokers/RenderBrokers';
 import { getUserBrokers } from '../../api/brokers';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
+import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
 
 export default function SelectBroker() {
+  const [isOpen, setIsOpen] = useState(false);
   const [brokerSelected, setBrokerSelected] = useState(false);
-  console.log(brokerSelected);
+  const [brokerConfig, setBrokerConfig] = useState({});
+
   const {
     publicId,
     authToken
   } = useSelector(selectUserCredentials);
+
+  const user = useSelector(state => state);
+  console.log('state: ', user);
+
+  const handleOpen = (config) => {
+    setIsOpen(true);
+    setBrokerConfig(config);
+  };
+  const handleClose = () => setIsOpen(false);
 
   useEffect(() => {
     (async () => {
@@ -32,6 +44,7 @@ export default function SelectBroker() {
     <React.Fragment>
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
+          <SelectBrokerPopup open={isOpen} handleClose={handleClose} brokerConfig={brokerConfig}/>
           <Container
             maxWidth="lg"
             component="main"
@@ -77,7 +90,7 @@ export default function SelectBroker() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <RenderBrokers/>
+                    <RenderBrokers handleOpen={handleOpen}/>
                   </Grid>
                 </Box>
                 <Box
