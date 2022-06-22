@@ -6,102 +6,31 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import './style.css';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import oanda from '../../assets/Images/oanda-100.png';
-import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
-import { getAllBrokers, getUserBrokers } from '../../api/brokers';
+import RenderBrokers from '../RenderBrokers/RenderBrokers';
+import { getUserBrokers } from '../../api/brokers';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
 
 export default function SelectBroker() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [brokers, setBrokers] = useState([]);
-  const [done, setDone] = useState(false);
-
+  const [brokerSelected, setBrokerSelected] = useState(false);
+  console.log(brokerSelected);
   const {
     publicId,
     authToken
   } = useSelector(selectUserCredentials);
 
-  const handleOpen = () => setIsOpen(true);
-  const handleClose = () => setIsOpen(false);
-
   useEffect(() => {
     (async () => {
-      const allBrokers = await getAllBrokers();
       const userBrokers = await getUserBrokers(publicId, authToken);
-
-      setBrokers(allBrokers);
-      console.log('User brokers: ', userBrokers);
+      if (userBrokers.length !== 0) {
+        setBrokerSelected(true);
+      }
     })();
-
-  }, [publicId, authToken]);
-
-  const renderBrokers = () => {
-    console.log('All brokers: ', brokers);
-    return brokers.map(broker => {
-      const isOanda = broker.name
-        .toLowerCase()
-        .includes('oanda');
-      return (
-        <Grid className={isOanda ? 'hover1' : 'hover2'}
-              item xs={5} sm={5} md={5} m={1}
-              sx={{ cursor: 'pointer' }}
-              onClick={handleOpen}
-              key={broker.id}>
-          <p
-            style={{
-              border: '1px solid rgb(41, 40, 40 , 0.5)',
-              padding: '0px 0px',
-              borderRadius: 5,
-              backgroundColor: done ? '#ee6535' : null,
-            }}
-          >
-            <Grid
-              container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-            >
-              {isOanda
-                ? <img
-                  src={oanda}
-                  width="150px"
-                  height="50px"
-                  style={{
-                    borderRadius: 3,
-                    margin: '20px'
-                  }}
-                  tintColor="blue"
-                />
-                : <h1 className="h">IG</h1>}
-            </Grid>
-            <hr
-              style={{
-                height: 0.1,
-                borderColor: 'rgb(41, 41, 41 , 0.5)',
-              }}
-            />
-            <Grid
-              className="in"
-              container
-              p={1}
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
-              color="white"
-            >
-              {broker.title}
-            </Grid>
-          </p>
-        </Grid>
-      );
-    });
-  };
+  }, [brokerSelected]);
 
   return (
     <React.Fragment>
       <MainPricingDashboard>
-        <SelectBrokerPopup open={isOpen} handleClose={handleClose}/>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
           <Container
             maxWidth="lg"
@@ -148,7 +77,7 @@ export default function SelectBroker() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    {renderBrokers()}
+                    <RenderBrokers/>
                   </Grid>
                 </Box>
                 <Box
@@ -185,7 +114,7 @@ export default function SelectBroker() {
                     </Grid>
                   </Grid>
                 </Box>
-                {done ? (
+                {brokerSelected ? (
                   <Button
                     type="submit"
                     fullWidth
