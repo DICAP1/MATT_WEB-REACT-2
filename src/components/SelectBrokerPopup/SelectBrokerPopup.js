@@ -10,12 +10,21 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 import Button from '@mui/material/Button';
 import './style.css';
+import { getUserBrokers, postUserBroker } from '../../api/brokers';
+import { useSelector } from 'react-redux';
+import { selectUserCredentials } from '../../slices/authSlice';
+import { patchUserBrokerById } from '../../api/users';
 
 const SelectBrokerPopup = ({
   open,
   handleClose,
   brokerConfig
 }) => {
+
+  const {
+    publicId,
+    authToken
+  } = useSelector(selectUserCredentials);
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -39,31 +48,58 @@ const SelectBrokerPopup = ({
   const isOanda = brokerConfig.name?.toLowerCase()
     .includes('oanda');
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const patchBrokerCredentials = async (brokerId, patchData, userBrokers) => {
+    try {
+      const brokerToUpdate = userBrokers.find(data => data.broker_id === brokerId);
+      console.log('brokerToUpdate: ', brokerToUpdate);
+      console.log('patchData: ', patchData);
 
-    const form = event.currentTarget;
-    const isValid = form.checkValidity();
+      for (const [key, value] of Object.entries(patchData)) {
 
-    if (isValid) {
-      let userData = Object.fromEntries(new FormData(form));
-      console.log(userData);
+        const currentField = brokerToUpdate.user_broker_setting.find(data => data.broker_setting.option_name.toLowerCase() === key);
+        console.log('currentField ', currentField);
 
-      // signIn(userData)
-      //   .then((data) => {
-      //     if (data.status === 'success') {
-      //       console.log(data);
-      //       dispatch(setUser({
-      //         isAuthenticated: true,
-      //         auth_token: data.Authorization, ...userData, ...data.user
-      //       })); // todo put only what really need
-      //       navigate('../pricing');
-      //     }
-      //   })
-      //     .catch((err) => console.log(err)); // todo add logic
+        await patchUserBrokerById(publicId, authToken, {
+          id: currentField.id,
+          broker_setting_id: currentField.broker_setting_id,
+          option_value: value
+        });
+        console.log(`${key}: ${value}`);
+      }
+    } catch (err) {
+      console.log('error: ', err.message);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    try {
+      event.preventDefault();
+
+      const form = event.currentTarget;
+      const isValid = form.checkValidity();
+
+      if (isValid) {
+        let userData = Object.fromEntries(new FormData(form));
+        console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
+
+        const postBroker = await postUserBroker(publicId, authToken, brokerConfig.id);
+
+        if (postBroker === null) {
+          console.log('ok');
+          setValues({
+            ...values,
+            password: ''
+          });
+          const userBrokers = await getUserBrokers(publicId, authToken);
+          await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
+        }
+
+      } else {
+        console.log('not valid inputs'); // todo add logic
+      }
       handleClose();
-    } else {
-      console.log('not valid inputs'); // todo add logic
+    } catch (err) {
+      console.log('error when submit: ', err.message);
     }
   };
 
@@ -284,10 +320,10 @@ const SelectBrokerPopup = ({
                     placeholder="Enter API key"
                     required
                     fullWidth
-                    id="api"
+                    id="api_key"
                     type="text"
                     size="small"
-                    name="api"
+                    name="api_key"
                   /></>}
                 <Grid>
                   <h5>Default account</h5>
@@ -317,10 +353,10 @@ const SelectBrokerPopup = ({
                   placeholder="Enter Default account"
                   required
                   fullWidth
-                  id="default_account"
+                  id="accountid"
                   type="text"
                   size="small"
-                  name="default_account"
+                  name="accountid"
                 />
               </Grid>
               <Button

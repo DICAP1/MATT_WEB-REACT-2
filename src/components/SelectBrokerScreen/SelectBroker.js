@@ -7,15 +7,18 @@ import Container from '@mui/material/Container';
 import './style.css';
 import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
 import RenderBrokers from '../RenderBrokers/RenderBrokers';
-import { getUserBrokers } from '../../api/brokers';
+import { getAllBrokers, getUserBrokers } from '../../api/brokers';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
 import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
+import { getUserById, patchUserById } from '../../api/users';
 
 export default function SelectBroker() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [popupIsOpen, setPopupIsOpen] = useState(false);
   const [brokerSelected, setBrokerSelected] = useState(false);
   const [brokerConfig, setBrokerConfig] = useState({});
+  const [brokers, setBrokers] = useState([]);
+  const [userBrokers, setUserBrokers] = useState([]);
 
   const {
     publicId,
@@ -24,27 +27,47 @@ export default function SelectBroker() {
 
   const user = useSelector(state => state);
   console.log('state: ', user);
+  console.log('All brokers: ', brokers);
+  console.log('User brokers: ', userBrokers);
 
   const handleOpen = (config) => {
-    setIsOpen(true);
+    setPopupIsOpen(true);
     setBrokerConfig(config);
   };
-  const handleClose = () => setIsOpen(false);
+  const handleClose = () => setPopupIsOpen(false);
 
   useEffect(() => {
     (async () => {
-      const userBrokers = await getUserBrokers(publicId, authToken);
-      if (userBrokers.length !== 0) {
-        setBrokerSelected(true);
+      const userBrokersData = await getUserBrokers(publicId, authToken);
+      const brokersData = await getAllBrokers();
+
+      setUserBrokers(userBrokersData);
+      setBrokers(brokersData);
+      setBrokerSelected(userBrokersData.length !== 0);
+
+    })();
+  }, [popupIsOpen]);
+
+  useEffect(() => {
+    (async () => {
+      const user = await getUserById(publicId, authToken);
+
+      if (!user.risk) {
+        patchUserById(publicId, authToken, { risk: 2 })
+          .then(() => console.log('risk set'))
+          .catch(err => console.log('broker data not sent', err)); // todo add logic;
+      } else {
+        console.log('risk: ', user.risk);
       }
     })();
-  }, [brokerSelected]);
+  }, []);
 
   return (
     <React.Fragment>
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
-          <SelectBrokerPopup open={isOpen} handleClose={handleClose} brokerConfig={brokerConfig}/>
+          <SelectBrokerPopup open={popupIsOpen} handleClose={handleClose}
+                             brokerConfig={brokerConfig}/>
           <Container
             maxWidth="lg"
             component="main"
@@ -90,7 +113,8 @@ export default function SelectBroker() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <RenderBrokers handleOpen={handleOpen}/>
+                    <RenderBrokers handleOpen={handleOpen} brokers={brokers}
+                                   userBrokers={userBrokers}/>
                   </Grid>
                 </Box>
                 <Box
@@ -128,25 +152,29 @@ export default function SelectBroker() {
                   </Grid>
                 </Box>
                 {brokerSelected ? (
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      mt: 3,
-                      mb: 2,
-                      backgroundColor: '#ee6535',
-                      textTransform: 'capitalize',
-                    }}
-                    style={{
-                      textDecoration: 'none',
-                      fontSize: '12px',
-                      height: '40px',
-                      borderRadius: '7px',
-                    }}
-                  >
-                    Let's Get Started
-                  </Button>
+                  <a href="https://demotraider.divergencecapital.com/#/get-started"
+                    // target="_blank"
+                     style={{ textDecoration: 'none' }}>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{
+                        mt: 3,
+                        mb: 2,
+                        backgroundColor: '#ee6535',
+                        textTransform: 'capitalize',
+                      }}
+                      style={{
+                        textDecoration: 'none',
+                        fontSize: '12px',
+                        height: '40px',
+                        borderRadius: '7px',
+                      }}
+                    >
+                      Let's Get Started
+                    </Button>
+                  </a>
                 ) : null}
               </Grid>
             </Container>

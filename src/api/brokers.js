@@ -21,3 +21,14 @@ export function getUserBrokers(publicId, authToken) {
       res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
     );
 }
+
+export function postUserBroker(publicId, authToken, brokerId) {
+  return brokerAPI.post(`users/brokers/${publicId}`, { broker_id: brokerId }, {
+    headers: {
+      'Authorization': authToken
+    }
+  })
+    .then((res) =>
+      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
+    );
+}

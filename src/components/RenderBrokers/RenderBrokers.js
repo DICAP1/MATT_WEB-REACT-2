@@ -1,31 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Grid from '@mui/material/Grid';
 import oanda from '../../assets/Images/oanda-100.png';
-import { useSelector } from 'react-redux';
-import { selectUserCredentials } from '../../slices/authSlice';
-import { getAllBrokers, getUserBrokers } from '../../api/brokers';
 
-const RenderBrokers = ({ handleOpen }) => {
-  const [brokers, setBrokers] = useState([]);
-  const [userBrokers, setUserBrokers] = useState([]);
-
-  const {
-    publicId,
-    authToken
-  } = useSelector(selectUserCredentials);
-
-  useEffect(() => {
-    (async () => {
-      const brokersData = await getAllBrokers();
-      const userBrokersData = await getUserBrokers(publicId, authToken);
-      setBrokers(brokersData);
-      setUserBrokers(userBrokersData);
-    })();
-
-  }, [publicId, authToken]);
-
-  console.log('All brokers: ', brokers);
-  console.log('User brokers: ', userBrokers);
+const RenderBrokers = ({
+  handleOpen,
+  brokers,
+  userBrokers
+}) => {
 
   return brokers.map(broker => {
     const isOanda = broker.name
