@@ -16,7 +16,7 @@ import google from '../../assets/Icons/google.png';
 import linkedin from '../../assets/Icons/linkedin.png';
 import Logo from '../Logo/Logo';
 import MainScreen from '../MainScreen/MainScreen';
-import { confirmEmail, signIn } from '../../utils/auth';
+import { confirmEmail, signIn } from '../../api/auth';
 import { setUser } from '../../slices/authSlice';
 
 // const theme = createTheme();

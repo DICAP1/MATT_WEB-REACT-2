@@ -16,12 +16,16 @@ import {
   useElements,
   useStripe
 } from '@stripe/react-stripe-js';
-import { getSubscription, postSubscription } from '../../utils/stripe';
+import { getSubscription, postSubscription } from '../../api/stripe';
+import { selectUserCredentials } from '../../slices/authSlice';
 
 export default function Credit() {
 
   const billing = useSelector((state) => state.billing);
-  const auth = useSelector((state) => state.auth);
+  const {
+    publicId,
+    authToken
+  } = useSelector(selectUserCredentials);
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -57,14 +61,14 @@ export default function Credit() {
     } else {
       console.log(token);
       postSubscription({
-          public_id: auth.user.public_id,
+          public_id: publicId,
           token_card: token.id,
           trial_days: 0,
           plans: [billing.plan_id]
         }
       )
         .then(() => {
-          getSubscription(auth.user.public_id, auth.user.auth_token)
+          getSubscription(publicId, authToken)
             .then(data => console.log(data)); // todo for dev needs
           navigate('../select-broker');
         })
