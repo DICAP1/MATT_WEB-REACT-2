@@ -18,7 +18,8 @@ import { patchUserBrokerById } from '../../api/users';
 const SelectBrokerPopup = ({
   open,
   handleClose,
-  brokerConfig
+  brokerConfig,
+  onSubmit
 }) => {
 
   const {
@@ -92,6 +93,7 @@ const SelectBrokerPopup = ({
           });
           const userBrokers = await getUserBrokers(publicId, authToken);
           await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
+          onSubmit();
         }
 
       } else {

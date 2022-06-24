@@ -36,22 +36,20 @@ export default function SelectBroker() {
   };
   const handleClose = () => setPopupIsOpen(false);
 
+  const handlePopupSubmit = async () => {
+    const userBrokersData = await getUserBrokers(publicId, authToken);
+    setUserBrokers(userBrokersData);
+  };
+
   useEffect(() => {
     (async () => {
-      const userBrokersData = await getUserBrokers(publicId, authToken);
       const brokersData = await getAllBrokers();
-
-      setUserBrokers(userBrokersData);
-      setBrokers(brokersData);
-      setBrokerSelected(userBrokersData.length !== 0);
-
-    })();
-  }, [popupIsOpen]);
-
-  useEffect(() => {
-    (async () => {
+      const userBrokersData = await getUserBrokers(publicId, authToken);
       const user = await getUserById(publicId, authToken);
 
+      setBrokers(brokersData);
+      setUserBrokers(userBrokersData);
+      setBrokerSelected(userBrokersData.length !== 0);
       if (!user.risk) {
         patchUserById(publicId, authToken, { risk: 2 })
           .then(() => console.log('risk set'))
@@ -67,7 +65,7 @@ export default function SelectBroker() {
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
           <SelectBrokerPopup open={popupIsOpen} handleClose={handleClose}
-                             brokerConfig={brokerConfig}/>
+                             brokerConfig={brokerConfig} onSubmit={handlePopupSubmit}/>
           <Container
             maxWidth="lg"
             component="main"

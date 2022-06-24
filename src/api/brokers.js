@@ -5,7 +5,7 @@ const brokerAPI = axios.create({
 });
 
 export function getAllBrokers() {
-  return brokerAPI.get('/brokers')
+  return brokerAPI.get('/brokers/')
     .then((res) =>
       res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
     );
