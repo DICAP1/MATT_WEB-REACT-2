@@ -1,56 +1,55 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Logo from '../Logo/Logo'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import MainScreen from '../MainScreen/MainScreen'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
-import { setUser } from '../../slices/authSlice'
-import { register, setPassword } from '../../utils/auth'
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Logo from '../Logo/Logo';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import MainScreen from '../MainScreen/MainScreen';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import { setPassword } from '../../api/auth';
 
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 // const theme = createTheme();
 
 export default function CreateNewPassword() {
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    const form = event.currentTarget
-    const isValid = form.checkValidity()
+    const form = event.currentTarget;
+    const isValid = form.checkValidity();
 
     if (isValid) {
-      const data = new FormData(form)
-      const password = data.get('password')
-      const retypePassword = data.get('confirmPassword')
-      const isPasswordEqual = password === retypePassword
+      const data = new FormData(form);
+      const password = data.get('password');
+      const retypePassword = data.get('confirmPassword');
+      const isPasswordEqual = password === retypePassword;
 
       if (isPasswordEqual && searchParams.has('reset-token')) {
-        const token = searchParams.get('reset-token')
-        const newPassword = { new_password: password }
+        const token = searchParams.get('reset-token');
+        const newPassword = { new_password: password };
 
         setPassword(token, newPassword)
           .then((data) => {
             if (data.status === 'success') {
-              navigate('../login')
+              navigate('../login');
             }
           })
-          .catch((err) => console.log(err)) // todo add logic
+          .catch((err) => console.log(err)); // todo add logic
       } else {
-        console.log('passwords are not the same') // todo add logic
+        console.log('passwords are not the same'); // todo add logic
       }
     } else {
-      console.log('not valid fields') // todo add logic
+      console.log('not valid fields'); // todo add logic
     }
-  }
+  };
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -60,23 +59,26 @@ export default function CreateNewPassword() {
     weightRange: '',
     showPassword: false,
     showConfirmPassword: false,
-  })
+  });
 
   const handleChange = (prop) => (event) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
+    setValues({
+      ...values,
+      [prop]: event.target.value
+    });
+  };
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
       showConfirmPassword: !values.showConfirmPassword,
-    })
-  }
+    });
+  };
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault()
-  }
+    event.preventDefault();
+  };
 
   return (
     <MainScreen>
@@ -86,7 +88,14 @@ export default function CreateNewPassword() {
         sm={12}
         md={6}
         lg={5.5}
-        sx={{ padding: 5, paddingRight: { lg: 15, md: 0, sm: 0 } }}
+        sx={{
+          padding: 5,
+          paddingRight: {
+            lg: 15,
+            md: 0,
+            sm: 0
+          }
+        }}
         square
         container
         direction="row"
@@ -114,9 +123,16 @@ export default function CreateNewPassword() {
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1, width: { md: 450, sm: 450, xs: 450 } }}
+                sx={{
+                  mt: 1,
+                  width: {
+                    md: 450,
+                    sm: 450,
+                    xs: 450
+                  }
+                }}
               >
-                <Logo />
+                <Logo/>
                 <h1>Create new password</h1>
                 <p style={{ marginBottom: 20 }}>
                   Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -141,7 +157,11 @@ export default function CreateNewPassword() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -165,9 +185,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
+                            <VisibilityOff sx={{ color: 'gray' }}/>
                           ) : (
-                            <Visibility sx={{ color: 'gray' }} />
+                            <Visibility sx={{ color: 'gray' }}/>
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -192,7 +212,11 @@ export default function CreateNewPassword() {
                     },
                   }}
                   inputProps={{
-                    style: { color: 'white', fontSize: 15, height: 30 },
+                    style: {
+                      color: 'white',
+                      fontSize: 15,
+                      height: 30
+                    },
                   }}
                   className="inputField"
                   margin="normal"
@@ -216,9 +240,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showConfirmPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }} />
+                            <VisibilityOff sx={{ color: 'gray' }}/>
                           ) : (
-                            <Visibility sx={{ color: 'gray' }} />
+                            <Visibility sx={{ color: 'gray' }}/>
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -255,5 +279,5 @@ export default function CreateNewPassword() {
         </Box>
       </Grid>
     </MainScreen>
-  )
+  );
 }

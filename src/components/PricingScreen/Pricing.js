@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBilling } from '../../slices/billingSlice';
-import { getPlans } from '../../utils/stripe';
+import { getPlans } from '../../api/stripe';
 
 const tiers = [
   {
