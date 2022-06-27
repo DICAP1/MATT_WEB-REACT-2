@@ -19,8 +19,6 @@ import MainScreen from '../MainScreen/MainScreen';
 import { confirmEmail, signIn } from '../../api/auth';
 import { setUser } from '../../slices/authSlice';
 
-// const theme = createTheme();
-
 export default function SignIn() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -46,9 +44,15 @@ export default function SignIn() {
           if (data.status === 'success') {
             console.log(data);
             dispatch(setUser({
-              isAuthenticated: true,
-              auth_token: data.Authorization, ...userData, ...data.user
+              auth_token: data.Authorization,
+              isAuth: true,
+              ...userData,
+              ...data.user
             })); // todo put only what really need
+            localStorage.setItem('credentials', JSON.stringify({
+              public_id: data.public_id,
+              token: data.Authorization
+            }));
             navigate('../pricing');
           }
         })

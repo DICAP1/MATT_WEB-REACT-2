@@ -8,7 +8,7 @@ export const authSlice = createSlice({
       name: '',
       lastName: '',
       password: '',
-      isAuthenticated: false,
+      isAuth: null
     },
   },
   reducers: {
@@ -31,3 +31,4 @@ export const selectUserCredentials = state => {
     authToken: state.auth.user.auth_token
   };
 };
+export const selectIsAuth = state => state.auth.user.isAuth;
