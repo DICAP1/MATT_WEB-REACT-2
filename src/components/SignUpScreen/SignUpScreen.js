@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -14,12 +14,12 @@ import Logo from '../Logo/Logo';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../slices/authSlice';
 import { register } from '../../api/auth';
+import { LoadingButton } from '@mui/lab';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
-// const theme = createTheme();
-
 export default function SignUp() {
+  const [isLoading, setIsLoading] = useState(false);
   const email = useSelector((state) => state.auth.user.email);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,42 +30,46 @@ export default function SignUp() {
     const form = event.currentTarget;
     const isValid = form.checkValidity();
 
-    if (isValid) {
-      const data = new FormData(form);
-      const name = data.get('firstName');
-      const lastName = data.get('lastName');
-      const password = data.get('password');
-      const retypePassword = data.get('confirmPassword');
-
-      const isPasswordEqual = password === retypePassword;
-
-      if (isPasswordEqual) {
-        const userData = {
-          email,
-          first_name: name,
-          last_name: lastName,
-          password,
-          retypePassword: password,
-        };
-
-        dispatch(setUser({
-          name,
-          lastName,
-          password
-        }));
-        register(userData)
-          .then((data) => {
-            if (data) {
-              navigate('../login');
-            }
-          })
-          .catch((err) => console.log(err)); // todo add logic
-      } else {
-        console.log('passwords are not the same'); // todo add logic
-      }
-    } else {
+    if (!isValid) {
       console.log('not valid fields'); // todo add logic
+      return;
     }
+
+    const data = new FormData(form);
+    const name = data.get('firstName');
+    const lastName = data.get('lastName');
+    const password = data.get('password');
+    const retypePassword = data.get('confirmPassword');
+
+    const isPasswordEqual = password === retypePassword;
+
+    if (!isPasswordEqual) {
+      console.log('passwords are not the same'); // todo add logic
+      return;
+    }
+
+    const userData = {
+      email,
+      first_name: name,
+      last_name: lastName,
+      password,
+      retypePassword: password,
+    };
+
+    dispatch(setUser({
+      name,
+      lastName,
+      password
+    }));
+    setIsLoading(true);
+    register(userData)
+      .then((data) => {
+        if (data) {
+          navigate('../login');
+        }
+      })
+      .catch((err) => console.log(err))// todo add logic
+      .finally(() => setIsLoading(false));
   };
 
   const [values, setValues] = React.useState({
@@ -355,20 +359,26 @@ export default function SignUp() {
                   </p>
                   <p style={{ color: '#ee6535' }}>Terms of Use &nbsp;</p>
                 </Grid>
-                <Button
+                <LoadingButton
                   type="submit"
                   fullWidth
-                  variant="contained"
+                  loading={isLoading}
+                  variant="text"
                   sx={{
                     mt: 3,
                     mb: 2,
                     backgroundColor: '#ff6838',
                     textTransform: 'none',
                     fontWeight: 'normal',
+                    color: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: 'primary.main',
+                      opacity: [0.9, 0.8, 0.7]
+                    }
                   }}
                 >
                   Continue
-                </Button>
+                </LoadingButton>
               </Box>
             </Grid>
             <Grid>

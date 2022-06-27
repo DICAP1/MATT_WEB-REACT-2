@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@mui/material/Modal';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -8,12 +8,12 @@ import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
-import Button from '@mui/material/Button';
 import './style.css';
 import { getUserBrokers, postUserBroker } from '../../api/brokers';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
 import { patchUserBrokerById } from '../../api/users';
+import { LoadingButton } from '@mui/lab';
 
 const SelectBrokerPopup = ({
   open,
@@ -21,7 +21,7 @@ const SelectBrokerPopup = ({
   brokerConfig,
   onSubmit
 }) => {
-
+  const [isLoading, setIsLoading] = useState(false);
   const {
     publicId,
     authToken
@@ -73,36 +73,37 @@ const SelectBrokerPopup = ({
   };
 
   const handleSubmit = async (event) => {
+    setIsLoading(true);
     try {
       event.preventDefault();
 
       const form = event.currentTarget;
       const isValid = form.checkValidity();
 
-      if (isValid) {
-        let userData = Object.fromEntries(new FormData(form));
-        console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
-
-        const postBroker = await postUserBroker(publicId, authToken, brokerConfig.id);
-
-        if (postBroker === null) {
-          console.log('ok');
-          setValues({
-            ...values,
-            password: ''
-          });
-          const userBrokers = await getUserBrokers(publicId, authToken);
-          await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
-          onSubmit();
-        }
-
-      } else {
+      if (!isValid) {
         console.log('not valid inputs'); // todo add logic
+        return;
+      }
+
+      let userData = Object.fromEntries(new FormData(form));
+      console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
+      const postBroker = await postUserBroker(publicId, authToken, brokerConfig.id);
+
+      if (postBroker === null) {
+        console.log('ok');
+        setValues({
+          ...values,
+          password: ''
+        });
+        const userBrokers = await getUserBrokers(publicId, authToken);
+        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
+        onSubmit();
       }
       handleClose();
     } catch (err) {
       console.log('error when submit: ', err.message);
     }
+    setIsLoading(false);
   };
 
   const handleChange = (prop) => (event) => {
@@ -361,14 +362,20 @@ const SelectBrokerPopup = ({
                   name="accountid"
                 />
               </Grid>
-              <Button
+              <LoadingButton
                 type="submit"
                 fullWidth
-                variant="contained"
+                loading={isLoading}
+                variant="text"
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#ee6535'
+                  backgroundColor: '#ee6535',
+                  color: '#ffffff',
+                  '&:hover': {
+                    backgroundColor: 'primary.main',
+                    opacity: [0.9, 0.8, 0.7]
+                  }
                 }}
                 style={{
                   textDecoration: 'none',
@@ -378,7 +385,7 @@ const SelectBrokerPopup = ({
                 }}
               >
                 Done
-              </Button>
+              </LoadingButton>
             </Grid>
           </Box>
         </Box>

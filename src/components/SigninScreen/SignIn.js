@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { useEffect } from 'react';
-import Button from '@mui/material/Button';
+import { useEffect, useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -18,8 +17,10 @@ import Logo from '../Logo/Logo';
 import MainScreen from '../MainScreen/MainScreen';
 import { confirmEmail, signIn } from '../../api/auth';
 import { setUser } from '../../slices/authSlice';
+import { LoadingButton } from '@mui/lab';
 
 export default function SignIn() {
+  const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -42,6 +43,7 @@ export default function SignIn() {
         email,
         password
       };
+      setIsLoading(true);
       const user = await signIn(userData);
       if (user.status === 'success') {
         console.log(user);
@@ -55,10 +57,12 @@ export default function SignIn() {
           public_id: user.public_id,
           token: user.Authorization
         }));
-        navigate(user.user.has_onboard ? '/' : '../pricing');
+        // navigate(user.user.has_onboard ? '/' : '../pricing');
+        navigate('../pricing');
       }
     } catch (err) {
       console.log(err); // todo add logic
+      setIsLoading(false);
     }
   };
 
@@ -265,20 +269,26 @@ export default function SignIn() {
                     Forgot password?
                   </Link>
                 </Grid>
-                <Button
+                <LoadingButton
                   type="submit"
                   fullWidth
-                  variant="contained"
+                  loading={isLoading}
+                  variant="text"
                   sx={{
                     mt: 3,
                     mb: 2,
                     backgroundColor: '#ff6838',
                     textTransform: 'none',
                     fontWeight: 'normal',
+                    color: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: 'primary.main',
+                      opacity: [0.9, 0.8, 0.7]
+                    }
                   }}
                 >
                   Sign In
-                </Button>
+                </LoadingButton>
 
                 <Grid
                   container

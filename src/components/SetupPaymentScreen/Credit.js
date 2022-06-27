@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -18,9 +18,10 @@ import {
 } from '@stripe/react-stripe-js';
 import { getSubscription, postSubscription } from '../../api/stripe';
 import { selectUserCredentials } from '../../slices/authSlice';
+import { LoadingButton } from '@mui/lab';
 
 export default function Credit() {
-
+  const [isLoading, setIsLoading] = useState(false);
   const billing = useSelector((state) => state.billing);
   const {
     publicId,
@@ -50,7 +51,7 @@ export default function Credit() {
     }
 
     const cardElement = elements.getElement('cardNumber');
-
+    setIsLoading(true);
     const {
       error,
       token
@@ -58,8 +59,8 @@ export default function Credit() {
 
     if (error) {
       console.log('Error: ', error.message);
+      setIsLoading(false);
     } else {
-      console.log(token);
       postSubscription({
           public_id: publicId,
           token_card: token.id,
@@ -72,8 +73,10 @@ export default function Credit() {
             .then(data => console.log(data)); // todo for dev needs
           navigate('../select-broker');
         })
-        .catch((err) => console.log(err)); // todo add logic
+        .catch((err) => console.log(err)) // todo add logic
+        .finally(() => setIsLoading(false));
     }
+
   };
 
   return (
@@ -317,17 +320,24 @@ export default function Credit() {
             </Link>
           </Grid>
         </Box>
-        <Button
+        <LoadingButton
           type="submit"
           fullWidth
-          variant="contained"
+          loading={isLoading}
+          variant="text"
           sx={{
             mt: 3,
             mb: 2,
-            backgroundColor: '#ee6535'
-          }}>
+            backgroundColor: '#ee6535',
+            color: '#ffffff',
+            '&:hover': {
+              backgroundColor: 'primary.main',
+              opacity: [0.9, 0.8, 0.7]
+            }
+          }}
+        >
           Start Membership
-        </Button>
+        </LoadingButton>
       </Grid>
     </React.Fragment>
   );
