@@ -24,13 +24,17 @@ export default function SignIn() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const form = event.currentTarget;
     const isValid = form.checkValidity();
 
-    if (isValid) {
+    if (!isValid) {
+      console.log('not valid inputs'); // todo add logic
+      return;
+    }
+    try {
       const formData = new FormData(form);
       const email = formData.get('email');
       const password = formData.get('password');
@@ -38,27 +42,23 @@ export default function SignIn() {
         email,
         password
       };
-
-      signIn(userData)
-        .then((data) => {
-          if (data.status === 'success') {
-            console.log(data);
-            dispatch(setUser({
-              auth_token: data.Authorization,
-              isAuth: true,
-              ...userData,
-              ...data.user
-            })); // todo put only what really need
-            localStorage.setItem('credentials', JSON.stringify({
-              public_id: data.public_id,
-              token: data.Authorization
-            }));
-            navigate('../pricing');
-          }
-        })
-        .catch((err) => console.log(err)); // todo add logic
-    } else {
-      console.log('not valid inputs'); // todo add logic
+      const user = await signIn(userData);
+      if (user.status === 'success') {
+        console.log(user);
+        dispatch(setUser({
+          auth_token: user.Authorization,
+          isAuth: true,
+          ...userData,
+          ...user.user
+        })); // todo put only what really need
+        localStorage.setItem('credentials', JSON.stringify({
+          public_id: user.public_id,
+          token: user.Authorization
+        }));
+        navigate(user.user.has_onboard ? '/' : '../pricing');
+      }
+    } catch (err) {
+      console.log(err); // todo add logic
     }
   };
 

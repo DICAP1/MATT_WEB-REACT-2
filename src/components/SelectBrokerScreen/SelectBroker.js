@@ -25,11 +25,6 @@ export default function SelectBroker() {
     authToken
   } = useSelector(selectUserCredentials);
 
-  const user = useSelector(state => state);
-  console.log('state: ', user);
-  console.log('All brokers: ', brokers);
-  console.log('User brokers: ', userBrokers);
-
   const handleOpen = (config) => {
     setPopupIsOpen(true);
     setBrokerConfig(config);

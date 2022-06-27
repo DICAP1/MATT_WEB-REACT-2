@@ -98,7 +98,7 @@ export default function Pricing() {
       .then((data) => {
         if (Array.isArray(data.data)) {
           const plansData = data.data;
-          console.log(plansData);
+          console.log('plansData: ', plansData);
           setPlans(tiers.map((plan, ind) => {
             if (plansData[ind]) {
               return {
