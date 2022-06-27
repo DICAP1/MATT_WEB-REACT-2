@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
 import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
 import { getUserById, patchUserById } from '../../api/users';
+import { useNavigate } from 'react-router-dom';
 
 export default function SelectBroker() {
   const [popupIsOpen, setPopupIsOpen] = useState(false);
@@ -19,6 +20,7 @@ export default function SelectBroker() {
   const [brokerConfig, setBrokerConfig] = useState({});
   const [brokers, setBrokers] = useState([]);
   const [userBrokers, setUserBrokers] = useState([]);
+  const navigate = useNavigate();
 
   const {
     publicId,
@@ -34,6 +36,10 @@ export default function SelectBroker() {
   const handlePopupSubmit = async () => {
     const userBrokersData = await getUserBrokers(publicId, authToken);
     setUserBrokers(userBrokersData);
+  };
+
+  const handleClick = () => {
+    navigate('./');
   };
 
   useEffect(() => {
@@ -145,29 +151,26 @@ export default function SelectBroker() {
                   </Grid>
                 </Box>
                 {brokerSelected ? (
-                  <a href="https://demotraider.divergencecapital.com/#/get-started"
-                    // target="_blank"
-                     style={{ textDecoration: 'none' }}>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      sx={{
-                        mt: 3,
-                        mb: 2,
-                        backgroundColor: '#ee6535',
-                        textTransform: 'capitalize',
-                      }}
-                      style={{
-                        textDecoration: 'none',
-                        fontSize: '12px',
-                        height: '40px',
-                        borderRadius: '7px',
-                      }}
-                    >
-                      Let's Get Started
-                    </Button>
-                  </a>
+                  <Button
+                    type="button"
+                    onClick={handleClick}
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: '#ee6535',
+                      textTransform: 'capitalize',
+                    }}
+                    style={{
+                      textDecoration: 'none',
+                      fontSize: '12px',
+                      height: '40px',
+                      borderRadius: '7px',
+                    }}
+                  >
+                    Let's Get Started
+                  </Button>
                 ) : null}
               </Grid>
             </Container>
