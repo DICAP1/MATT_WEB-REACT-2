@@ -16,7 +16,7 @@ import {
   useElements,
   useStripe
 } from '@stripe/react-stripe-js';
-import { getSubscription, postSubscription } from '../../api/stripe';
+import { useGetSubscriptionQuery, usePostSubscriptionMutation } from '../../api/stripe';
 import { selectUserCredentials } from '../../slices/authSlice';
 import { LoadingButton } from '@mui/lab';
 
@@ -30,6 +30,8 @@ export default function Credit() {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const [postSubscription] = usePostSubscriptionMutation();
+  const {data : dataSubscription} = useGetSubscriptionQuery({publicId, authToken}, {skip: (!publicId || !authToken)})
 
   const inputStyles = {
     style: {
@@ -69,8 +71,7 @@ export default function Credit() {
         }
       )
         .then(() => {
-          getSubscription(publicId, authToken)
-            .then(data => console.log(data)); // todo for dev needs
+          console.log('data subscription', dataSubscription);
           navigate('../select-broker');
         })
         .catch((err) => console.log(err)) // todo add logic

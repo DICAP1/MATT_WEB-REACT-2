@@ -1,34 +1,61 @@
-import axios from 'axios';
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { getConfig } from '../config/app-config'
 
-const brokerAPI = axios.create({
-  baseURL: 'https://demotraider.divergencecapital.com:5000/api/v1',
-});
-
-export function getAllBrokers() {
-  return brokerAPI.get('/brokers/')
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function getUserBrokers(publicId, authToken) {
-  return brokerAPI.get(`users/brokers/${publicId}`, {
-    headers: {
-      'Authorization': authToken
-    }
+export const brokerApi = createApi({
+  reducerPath: 'brokerApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: getConfig().API_URL,
+  }),
+  endpoints: (builder) => ({
+    getAllBrokes: builder.query({
+      query: () => ({
+        url: `brokers/`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }),
+    getUserBrokers: builder.query({
+      query: ({publicId, authToken}) => ({
+        url: `users/brokes/${publicId}`,
+        headers: {
+          'Authorization' : authToken,
+        }
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    }),
+    postUserBroker: builder.mutation({
+      query: ({publicId, authToken, brokerId}) => ({
+        url: `users/brokes/${publicId}`,
+        body: brokerId,
+        headers: {
+          'Authorization' : authToken,
+        }
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try { 
+          await queryFulfilled
+        } catch (error) {
+          console.error(error)
+        }
+      }
+    })
   })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+})
 
-export function postUserBroker(publicId, authToken, brokerId) {
-  return brokerAPI.post(`users/brokers/${publicId}`, { broker_id: brokerId }, {
-    headers: {
-      'Authorization': authToken
-    }
-  })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+export const {
+  useGetAllBrokesQuery,
+  useGetUserBrokersQuery,
+  usePostUserBrokerMutation,
+} = brokerApi

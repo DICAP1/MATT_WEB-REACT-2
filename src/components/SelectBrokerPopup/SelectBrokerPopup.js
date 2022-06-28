@@ -9,10 +9,10 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 import './style.css';
-import { getUserBrokers, postUserBroker } from '../../api/brokers';
+import { useGetUserBrokersQuery, usePostUserBrokerMutation } from '../../api/brokers';
 import { useSelector } from 'react-redux';
 import { selectUserCredentials } from '../../slices/authSlice';
-import { patchUserBrokerById } from '../../api/users';
+import { usePatchUserBrokerByIdMutation } from '../../api/users';
 import { LoadingButton } from '@mui/lab';
 
 const SelectBrokerPopup = ({
@@ -34,6 +34,10 @@ const SelectBrokerPopup = ({
     weightRange: '',
     showPassword: false,
   });
+
+  const [postUserBroker] = usePostUserBrokerMutation();
+  const {data: userBrokers} = useGetUserBrokersQuery({publicId, authToken});
+  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation();
 
   const style = {
     position: 'absolute',
@@ -87,7 +91,7 @@ const SelectBrokerPopup = ({
 
       let userData = Object.fromEntries(new FormData(form));
       console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
-      const postBroker = await postUserBroker(publicId, authToken, brokerConfig.id);
+      const postBroker = await postUserBroker({publicId, authToken, brokerId: brokerConfig.id});
 
       if (postBroker === null) {
         console.log('ok');
@@ -95,7 +99,6 @@ const SelectBrokerPopup = ({
           ...values,
           password: ''
         });
-        const userBrokers = await getUserBrokers(publicId, authToken);
         await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
         onSubmit();
       }

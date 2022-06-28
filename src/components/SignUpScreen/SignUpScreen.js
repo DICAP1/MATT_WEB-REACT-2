@@ -13,7 +13,7 @@ import IconButton from '@mui/material/IconButton';
 import Logo from '../Logo/Logo';
 import { useDispatch, useSelector } from 'react-redux';
 import { setUser } from '../../slices/authSlice';
-import { register } from '../../api/auth';
+import { useRegisterMutation } from '../../api/auth';
 import { LoadingButton } from '@mui/lab';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
@@ -23,6 +23,7 @@ export default function SignUp() {
   const email = useSelector((state) => state.auth.user.email);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [register] = useRegisterMutation();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -62,11 +63,12 @@ export default function SignUp() {
       password
     }));
     setIsLoading(true);
-    register(userData)
+    register(userData).unwrap()
       .then((data) => {
-        if (data) {
-          navigate('../login');
-        }
+        // if (data) {
+        //   navigate('../login');
+        // }
+        console.log(data);
       })
       .catch((err) => console.log(err))// todo add logic
       .finally(() => setIsLoading(false));

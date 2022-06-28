@@ -10,7 +10,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
-import { setPassword } from '../../api/auth';
+import { useSetPasswordMutation } from '../../api/auth';
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -19,6 +19,7 @@ const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 export default function CreateNewPassword() {
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [setPassword] = useSetPasswordMutation();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -35,8 +36,9 @@ export default function CreateNewPassword() {
       if (isPasswordEqual && searchParams.has('reset-token')) {
         const token = searchParams.get('reset-token');
         const newPassword = { new_password: password };
-
-        setPassword(token, newPassword)
+      
+        console.log(newPassword);
+        setPassword({token, newPassword})
           .then((data) => {
             if (data.status === 'success') {
               navigate('../login');

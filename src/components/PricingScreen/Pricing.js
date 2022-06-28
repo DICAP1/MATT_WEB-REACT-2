@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBilling } from '../../slices/billingSlice';
-import { getPlans } from '../../api/stripe';
+import { useGetPlansQuery } from '../../api/stripe';
 import { plansDescription } from '../../fixtures';
 
 export default function Pricing() {
@@ -24,6 +24,8 @@ export default function Pricing() {
   const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
   const [monthlyPlans, setMonthlyPlans] = useState([]);
   const [yearPlans, setYearPlans] = useState([]);
+  const {data: plans} = useGetPlansQuery();
+
   const plansToRender = isMonthly ? monthlyPlans : yearPlans;
 
   function handleTerm() {
@@ -69,18 +71,14 @@ export default function Pricing() {
   }
 
   useEffect(() => {
-    getPlans()
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          const plansData = data.data;
-          const monthlyPlansData = plansData.filter(plan => plan.interval === 'month');
-          const yearPlansData = plansData.filter(plan => plan.interval === 'year');
-          setPlan('month', plansDescription, monthlyPlansData);
-          setPlan('year', plansDescription, yearPlansData);
-        }
-      })
-      .catch((err) => console.log(err)); // todo add logic;
-  }, []);
+    if (Array.isArray(plans?.data)) {
+      const plansData = plans.data;
+      const monthlyPlansData = plansData.filter(plan => plan.interval === 'month');
+      const yearPlansData = plansData.filter(plan => plan.interval === 'year');
+      setPlan('month', plansDescription, monthlyPlansData);
+      setPlan('year', plansDescription, yearPlansData);
+    }
+  }, [plans]);
 
   return (
     <MainPricingDashboard>

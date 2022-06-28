@@ -15,7 +15,7 @@ import google from '../../assets/Icons/google.png';
 import linkedin from '../../assets/Icons/linkedin.png';
 import Logo from '../Logo/Logo';
 import MainScreen from '../MainScreen/MainScreen';
-import { confirmEmail, signIn } from '../../api/auth';
+import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth';
 import { setUser } from '../../slices/authSlice';
 import { LoadingButton } from '@mui/lab';
 
@@ -23,6 +23,9 @@ export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [signIn] = useSignInMutation();
+  const [confirmEmailToken, setConfirmEmailToken] = useState('');
+  const {data: confirmEmail} = useConfirmEmailQuery(confirmEmailToken, {skip : !confirmEmailToken});
   const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmit = async (event) => {
@@ -44,9 +47,8 @@ export default function SignIn() {
         password
       };
       setIsLoading(true);
-      const user = await signIn(userData);
-      if (user.status === 'success') {
-        console.log(user);
+      const {data: user} = await signIn(userData);
+      if (user?.status === 'success') {
         dispatch(setUser({
           auth_token: user.Authorization,
           isAuth: true,
@@ -96,15 +98,23 @@ export default function SignIn() {
     if (searchParams.has('confirm')) {
       const token = searchParams.get('confirm');
 
-      confirmEmail(token)
-        .then((data) => {
-          if (data) {
-            setSearchParams('', { replace: true });
-          }
-        })
-        .catch((err) => console.log(err)); // todo add logic
+      setConfirmEmailToken(token);
     }
   }, []);
+
+  useEffect(() => {
+    try {
+      if (confirmEmail?.status === 'success') {
+        //TODO: add toast
+        console.log(confirmEmail.message);
+        setSearchParams('', {replace: true});
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+    
+  }, [confirmEmail])
 
   return (
     <MainScreen>

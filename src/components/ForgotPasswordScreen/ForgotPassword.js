@@ -6,12 +6,13 @@ import Grid from '@mui/material/Grid';
 import Logo from '../Logo/Logo';
 import MainScreen from '../MainScreen/MainScreen';
 import { useNavigate } from 'react-router-dom';
-import { resetPassword } from '../../api/auth';
+import { useResetPasswordMutation } from '../../api/auth';
 
 // const theme = createTheme();
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
+  const [resetPassword] = useResetPasswordMutation();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -22,7 +23,7 @@ export default function ForgotPassword() {
       const data = new FormData(form);
       const email = data.get('email');
 
-      resetPassword(email)
+      resetPassword({email: email})
         .then((data) => {
           if (data.status === 'success') {
             navigate('../login');
