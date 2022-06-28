@@ -44,4 +44,13 @@ export const plansDescription = [
     buttonVariant: 'outlined',
     btn: 'Get Pro Plan',
   },
-];
+]
+
+export const toastTypes = {
+  error: 'error',
+  warning: 'warning',
+  info: 'info',
+  success: 'success',
+}
+
+export const toastTimeout = 5000

@@ -18,25 +18,27 @@ export const RequireAuth = ({
         dispatch(setUser({
           isAuth: false,
         }));
-      } else {
-        const {
-          public_id,
-          token
-        } = JSON.parse(credentials);
-        try {
-          const user = await getUserById(public_id, token);
-          if (user.confirmed) {
-            dispatch(setUser({
-              isAuth: true,
-            }));
-          }
-        } catch (err) {
-          console.log('error getting user', err.message);
-          dispatch(setUser({
-            isAuth: false,
-          }));
-        }
+        return;
       }
+
+      const {
+        public_id,
+        token
+      } = JSON.parse(credentials);
+      try {
+        const user = await getUserById(public_id, token);
+        if (user.confirmed) {
+          dispatch(setUser({
+            isAuth: true,
+          }));
+          return;
+        }
+      } catch (err) {
+        console.log('error getting user', err.message);
+      }
+      dispatch(setUser({
+        isAuth: false,
+      }));
     })();
   }, []);
 
