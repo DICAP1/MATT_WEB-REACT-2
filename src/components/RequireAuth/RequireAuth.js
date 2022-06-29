@@ -12,33 +12,31 @@ export const RequireAuth = ({
   const [getUser, user] = useLazyGetUserByIdQuery();
 
   useEffect(() => {
-    (async () => {
-      const credentials = localStorage.getItem('credentials');
-
-      if (!credentials) {
+    const credentials = localStorage.getItem('credentials');
+    
+    if (!credentials) {
+      dispatch(setUser({
+        isAuth: false,
+      }));
+    } else {
+      const {
+        public_id,
+        token
+      } = JSON.parse(credentials);
+      try {
+        getUser({publicId: public_id, authToken: token})
+        if (user.confirmed) {
+          dispatch(setUser({
+            isAuth: true,
+          }));
+        }
+      } catch (err) {
+        console.log('error getting user', err.message);
         dispatch(setUser({
           isAuth: false,
         }));
-      } else {
-        const {
-          public_id,
-          token
-        } = JSON.parse(credentials);
-        try {
-          getUser({publicId: public_id, authToken: token})
-          if (user.confirmed) {
-            dispatch(setUser({
-              isAuth: true,
-            }));
-          }
-        } catch (err) {
-          console.log('error getting user', err.message);
-          dispatch(setUser({
-            isAuth: false,
-          }));
-        }
       }
-    })();
+    }
   }, []);
 
   if (isAuth === null) {

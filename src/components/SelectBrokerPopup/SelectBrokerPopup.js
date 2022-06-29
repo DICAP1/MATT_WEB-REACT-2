@@ -19,13 +19,13 @@ const SelectBrokerPopup = ({
   open,
   handleClose,
   brokerConfig,
-  onSubmit
+  onSubmit,
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const {
     publicId,
-    authToken
-  } = useSelector(selectUserCredentials);
+    authToken,
+  } = useSelector(selectUserCredentials)
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -33,7 +33,7 @@ const SelectBrokerPopup = ({
     weight: '',
     weightRange: '',
     showPassword: false,
-  });
+  })
 
   const [postUserBroker] = usePostUserBrokerMutation();
   const {data: userBrokers} = useGetUserBrokersQuery({publicId, authToken});
@@ -48,45 +48,46 @@ const SelectBrokerPopup = ({
     height: 700,
     border: '10px solid rgb(30,30,30 , 0) !important',
     p: 4,
-  };
+  }
 
   const isOanda = brokerConfig.name?.toLowerCase()
-    .includes('oanda');
+    .includes('oanda')
 
   const patchBrokerCredentials = async (brokerId, patchData, userBrokers) => {
     try {
-      const brokerToUpdate = userBrokers.find(data => data.broker_id === brokerId);
-      console.log('brokerToUpdate: ', brokerToUpdate);
-      console.log('patchData: ', patchData);
+      const brokerToUpdate = userBrokers.find(data => data.broker_id === brokerId)
+      console.log('brokerToUpdate: ', brokerToUpdate)
+      console.log('patchData: ', patchData)
 
       for (const [key, value] of Object.entries(patchData)) {
 
-        const currentField = brokerToUpdate.user_broker_setting.find(data => data.broker_setting.option_name.toLowerCase() === key);
-        console.log('currentField ', currentField);
+        const currentField = brokerToUpdate.user_broker_setting.find(data => data.broker_setting.option_name.toLowerCase() === key)
+        console.log('currentField ', currentField)
 
         await patchUserBrokerById(publicId, authToken, {
           id: currentField.id,
           broker_setting_id: currentField.broker_setting_id,
-          option_value: value
-        });
-        console.log(`${key}: ${value}`);
+          option_value: value,
+        })
+        console.log(`${key}: ${value}`)
       }
     } catch (err) {
-      console.log('error: ', err.message);
+      console.log('error: ', err.message)
     }
-  };
+  }
 
   const handleSubmit = async (event) => {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      event.preventDefault();
+      event.preventDefault()
 
-      const form = event.currentTarget;
-      const isValid = form.checkValidity();
+      const form = event.currentTarget
+      const isValid = form.checkValidity()
 
       if (!isValid) {
-        console.log('not valid inputs'); // todo add logic
-        return;
+        setIsLoading(false)
+        console.log('not valid inputs') // todo add logic
+        return
       }
 
       let userData = Object.fromEntries(new FormData(form));
@@ -94,7 +95,7 @@ const SelectBrokerPopup = ({
       const postBroker = await postUserBroker({publicId, authToken, brokerId: brokerConfig.id});
 
       if (postBroker === null) {
-        console.log('ok');
+        console.log('ok')
         setValues({
           ...values,
           password: ''
@@ -102,36 +103,36 @@ const SelectBrokerPopup = ({
         await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
         onSubmit();
       }
-      handleClose();
+      handleClose()
     } catch (err) {
-      console.log('error when submit: ', err.message);
+      console.log('error when submit: ', err.message)
     }
-    setIsLoading(false);
-  };
+    setIsLoading(false)
+  }
 
   const handleChange = (prop) => (event) => {
     setValues({
       ...values,
-      [prop]: event.target.value
-    });
-  };
+      [prop]: event.target.value,
+    })
+  }
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
-    });
-  };
+    })
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <Modal
       open={open}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
+      aria-labelledby='modal-modal-title'
+      aria-describedby='modal-modal-description'
     >
       <Box sx={style}>
         <Box
@@ -147,21 +148,21 @@ const SelectBrokerPopup = ({
         >
           <Grid
             container
-            direction="row"
-            justifyContent="flex-end"
-            alignItems="center"
+            direction='row'
+            justifyContent='flex-end'
+            alignItems='center'
           >
             <CloseIcon
               onClick={handleClose}
               sx={{
                 color: 'white',
                 margin: '15px 15px 0px 0px',
-                cursor: 'pointer'
+                cursor: 'pointer',
               }}
             />
           </Grid>
           <Box
-            component="form"
+            component='form'
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
@@ -174,9 +175,9 @@ const SelectBrokerPopup = ({
               </p>
               <Grid
                 container
-                direction="row"
-                justifyContent="space-between"
-                alignItems="center"
+                direction='row'
+                justifyContent='space-between'
+                alignItems='center'
               >
                 {isOanda && <><Grid>
                   <h5>Token</h5>
@@ -198,18 +199,18 @@ const SelectBrokerPopup = ({
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
-                    className="inputField1"
-                    margin="normal"
-                    placeholder="Enter token"
+                    className='inputField1'
+                    margin='normal'
+                    placeholder='Enter token'
                     required
                     fullWidth
-                    id="token"
-                    type="text"
-                    size="small"
-                    name="token"
+                    id='token'
+                    type='text'
+                    size='small'
+                    name='token'
                   /></>}
                 {!isOanda && <><Grid>
                   <h5>Username</h5>
@@ -231,18 +232,18 @@ const SelectBrokerPopup = ({
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
-                    className="inputField1"
-                    margin="normal"
-                    placeholder="Enter username"
+                    className='inputField1'
+                    margin='normal'
+                    placeholder='Enter username'
                     required
                     fullWidth
-                    id="username"
-                    type="text"
-                    size="small"
-                    name="username"
+                    id='username'
+                    type='text'
+                    size='small'
+                    name='username'
                   />
                   <Grid>
                     <h5>Password</h5>
@@ -264,34 +265,34 @@ const SelectBrokerPopup = ({
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
-                    className="inputField1"
-                    margin="normal"
-                    placeholder="Enter password"
+                    className='inputField1'
+                    margin='normal'
+                    placeholder='Enter password'
                     required
                     fullWidth
-                    size="small"
-                    name="password"
+                    size='small'
+                    name='password'
                     type={values.showPassword ? 'text' : 'password'}
                     value={values.password}
                     onChange={handleChange('password')}
-                    id="password"
-                    autoComplete="current-password"
+                    id='password'
+                    autoComplete='current-password'
                     InputProps={{
                       endAdornment: (
-                        <InputAdornment position="end">
+                        <InputAdornment position='end'>
                           <IconButton
-                            aria-label="toggle password visibility"
+                            aria-label='toggle password visibility'
                             onClick={handleClickShowPassword}
                             onMouseDown={handleMouseDownPassword}
-                            edge="end"
+                            edge='end'
                           >
                             {values.showPassword ? (
-                              <VisibilityOff sx={{ color: 'gray' }}/>
+                              <VisibilityOff sx={{ color: 'gray' }} />
                             ) : (
-                              <Visibility sx={{ color: 'gray' }}/>
+                              <Visibility sx={{ color: 'gray' }} />
                             )}
                           </IconButton>
                         </InputAdornment>
@@ -318,18 +319,18 @@ const SelectBrokerPopup = ({
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
-                    className="inputField1"
-                    margin="normal"
-                    placeholder="Enter API key"
+                    className='inputField1'
+                    margin='normal'
+                    placeholder='Enter API key'
                     required
                     fullWidth
-                    id="api_key"
-                    type="text"
-                    size="small"
-                    name="api_key"
+                    id='api_key'
+                    type='text'
+                    size='small'
+                    name='api_key'
                   /></>}
                 <Grid>
                   <h5>Default account</h5>
@@ -351,25 +352,25 @@ const SelectBrokerPopup = ({
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
-                  className="inputField1"
-                  margin="normal"
-                  placeholder="Enter Default account"
+                  className='inputField1'
+                  margin='normal'
+                  placeholder='Enter Default account'
                   required
                   fullWidth
-                  id="accountid"
-                  type="text"
-                  size="small"
-                  name="accountid"
+                  id='accountid'
+                  type='text'
+                  size='small'
+                  name='accountid'
                 />
               </Grid>
               <LoadingButton
-                type="submit"
+                type='submit'
                 fullWidth
                 loading={isLoading}
-                variant="text"
+                variant='text'
                 sx={{
                   mt: 3,
                   mb: 2,
@@ -377,8 +378,8 @@ const SelectBrokerPopup = ({
                   color: '#ffffff',
                   '&:hover': {
                     backgroundColor: 'primary.main',
-                    opacity: [0.9, 0.8, 0.7]
-                  }
+                    opacity: [0.9, 0.8, 0.7],
+                  },
                 }}
                 style={{
                   textDecoration: 'none',
@@ -394,7 +395,7 @@ const SelectBrokerPopup = ({
         </Box>
       </Box>
     </Modal>
-  );
-};
+  )
+}
 
-export default SelectBrokerPopup;
+export default SelectBrokerPopup

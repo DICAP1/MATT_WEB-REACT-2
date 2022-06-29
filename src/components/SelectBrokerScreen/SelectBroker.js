@@ -30,18 +30,18 @@ export default function SelectBroker() {
   const [patchUserById] = usePatchUserByIdMutation();
 
   const handleOpen = (config) => {
-    setPopupIsOpen(true);
-    setBrokerConfig(config);
-  };
-  const handleClose = () => setPopupIsOpen(false);
+    setPopupIsOpen(true)
+    setBrokerConfig(config)
+  }
+  const handleClose = () => setPopupIsOpen(false)
 
   const handlePopupSubmit = async () => {
     refetchUserBrokers();
   };
 
   const handleClick = () => {
-    navigate('./');
-  };
+    navigate('../')
+  }
 
   useEffect(() => {
     if (!user?.risk) {
@@ -62,33 +62,33 @@ export default function SelectBroker() {
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
           <SelectBrokerPopup open={popupIsOpen} handleClose={handleClose}
-                             brokerConfig={brokerConfig} onSubmit={handlePopupSubmit}/>
+                             brokerConfig={brokerConfig} onSubmit={handlePopupSubmit} />
           <Container
-            maxWidth="lg"
-            component="main"
+            maxWidth='lg'
+            component='main'
             sx={{
               backgroundColor: 'none',
-              height: '100vh'
+              height: '100vh',
             }}
           >
             <Grid
               container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
+              direction='row'
+              justifyContent='center'
+              alignItems='center'
             >
               <h1>Select your broker</h1>
             </Grid>
 
             <Grid
               container
-              direction="row"
-              justifyContent="center"
-              alignItems="center"
+              direction='row'
+              justifyContent='center'
+              alignItems='center'
             >
               <p>Your membership starts as soon as you set up payment. </p>
             </Grid>
-            <Container component="main" maxWidth="sm">
+            <Container component='main' maxWidth='sm'>
               <Grid sx={{ backgroundColor: '#0f0f11' }}>
                 <Box
                   px={3}
@@ -104,12 +104,12 @@ export default function SelectBroker() {
                 >
                   <Grid
                     container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    direction='row'
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
                     <RenderBrokers handleOpen={handleOpen} brokers={brokers}
-                                   userBrokers={userBrokers}/>
+                                   userBrokers={userBrokers} />
                   </Grid>
                 </Box>
                 <Box
@@ -126,9 +126,9 @@ export default function SelectBroker() {
                 >
                   <Grid
                     container
-                    direction="row"
-                    justifyContent="space-between"
-                    alignItems="center"
+                    direction='row'
+                    justifyContent='space-between'
+                    alignItems='center'
                   >
                     <Grid>
                       <p style={{ margin: 0 }}>How does this work?</p>
@@ -148,10 +148,10 @@ export default function SelectBroker() {
                 </Box>
                 {brokerSelected ? (
                   <Button
-                    type="button"
+                    type='button'
                     onClick={handleClick}
                     fullWidth
-                    variant="contained"
+                    variant='contained'
                     sx={{
                       mt: 3,
                       mb: 2,
@@ -174,5 +174,5 @@ export default function SelectBroker() {
         </Grid>
       </MainPricingDashboard>
     </React.Fragment>
-  );
+  )
 }
