@@ -1,5 +1,7 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
+import { pushToast } from '../slices/toastSlice'
+import { toastTypes } from '../fixtures'
 
 export const brokerApi = createApi({
   reducerPath: 'brokerApi',
@@ -12,46 +14,61 @@ export const brokerApi = createApi({
         url: `brokers/`,
         method: 'GET',
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error)
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     getUserBrokers: builder.query({
-      query: ({publicId, authToken}) => ({
-        url: `users/brokes/${publicId}`,
+      query: ({ publicId, authToken }) => ({
+        url: `users/brokers/${publicId}`,
         headers: {
-          'Authorization' : authToken,
-        }
+          Authorization: authToken,
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error)
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     postUserBroker: builder.mutation({
-      query: ({publicId, authToken, brokerId}) => ({
-        url: `users/brokes/${publicId}`,
+      query: ({ publicId, authToken, brokerId }) => ({
+        url: `users/brokers/${publicId}`,
         body: brokerId,
         headers: {
-          'Authorization' : authToken,
-        }
+          Authorization: authToken,
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
-        try { 
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
           await queryFulfilled
         } catch (error) {
-          console.error(error)
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
-    })
-  })
+      },
+    }),
+  }),
 })
 
 export const {
