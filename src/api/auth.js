@@ -44,7 +44,7 @@ export const authApi = createApi({
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error)
+          console.error(error);
         }
       }
     }),
@@ -57,7 +57,7 @@ export const authApi = createApi({
       async onQueryStarted(arg, {dispatch, queryFulfilled}) {
         try {
           await queryFulfilled
-        } catch (error) {
+        } catch (error) {ssss
           console.error(error);
         }
       }
@@ -72,7 +72,7 @@ export const authApi = createApi({
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error);
+          console.error(errors)
         }
       }
     })

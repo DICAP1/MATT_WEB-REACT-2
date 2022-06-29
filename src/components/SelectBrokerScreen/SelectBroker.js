@@ -22,18 +22,20 @@ export default function SelectBroker() {
 
   const {
     publicId,
-    authToken
   } = useSelector(selectUserCredentials);
   const {data : brokers} = useGetAllBrokesQuery();
-  const {data : userBrokers, refetchUserBrokers} = useGetUserBrokersQuery({publicId, authToken}, {skip: (!publicId || !authToken)})
-  const {data : user} = useGetUserByIdQuery({publicId, authToken}, {skip: (!publicId || !authToken)});
+  const {data : userBrokers, refetchUserBrokers} = useGetUserBrokersQuery({publicId}, {skip: !publicId})
+  const {data : user} = useGetUserByIdQuery({publicId}, {skip: !publicId});
   const [patchUserById] = usePatchUserByIdMutation();
 
   const handleOpen = (config) => {
     setPopupIsOpen(true)
     setBrokerConfig(config)
   }
-  const handleClose = () => setPopupIsOpen(false)
+  const handleClose = () => {
+    setPopupIsOpen(false)
+    refetchUserBrokers();
+  }
 
   const handlePopupSubmit = async () => {
     refetchUserBrokers();
@@ -45,7 +47,7 @@ export default function SelectBroker() {
 
   useEffect(() => {
     if (!user?.risk) {
-      patchUserById(publicId, authToken, { risk: 2 })
+      patchUserById({publicId, data : { risk: 2 }})
         .then(() => console.log('risk set'))
         .catch(err => console.log('broker data not sent', err)); // todo add logic;
     } else {

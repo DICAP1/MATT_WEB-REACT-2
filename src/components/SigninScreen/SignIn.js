@@ -50,7 +50,6 @@ export default function SignIn() {
       const {data: user} = await signIn(userData);
       if (user?.status === 'success') {
         dispatch(setUser({
-          auth_token: user.Authorization,
           isAuth: true,
           ...userData,
           ...user.user,

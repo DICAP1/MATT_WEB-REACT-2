@@ -24,7 +24,6 @@ const SelectBrokerPopup = ({
   const [isLoading, setIsLoading] = useState(false)
   const {
     publicId,
-    authToken,
   } = useSelector(selectUserCredentials)
 
   const [values, setValues] = React.useState({
@@ -36,7 +35,7 @@ const SelectBrokerPopup = ({
   })
 
   const [postUserBroker] = usePostUserBrokerMutation();
-  const {data: userBrokers} = useGetUserBrokersQuery({publicId, authToken});
+  const {data: userBrokers} = useGetUserBrokersQuery({publicId});
   const [patchUserBrokerById] = usePatchUserBrokerByIdMutation();
 
   const style = {
@@ -64,11 +63,11 @@ const SelectBrokerPopup = ({
         const currentField = brokerToUpdate.user_broker_setting.find(data => data.broker_setting.option_name.toLowerCase() === key)
         console.log('currentField ', currentField)
 
-        await patchUserBrokerById(publicId, authToken, {
+        await patchUserBrokerById({publicId, data : {
           id: currentField.id,
           broker_setting_id: currentField.broker_setting_id,
           option_value: value,
-        })
+        }})
         console.log(`${key}: ${value}`)
       }
     } catch (err) {
@@ -92,7 +91,7 @@ const SelectBrokerPopup = ({
 
       let userData = Object.fromEntries(new FormData(form));
       console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
-      const postBroker = await postUserBroker({publicId, authToken, brokerId: brokerConfig.id});
+      const postBroker = await postUserBroker({publicId, broker_id: brokerConfig.id});
 
       if (postBroker === null) {
         console.log('ok')

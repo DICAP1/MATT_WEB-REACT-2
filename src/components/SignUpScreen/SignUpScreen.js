@@ -64,10 +64,9 @@ export default function SignUp() {
     register(userData)
       .unwrap()
       .then((data) => {
-        // if (data) {
-        //   navigate('../login');
-        // }
-        console.log(data)
+        if (data) {
+          navigate('../login');
+        }
       })
       .catch((err) => console.log(err))// todo add logic
       .finally(() => setIsLoading(false))
