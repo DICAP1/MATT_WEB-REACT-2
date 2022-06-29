@@ -1,31 +1,33 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
-import Box from '@mui/material/Box'
-import Container from '@mui/material/Container'
-import './style.css'
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
-import RenderBrokers from '../RenderBrokers/RenderBrokers'
-import { getAllBrokers, getUserBrokers } from '../../api/brokers'
-import { useSelector } from 'react-redux'
-import { selectUserCredentials } from '../../slices/authSlice'
-import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup'
-import { getUserById, patchUserById } from '../../api/users'
-import { useNavigate } from 'react-router-dom'
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import Button from '@mui/material/Button';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import './style.css';
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
+import RenderBrokers from '../RenderBrokers/RenderBrokers';
+import { useGetAllBrokesQuery, useGetUserBrokersQuery } from '../../api/brokers';
+import { useSelector } from 'react-redux';
+import { selectUserCredentials } from '../../slices/authSlice';
+import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
+import { useGetUserByIdQuery, usePatchUserByIdMutation } from '../../api/users';
+import { useNavigate } from 'react-router-dom';
 
 export default function SelectBroker() {
-  const [popupIsOpen, setPopupIsOpen] = useState(false)
-  const [brokerSelected, setBrokerSelected] = useState(false)
-  const [brokerConfig, setBrokerConfig] = useState({})
-  const [brokers, setBrokers] = useState([])
-  const [userBrokers, setUserBrokers] = useState([])
-  const navigate = useNavigate()
+  const [popupIsOpen, setPopupIsOpen] = useState(false);
+  const [brokerSelected, setBrokerSelected] = useState(false);
+  const [brokerConfig, setBrokerConfig] = useState({});
+  const navigate = useNavigate();
 
   const {
     publicId,
-    authToken,
-  } = useSelector(selectUserCredentials)
+    authToken
+  } = useSelector(selectUserCredentials);
+  const {data : brokers} = useGetAllBrokesQuery();
+  const {data : userBrokers, refetchUserBrokers} = useGetUserBrokersQuery({publicId, authToken}, {skip: (!publicId || !authToken)})
+  const {data : user} = useGetUserByIdQuery({publicId, authToken}, {skip: (!publicId || !authToken)});
+  const [patchUserById] = usePatchUserByIdMutation();
 
   const handleOpen = (config) => {
     setPopupIsOpen(true)
@@ -34,33 +36,26 @@ export default function SelectBroker() {
   const handleClose = () => setPopupIsOpen(false)
 
   const handlePopupSubmit = async () => {
-    const userBrokersData = await getUserBrokers(publicId, authToken)
-    setUserBrokers(userBrokersData)
-    setBrokerSelected(userBrokersData.length !== 0)
-  }
+    refetchUserBrokers();
+  };
 
   const handleClick = () => {
     navigate('../')
   }
 
   useEffect(() => {
-    (async () => {
-      const brokersData = await getAllBrokers()
-      const userBrokersData = await getUserBrokers(publicId, authToken)
-      const user = await getUserById(publicId, authToken)
+    if (!user?.risk) {
+      patchUserById(publicId, authToken, { risk: 2 })
+        .then(() => console.log('risk set'))
+        .catch(err => console.log('broker data not sent', err)); // todo add logic;
+    } else {
+      console.log('risk: ', user.risk);
+    }
+  }, [user]);
 
-      setBrokers(brokersData)
-      setUserBrokers(userBrokersData)
-      setBrokerSelected(userBrokersData.length !== 0)
-      if (!user.risk) {
-        patchUserById(publicId, authToken, { risk: 2 })
-          .then(() => console.log('risk set'))
-          .catch(err => console.log('broker data not sent', err)) // todo add logic;
-      } else {
-        console.log('risk: ', user.risk)
-      }
-    })()
-  }, [])
+  useEffect(() => {
+    setBrokerSelected(userBrokers?.length !== 0)
+  }, [userBrokers])
 
   return (
     <React.Fragment>

@@ -8,7 +8,7 @@ const RenderBrokers = ({
   userBrokers
 }) => {
 
-  return brokers.map(broker => {
+  return brokers?.map(broker => {
     const isOanda = broker.name
       .toLowerCase()
       .includes('oanda');
@@ -17,7 +17,7 @@ const RenderBrokers = ({
       handleOpen(broker);
     };
 
-    const choosenBroker = userBrokers.some(userBroker => userBroker.broker_id === broker.id);
+    const choosenBroker = userBrokers?.some(userBroker => userBroker.broker_id === broker.id);
 
     return (
       <>

@@ -1,29 +1,32 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import './style.css'
-import InputAdornment from '@mui/material/InputAdornment'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
-import Visibility from '@mui/icons-material/Visibility'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import IconButton from '@mui/material/IconButton'
-import { useDispatch } from 'react-redux'
-import facebook from '../../assets/Icons/facebook.png'
-import google from '../../assets/Icons/google.png'
-import linkedin from '../../assets/Icons/linkedin.png'
-import Logo from '../Logo/Logo'
-import MainScreen from '../MainScreen/MainScreen'
-import { confirmEmail, signIn } from '../../api/auth'
-import { setUser } from '../../slices/authSlice'
-import { LoadingButton } from '@mui/lab'
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import TextField from '@mui/material/TextField';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import './style.css';
+import InputAdornment from '@mui/material/InputAdornment';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import IconButton from '@mui/material/IconButton';
+import { useDispatch } from 'react-redux';
+import facebook from '../../assets/Icons/facebook.png';
+import google from '../../assets/Icons/google.png';
+import linkedin from '../../assets/Icons/linkedin.png';
+import Logo from '../Logo/Logo';
+import MainScreen from '../MainScreen/MainScreen';
+import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth';
+import { setUser } from '../../slices/authSlice';
+import { LoadingButton } from '@mui/lab';
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false)
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [signIn] = useSignInMutation();
+  const [confirmEmailToken, setConfirmEmailToken] = useState('');
+  const {data: confirmEmail} = useConfirmEmailQuery(confirmEmailToken, {skip : !confirmEmailToken});
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -41,12 +44,11 @@ export default function SignIn() {
       const password = formData.get('password')
       const userData = {
         email,
-        password,
-      }
-      setIsLoading(true)
-      const user = await signIn(userData)
-      if (user.status === 'success') {
-        console.log(user)
+        password
+      };
+      setIsLoading(true);
+      const {data: user} = await signIn(userData);
+      if (user?.status === 'success') {
         dispatch(setUser({
           auth_token: user.Authorization,
           isAuth: true,
@@ -96,15 +98,23 @@ export default function SignIn() {
     if (searchParams.has('confirm')) {
       const token = searchParams.get('confirm')
 
-      confirmEmail(token)
-        .then((data) => {
-          if (data) {
-            setSearchParams('', { replace: true })
-          }
-        })
-        .catch((err) => console.log(err)) // todo add logic
+      setConfirmEmailToken(token);
     }
   }, [])
+
+  useEffect(() => {
+    try {
+      if (confirmEmail?.status === 'success') {
+        //TODO: add toast
+        console.log(confirmEmail.message);
+        setSearchParams('', {replace: true});
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+    
+  }, [confirmEmail])
 
   return (
     <MainScreen>

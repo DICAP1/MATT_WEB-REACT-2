@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import CloseIcon from '@mui/icons-material/Close'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
-import IconButton from '@mui/material/IconButton'
-import VisibilityOff from '@mui/icons-material/VisibilityOff'
-import Visibility from '@mui/icons-material/Visibility'
-import './style.css'
-import { getUserBrokers, postUserBroker } from '../../api/brokers'
-import { useSelector } from 'react-redux'
-import { selectUserCredentials } from '../../slices/authSlice'
-import { patchUserBrokerById } from '../../api/users'
-import { LoadingButton } from '@mui/lab'
+import React, { useState } from 'react';
+import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import CloseIcon from '@mui/icons-material/Close';
+import TextField from '@mui/material/TextField';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
+import './style.css';
+import { useGetUserBrokersQuery, usePostUserBrokerMutation } from '../../api/brokers';
+import { useSelector } from 'react-redux';
+import { selectUserCredentials } from '../../slices/authSlice';
+import { usePatchUserBrokerByIdMutation } from '../../api/users';
+import { LoadingButton } from '@mui/lab';
 
 const SelectBrokerPopup = ({
   open,
@@ -34,6 +34,10 @@ const SelectBrokerPopup = ({
     weightRange: '',
     showPassword: false,
   })
+
+  const [postUserBroker] = usePostUserBrokerMutation();
+  const {data: userBrokers} = useGetUserBrokersQuery({publicId, authToken});
+  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation();
 
   const style = {
     position: 'absolute',
@@ -86,19 +90,18 @@ const SelectBrokerPopup = ({
         return
       }
 
-      let userData = Object.fromEntries(new FormData(form))
-      console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig)
-      const postBroker = await postUserBroker(publicId, authToken, brokerConfig.id)
+      let userData = Object.fromEntries(new FormData(form));
+      console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
+      const postBroker = await postUserBroker({publicId, authToken, brokerId: brokerConfig.id});
 
       if (postBroker === null) {
         console.log('ok')
         setValues({
           ...values,
-          password: '',
-        })
-        const userBrokers = await getUserBrokers(publicId, authToken)
-        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers)
-        onSubmit()
+          password: ''
+        });
+        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
+        onSubmit();
       }
       handleClose()
     } catch (err) {

@@ -1,26 +1,60 @@
-import axios from 'axios';
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { getConfig } from '../config/app-config'
 
-const stripeAPI = axios.create({
-  baseURL: 'https://demotraider.divergencecapital.com:5000/api/v1/stripe',
-});
+export const stripeApi = createApi({
+  reducerPath: 'stripeApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: getConfig().API_URL,
+  }),
+  endpoints: (builder) => ({
+    getPlans: builder.query({
+      query: () => ({
+        url: `stripe/plans`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }),
+    postSubscription: builder.mutation({
+      query: (data) => ({
+        url: `stripe/subscriptions`,
+        method: 'POST',
+        body: data,
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }),
+    getSubscription: builder.query({
+      query: ({publicId, authToken}) => ({
+        url: `stripe/subscriptions/${publicId}`,
+        method: 'GET',
+        headers: {
+          'Authorization' : authToken,
+        }
+      }),
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    })
+  })
+})
 
-export function getPlans() {
-  return stripeAPI.get('/plans')
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function postSubscription(data, config) {
-  return stripeAPI.post('/subscriptions', data, config)
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function getSubscription(publicId, authToken) {
-  return stripeAPI.get(`/subscriptions/${publicId}`, { headers: { 'Authorization': authToken } })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+export const {
+  useGetPlansQuery,
+  usePostSubscriptionMutation,
+  useGetSubscriptionQuery,
+} = stripeApi
