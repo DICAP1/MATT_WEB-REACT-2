@@ -1,32 +1,36 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import './style.css';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
-import { useDispatch } from 'react-redux';
-import facebook from '../../assets/Icons/facebook.png';
-import google from '../../assets/Icons/google.png';
-import linkedin from '../../assets/Icons/linkedin.png';
-import Logo from '../Logo/Logo';
-import MainScreen from '../MainScreen/MainScreen';
-import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth';
-import { setUser } from '../../slices/authSlice';
-import { LoadingButton } from '@mui/lab';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import './style.css'
+import InputAdornment from '@mui/material/InputAdornment'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
+import { useDispatch } from 'react-redux'
+import facebook from '../../assets/Icons/facebook.png'
+import google from '../../assets/Icons/google.png'
+import linkedin from '../../assets/Icons/linkedin.png'
+import Logo from '../Logo/Logo'
+import MainScreen from '../MainScreen/MainScreen'
+import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth'
+import { setUser } from '../../slices/authSlice'
+import { LoadingButton } from '@mui/lab'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
 
 export default function SignIn() {
-  const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [signIn] = useSignInMutation();
-  const [confirmEmailToken, setConfirmEmailToken] = useState('');
-  const {data: confirmEmail} = useConfirmEmailQuery(confirmEmailToken, {skip : !confirmEmailToken});
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [signIn] = useSignInMutation()
+  const [confirmEmailToken, setConfirmEmailToken] = useState('')
+  const { data: confirmEmail } = useConfirmEmailQuery(confirmEmailToken, {
+    skip: !confirmEmailToken,
+  })
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -35,7 +39,12 @@ export default function SignIn() {
     const isValid = form.checkValidity()
 
     if (!isValid) {
-      console.log('not valid inputs') // todo add logic
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.signIn.warning,
+        })
+      )
       return
     }
     try {
@@ -44,26 +53,32 @@ export default function SignIn() {
       const password = formData.get('password')
       const userData = {
         email,
-        password
-      };
-      setIsLoading(true);
-      const {data: user} = await signIn(userData);
+        password,
+      }
+      setIsLoading(true)
+      const { data: user } = await signIn(userData)
       if (user?.status === 'success') {
-        dispatch(setUser({
-          auth_token: user.Authorization,
-          isAuth: true,
-          ...userData,
-          ...user.user,
-        })) // todo put only what really need
-        localStorage.setItem('credentials', JSON.stringify({
-          public_id: user.public_id,
-          token: user.Authorization,
-        }))
+        dispatch(
+          setUser({
+            auth_token: user.Authorization,
+            isAuth: true,
+            ...userData,
+            ...user.user,
+          })
+        ) // todo put only what really need
+        localStorage.setItem(
+          'credentials',
+          JSON.stringify({
+            public_id: user.public_id,
+            token: user.Authorization,
+          })
+        )
         // navigate(user.user.has_onboard ? '/' : '../pricing');
         navigate('../pricing')
       }
+      setIsLoading(false)
     } catch (err) {
-      console.log(err) // todo add logic
+      console.error(err)
       setIsLoading(false)
     }
   }
@@ -98,7 +113,7 @@ export default function SignIn() {
     if (searchParams.has('confirm')) {
       const token = searchParams.get('confirm')
 
-      setConfirmEmailToken(token);
+      setConfirmEmailToken(token)
     }
   }, [])
 
@@ -106,20 +121,18 @@ export default function SignIn() {
     try {
       if (confirmEmail?.status === 'success') {
         //TODO: add toast
-        console.log(confirmEmail.message);
-        setSearchParams('', {replace: true});
+        console.log(confirmEmail.message)
+        setSearchParams('', { replace: true })
       }
+    } catch (error) {
+      console.error(error)
     }
-    catch (error) {
-      console.error(error);
-    }
-    
   }, [confirmEmail])
 
   return (
     <MainScreen>
       <Grid
-        className='leftSide'
+        className="leftSide"
         xs={12}
         sm={12}
         md={6}
@@ -134,9 +147,9 @@ export default function SignIn() {
         }}
         square
         container
-        direction='row'
-        justifyContent='center'
-        alignItems='center'
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
@@ -149,14 +162,14 @@ export default function SignIn() {
 
           <Grid
             container
-            direction='column'
-            justifyContent='space-between'
+            direction="column"
+            justifyContent="space-between"
             sx={{ height: '88vh' }}
           >
             <Grid>
               {' '}
               <Box
-                component='form'
+                component="form"
                 noValidate
                 onSubmit={handleSubmit}
                 sx={{
@@ -197,15 +210,16 @@ export default function SignIn() {
                       height: 30,
                     },
                   }}
-                  className='inputField'
-                  margin='normal'
-                  placeholder='Enter email address'
+                  className="inputField"
+                  margin="normal"
+                  placeholder="Enter email address"
                   required
                   fullWidth
-                  id='email'
-                  size='small'
-                  name='email'
-                  autoComplete='email'
+                  id="email"
+                  size="small"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
                 />
 
                 <Grid>
@@ -231,26 +245,26 @@ export default function SignIn() {
                       height: 30,
                     },
                   }}
-                  className='inputField'
-                  margin='normal'
-                  placeholder='Enter password'
+                  className="inputField"
+                  margin="normal"
+                  placeholder="Enter password"
                   required
                   fullWidth
-                  size='small'
-                  name='password'
+                  size="small"
+                  name="password"
                   type={values.showPassword ? 'text' : 'password'}
                   value={values.password}
                   onChange={handleChange('password')}
-                  id='password'
-                  autoComplete='current-password'
+                  id="password"
+                  autoComplete="current-password"
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position='end'>
+                      <InputAdornment position="end">
                         <IconButton
-                          aria-label='toggle password visibility'
+                          aria-label="toggle password visibility"
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
-                          edge='end'
+                          edge="end"
                         >
                           {values.showPassword ? (
                             <VisibilityOff sx={{ color: 'gray' }} />
@@ -264,12 +278,12 @@ export default function SignIn() {
                 />
                 <Grid
                   container
-                  direction='row'
-                  justifyContent='flex-end'
-                  alignItems='flex-end'
+                  direction="row"
+                  justifyContent="flex-end"
+                  alignItems="flex-end"
                 >
                   <Link
-                    to='/forgot-password'
+                    to="/forgot-password"
                     style={{
                       textDecoration: 'none',
                       color: 'white',
@@ -280,10 +294,10 @@ export default function SignIn() {
                   </Link>
                 </Grid>
                 <LoadingButton
-                  type='submit'
+                  type="submit"
                   fullWidth
                   loading={isLoading}
-                  variant='text'
+                  variant="text"
                   sx={{
                     mt: 3,
                     mb: 2,
@@ -302,21 +316,21 @@ export default function SignIn() {
 
                 <Grid
                   container
-                  direction='row'
-                  justifyContent='center'
-                  alignItems='center'
+                  direction="row"
+                  justifyContent="center"
+                  alignItems="center"
                 >
                   <p>Or continue with this social profile</p>
                 </Grid>
-                <Grid container direction='row' justifyContent='center'>
-                  <span className='icon'>
-                    <img src={google} width='25px' height='25px' />
+                <Grid container direction="row" justifyContent="center">
+                  <span className="icon">
+                    <img src={google} width="25px" height="25px" />
                   </span>
-                  <span className='icon'>
-                    <img src={facebook} width='25px' height='25px' />
+                  <span className="icon">
+                    <img src={facebook} width="25px" height="25px" />
                   </span>
-                  <span className='icon'>
-                    <img src={linkedin} width='25px' height='25px' />{' '}
+                  <span className="icon">
+                    <img src={linkedin} width="25px" height="25px" />{' '}
                   </span>
                 </Grid>
               </Box>
@@ -324,16 +338,16 @@ export default function SignIn() {
             <Grid>
               <Grid
                 container
-                direction='row'
-                justifyContent='center'
-                alignItems='center'
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
               >
                 <p style={{ color: 'rgb(209, 209, 209)' }}>
                   Don't have an account? &nbsp;
                 </p>
 
                 <Link
-                  to='/register'
+                  to="/register"
                   style={{
                     color: '#ee6535',
                     fontSize: 13,
@@ -345,9 +359,9 @@ export default function SignIn() {
               </Grid>
               <Grid
                 container
-                direction='row'
-                justifyContent='center'
-                alignItems='center'
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
               >
                 <p>Copyright &copy; 2022 Traider. All Rights Reserved</p>
               </Grid>

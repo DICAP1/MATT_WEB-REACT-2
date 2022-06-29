@@ -54,3 +54,28 @@ export const toastTypes = {
 }
 
 export const toastTimeout = 5000
+
+export const toastMessages = {
+  register: {
+    success: 'You are successfully registered',
+    warningEmail: 'Check your email address',
+    warningAllFields: 'All fields should be filled in',
+    warningPassword: 'Passwords should be the same',
+    error: 'Server error',
+  },
+  signIn: {
+    success: 'You are successfully logged in',
+    warning: 'Check your password and/or email',
+  },
+  confirmEmail: {
+    success: 'Email has been confirmed',
+    error: 'Server error',
+  },
+  resetPassword: {
+    success: 'Success! Check your inbox email',
+    warningEmail: 'Check your email address',
+  },
+  setPassword: {
+    success: 'Password has been reset',
+  },
+}

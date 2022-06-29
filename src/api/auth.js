@@ -1,5 +1,7 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
+import { pushToast } from '../slices/toastSlice'
+import { toastMessages, toastTypes } from '../fixtures'
 
 export const authApi = createApi({
   reducerPath: 'authApi',
@@ -13,26 +15,48 @@ export const authApi = createApi({
         method: 'POST',
         body: userData,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.register.success,
+            })
+          )
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: toastMessages.register.error,
+            })
+          )
         }
-      }
+      },
     }),
     confirmEmail: builder.query({
       query: (token) => ({
         method: 'GET',
-        url: `/users/confirm/${token}`
+        url: `/users/confirm/${token}`,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.confirmEmail.success,
+            })
+          )
         } catch (error) {
-          console.error(error)
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     signIn: builder.mutation({
       query: (userData) => ({
@@ -40,13 +64,24 @@ export const authApi = createApi({
         method: 'POST',
         body: userData,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.signIn.success,
+            })
+          )
         } catch (error) {
-          console.error(error)
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     resetPassword: builder.mutation({
       query: (params) => ({
@@ -54,29 +89,51 @@ export const authApi = createApi({
         method: 'POST',
         params,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.resetPassword.success,
+            })
+          )
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     setPassword: builder.mutation({
-      query: ({token, newPassword}) => ({
+      query: ({ token, newPassword }) => ({
         url: `/users/resetPw/${token}`,
         method: 'POST',
         body: newPassword,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.setPassword.success,
+            })
+          )
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
-    })
-  })
+      },
+    }),
+  }),
 })
 
 export const {

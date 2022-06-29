@@ -1,16 +1,16 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Logo from '../Logo/Logo';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import MainScreen from '../MainScreen/MainScreen';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import { useSetPasswordMutation } from '../../api/auth';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Logo from '../Logo/Logo'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import MainScreen from '../MainScreen/MainScreen'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import { useSetPasswordMutation } from '../../api/auth'
 
 const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
@@ -36,12 +36,12 @@ export default function CreateNewPassword() {
       if (isPasswordEqual && searchParams.has('reset-token')) {
         const token = searchParams.get('reset-token');
         const newPassword = { new_password: password };
-      
+
         console.log(newPassword);
-        setPassword({token, newPassword})
+        setPassword({ token, newPassword })
           .then((data) => {
             if (data.status === 'success') {
-              navigate('../login');
+              navigate('../signin');
             }
           })
           .catch((err) => console.log(err)); // todo add logic
@@ -134,7 +134,7 @@ export default function CreateNewPassword() {
                   }
                 }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Create new password</h1>
                 <p style={{ marginBottom: 20 }}>
                   Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -187,9 +187,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -242,9 +242,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showConfirmPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
