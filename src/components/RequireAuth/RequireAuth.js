@@ -7,12 +7,12 @@ import { useLazyGetUserByIdQuery } from '../../api/users';
 export const RequireAuth = ({
   redirectTo,
 }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch(); 
   const isAuth = useSelector(selectIsAuth);
   const [getUser, user] = useLazyGetUserByIdQuery();
 
   useEffect(() => {
-    const credentials = localStorage.getItem('credentials');
+    const credentials = localStorage.getItem('credentials')
     
     if (!credentials) {
       dispatch(setUser({
@@ -23,21 +23,24 @@ export const RequireAuth = ({
         public_id,
         token
       } = JSON.parse(credentials);
-      try {
-        getUser({publicId: public_id, authToken: token})
-        if (user.confirmed) {
-          dispatch(setUser({
-            isAuth: true,
-          }));
-        }
-      } catch (err) {
-        console.log('error getting user', err.message);
-        dispatch(setUser({
-          isAuth: false,
-        }));
-      }
+      getUser({publicId: public_id, authToken: token});
     }
   }, []);
+
+  useEffect(() => {
+    try {
+      if (user?.data?.confirmed) {
+        dispatch(setUser({
+          isAuth: true,
+        }));
+      }
+    } catch (err) {
+      console.log('error getting user', err.message);
+      dispatch(setUser({
+        isAuth: false,
+      }));
+    }
+  }, [user])
 
   if (isAuth === null) {
     return null;

@@ -4,7 +4,6 @@ export function getConfig() {
       API_URL: process.env.REACT_APP_PUBLIC_API_URL_PROD,
     };
   }
-  console.log('im here', process.env.REACT_APP_PUBLIC_API_URL_DEV)
   return {
     API_URL: process.env.REACT_APP_PUBLIC_API_URL_DEV,
   };
