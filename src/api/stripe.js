@@ -1,5 +1,7 @@
-import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
+import { pushToast } from '../slices/toastSlice'
+import { toastTypes } from '../fixtures'
 
 export const stripeApi = createApi({
   reducerPath: 'stripeApi',
@@ -12,13 +14,18 @@ export const stripeApi = createApi({
         url: `stripe/plans`,
         method: 'GET',
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     postSubscription: builder.mutation({
       query: (data) => ({
@@ -26,31 +33,41 @@ export const stripeApi = createApi({
         method: 'POST',
         body: data,
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
+      },
     }),
     getSubscription: builder.query({
-      query: ({publicId, authToken}) => ({
+      query: ({ publicId, authToken }) => ({
         url: `stripe/subscriptions/${publicId}`,
         method: 'GET',
         headers: {
-          'Authorization' : authToken,
-        }
+          Authorization: authToken,
+        },
       }),
-      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
         } catch (error) {
-          console.error(error);
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
         }
-      }
-    })
-  })
+      },
+    }),
+  }),
 })
 
 export const {
