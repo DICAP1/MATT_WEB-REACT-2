@@ -1,52 +1,50 @@
-import * as React from 'react';
-import { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
-import { useNavigate } from 'react-router-dom';
-import MainScreen from '../MainScreen/MainScreen';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import Logo from '../Logo/Logo';
-import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '../../slices/authSlice';
-import { useRegisterMutation } from '../../api/auth';
-import { LoadingButton } from '@mui/lab';
+import * as React from 'react'
+import { useState } from 'react'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Checkbox from '@mui/material/Checkbox'
+import { useNavigate } from 'react-router-dom'
+import MainScreen from '../MainScreen/MainScreen'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import Logo from '../Logo/Logo'
+import { useDispatch, useSelector } from 'react-redux'
+import { setUser } from '../../slices/authSlice'
+import { useRegisterMutation } from '../../api/auth'
+import { LoadingButton } from '@mui/lab'
 
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 export default function SignUp() {
-  const [isLoading, setIsLoading] = useState(false);
-  const email = useSelector((state) => state.auth.user.email);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [register] = useRegisterMutation();
+  const [isLoading, setIsLoading] = useState(false)
+  const email = useSelector((state) => state.auth.user.email)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [register] = useRegisterMutation()
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const form = event.currentTarget;
-    const isValid = form.checkValidity();
+    const form = event.currentTarget
+    const isValid = form.checkValidity()
 
     if (!isValid) {
-      console.log('not valid fields'); // todo add logic
-      return;
+      console.log('not valid fields') // todo add logic
+      return
     }
 
-    const data = new FormData(form);
-    const name = data.get('firstName');
-    const lastName = data.get('lastName');
-    const password = data.get('password');
-    const retypePassword = data.get('confirmPassword');
+    const data = new FormData(form)
+    const name = data.get('firstName')
+    const lastName = data.get('lastName')
+    const password = data.get('password')
+    const retypePassword = data.get('confirmPassword')
 
-    const isPasswordEqual = password === retypePassword;
-
-    if (!isPasswordEqual) {
-      console.log('passwords are not the same'); // todo add logic
-      return;
+    if (password !== retypePassword) {
+      console.log('passwords are not the same') // todo add logic
+      return
     }
 
     const userData = {
@@ -55,24 +53,25 @@ export default function SignUp() {
       last_name: lastName,
       password,
       retypePassword: password,
-    };
+    }
 
     dispatch(setUser({
       name,
       lastName,
-      password
-    }));
-    setIsLoading(true);
-    register(userData).unwrap()
+      password,
+    }))
+    setIsLoading(true)
+    register(userData)
+      .unwrap()
       .then((data) => {
         // if (data) {
         //   navigate('../login');
         // }
-        console.log(data);
+        console.log(data)
       })
       .catch((err) => console.log(err))// todo add logic
-      .finally(() => setIsLoading(false));
-  };
+      .finally(() => setIsLoading(false))
+  }
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -82,31 +81,31 @@ export default function SignUp() {
     weightRange: '',
     showPassword: false,
     showConfirmPassword: false,
-  });
+  })
 
   const handleChange = (prop) => (event) => {
     setValues({
       ...values,
-      [prop]: event.target.value
-    });
-  };
+      [prop]: event.target.value,
+    })
+  }
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
       showConfirmPassword: !values.showConfirmPassword,
-    });
-  };
+    })
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <MainScreen>
       <Grid
-        className="leftSide"
+        className='leftSide'
         xs={12}
         sm={12}
         md={6}
@@ -116,14 +115,14 @@ export default function SignUp() {
           paddingRight: {
             lg: 15,
             md: 0,
-            sm: 0
-          }
+            sm: 0,
+          },
         }}
         square
         container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
+        direction='row'
+        justifyContent='center'
+        alignItems='center'
       >
         <Box
           sx={{
@@ -136,14 +135,14 @@ export default function SignUp() {
 
           <Grid
             container
-            direction="column"
-            justifyContent="space-between"
+            direction='column'
+            justifyContent='space-between'
             sx={{ height: '88vh' }}
           >
             <Grid>
               {' '}
               <Box
-                component="form"
+                component='form'
                 noValidate
                 onSubmit={handleSubmit}
                 sx={{
@@ -151,11 +150,11 @@ export default function SignUp() {
                   width: {
                     md: 450,
                     sm: 450,
-                    xs: 450
-                  }
+                    xs: 450,
+                  },
                 }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Create an account</h1>
                 <p style={{ marginBottom: 20 }}>
                   Stocks, Forex, Indices, Bonds, Equities
@@ -163,9 +162,9 @@ export default function SignUp() {
                 <Grid
                   container
                   spacing={1}
-                  direction="row"
+                  direction='row'
                   // justifyContent="space-between"
-                  alignItems="center"
+                  alignItems='center'
                 >
                   <Grid item xs={6}>
                     <Grid>
@@ -188,17 +187,17 @@ export default function SignUp() {
                         style: {
                           color: 'white',
                           fontSize: 15,
-                          height: 30
+                          height: 30,
                         },
                       }}
-                      className="inputField"
-                      margin="normal"
-                      placeholder="Enter first name"
+                      className='inputField'
+                      margin='normal'
+                      placeholder='Enter first name'
                       required
                       fullWidth
-                      id="firstName"
-                      size="small"
-                      name="firstName"
+                      id='firstName'
+                      size='small'
+                      name='firstName'
                       // autoComplete="email"
                     />
                   </Grid>
@@ -223,17 +222,17 @@ export default function SignUp() {
                         style: {
                           color: 'white',
                           fontSize: 15,
-                          height: 30
+                          height: 30,
                         },
                       }}
-                      className="inputField"
-                      margin="normal"
-                      placeholder="Enter last name"
+                      className='inputField'
+                      margin='normal'
+                      placeholder='Enter last name'
                       required
                       fullWidth
-                      id="lastName"
-                      size="small"
-                      name="lastName"
+                      id='lastName'
+                      size='small'
+                      name='lastName'
                       // autoComplete="email"
                     />
                   </Grid>
@@ -259,34 +258,34 @@ export default function SignUp() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
-                  className="inputField"
-                  margin="normal"
-                  placeholder="Enter password"
+                  className='inputField'
+                  margin='normal'
+                  placeholder='Enter password'
                   required
                   fullWidth
-                  size="small"
-                  name="password"
+                  size='small'
+                  name='password'
                   onChange={handleChange('password')}
                   type={values.showPassword ? 'text' : 'password'}
                   value={values.password}
-                  id="password"
-                  autoComplete="current-password"
+                  id='password'
+                  autoComplete='current-password'
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label='toggle password visibility'
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
-                          edge="end"
+                          edge='end'
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -314,34 +313,34 @@ export default function SignUp() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
-                  className="inputField"
-                  margin="normal"
-                  placeholder="Enter password"
+                  className='inputField'
+                  margin='normal'
+                  placeholder='Enter password'
                   required
                   fullWidth
-                  size="small"
-                  name="confirmPassword"
+                  size='small'
+                  name='confirmPassword'
                   type={values.showConfirmPassword ? 'text' : 'password'}
                   value={values.confirmPassword}
                   onChange={handleChange('confirmPassword')}
-                  id="confirmPassword"
-                  autoComplete="current-password"
+                  id='confirmPassword'
+                  autoComplete='current-password'
                   InputProps={{
                     endAdornment: (
-                      <InputAdornment position="end">
+                      <InputAdornment position='end'>
                         <IconButton
-                          aria-label="toggle password visibility"
+                          aria-label='toggle password visibility'
                           onClick={handleClickShowPassword}
                           onMouseDown={handleMouseDownPassword}
-                          edge="end"
+                          edge='end'
                         >
                           {values.showConfirmPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -351,9 +350,9 @@ export default function SignUp() {
 
                 <Grid
                   container
-                  direction="row"
+                  direction='row'
                   //   justifyContent="center"
-                  alignItems="center"
+                  alignItems='center'
                 >
                   <Checkbox {...label} />
                   <p style={{ color: 'rgb(209, 209, 209)' }}>
@@ -362,10 +361,10 @@ export default function SignUp() {
                   <p style={{ color: '#ee6535' }}>Terms of Use &nbsp;</p>
                 </Grid>
                 <LoadingButton
-                  type="submit"
+                  type='submit'
                   fullWidth
                   loading={isLoading}
-                  variant="text"
+                  variant='text'
                   sx={{
                     mt: 3,
                     mb: 2,
@@ -375,8 +374,8 @@ export default function SignUp() {
                     color: '#ffffff',
                     '&:hover': {
                       backgroundColor: 'primary.main',
-                      opacity: [0.9, 0.8, 0.7]
-                    }
+                      opacity: [0.9, 0.8, 0.7],
+                    },
                   }}
                 >
                   Continue
@@ -386,9 +385,9 @@ export default function SignUp() {
             <Grid>
               <Grid
                 container
-                direction="row"
-                justifyContent="center"
-                alignItems="center"
+                direction='row'
+                justifyContent='center'
+                alignItems='center'
               >
                 <p>Copyright &copy; 2022 Traider. All Rights Reserved</p>
               </Grid>
@@ -397,5 +396,5 @@ export default function SignUp() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }
