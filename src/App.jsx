@@ -26,6 +26,7 @@ function App() {
         <Route path="/register" element={<PreSignUp />} />
         <Route path="/create-account" element={<SignUp />} />
         <Route path="/login" element={<SignIn />} />
+        
         <Route
           path="/pricing"
           element={
