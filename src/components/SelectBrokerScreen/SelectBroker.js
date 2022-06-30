@@ -20,12 +20,11 @@ export default function SelectBroker() {
   const [brokerConfig, setBrokerConfig] = useState({})
   const navigate = useNavigate()
 
-  const { publicId } = useSelector(selectUserCredentials)
-  const { data: brokers } = useGetAllBrokesQuery()
-  const { data: userBrokers, refetch: refetchUserBrokers } =
-    useGetUserBrokersQuery({ publicId }, { skip: !publicId })
-  const { data: user } = useGetUserByIdQuery({ publicId }, { skip: !publicId })
-  const [patchUserById] = usePatchUserByIdMutation()
+  const {publicId} = useSelector(selectUserCredentials);
+  const {data : brokers} = useGetAllBrokesQuery();
+  const {data : userBrokers, refetch : refetchUserBrokers} = useGetUserBrokersQuery({publicId}, {skip: !publicId})
+  const {data : user} = useGetUserByIdQuery({publicId}, {skip: !publicId});
+  const [patchUserById] = usePatchUserByIdMutation();
 
   const handleOpen = (config) => {
     setPopupIsOpen(true)
@@ -38,21 +37,18 @@ export default function SelectBroker() {
 
   const handlePopupSubmit = async () => {
     refetchUserBrokers()
+    if (!user?.risk || !user.has_onboard) {
+      patchUserById({publicId, data : { risk: 2, has_onboard: true }})
+        .then((data) => console.log('data patch user by id', data))
+        .catch((err) => {
+          console.log('broker data not sent', err)
+        })
+    }
   }
 
   const handleClick = () => {
     navigate('../')
   }
-
-  useEffect(() => {
-    if (!user?.risk) {
-      patchUserById({ publicId, data: { risk: 2 } })
-        .then(() => console.log('risk set'))
-        .catch((err) => {
-          console.log('broker data not sent', err)
-        })
-    }
-  }, [user])
 
   useEffect(() => {
     setBrokerSelected(userBrokers?.length !== 0)

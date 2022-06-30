@@ -28,7 +28,6 @@ export const RequireAuth = ({
 
   useEffect(() => {
     try {
-      console.log(user?.data);
       if (user?.data?.confirmed) {
         dispatch(setUser({
           isAuth: true,

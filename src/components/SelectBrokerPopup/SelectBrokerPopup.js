@@ -52,6 +52,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
 
   const patchBrokerCredentials = async (brokerId, patchData, userBrokers) => {
     try {
+
       const brokerToUpdate = userBrokers.find(
         (data) => data.broker_id === brokerId
       )
@@ -71,6 +72,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
             option_value: value,
           },
         })
+
       }
     } catch (err) {
       console.log('error: ', err.message)
@@ -101,7 +103,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
         broker_id: brokerConfig.id,
       })
 
-      if (postBroker === null) {
+      if (postBroker?.data !== null) {
         setValues({
           ...values,
           password: '',
@@ -111,6 +113,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
       }
       handleClose()
     } catch (err) {
+      console.log(err.message)
       dispatch(
         pushToast({
           type: toastTypes.error,
