@@ -1,30 +1,29 @@
-import axios from 'axios'
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
+import { getIdToken } from '../utils';
 import { pushToast } from '../slices/toastSlice'
 import { toastTypes } from '../fixtures'
-
-const userAPI = axios.create({
-  baseURL: 'https://demotraider.divergencecapital.com:5000/api/v1/users',
-})
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
   baseQuery: fetchBaseQuery({
     baseUrl: getConfig().API_URL,
+    prepareHeaders: (headers) => {
+      const token = getIdToken();
+      if (token) {
+        headers.set('authorization', `${token}`)
+      }
+      return headers
+    }
   }),
   endpoints: (builder) => ({
     getUserById: builder.query({
-      query: ({ publicId, authToken }) => {
+      query: ({publicId}) => {
         return {
-          url: `users/${publicId}`,
-          method: 'GET',
-          headers: {
-            Authorization: authToken,
-          },
-        }
-      },
-      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        url: `users/${publicId}`,
+        method: 'GET',
+      }},
+      async onQueryStarted(arg, {dispatch, queryFulfilled}) {
         try {
           await queryFulfilled
         } catch (error) {
@@ -41,9 +40,6 @@ export const usersApi = createApi({
       query: ({ publicId, authToken, data }) => ({
         url: `users/${publicId}`,
         body: data,
-        headers: {
-          Authorization: authToken,
-        },
         method: 'PATCH',
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {

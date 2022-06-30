@@ -58,21 +58,15 @@ export default function SignIn() {
       setIsLoading(true)
       const { data: user } = await signIn(userData)
       if (user?.status === 'success') {
-        dispatch(
-          setUser({
-            auth_token: user.Authorization,
-            isAuth: true,
-            ...userData,
-            ...user.user,
-          })
-        ) // todo put only what really need
-        localStorage.setItem(
-          'credentials',
-          JSON.stringify({
-            public_id: user.public_id,
-            token: user.Authorization,
-          })
-        )
+        dispatch(setUser({
+          isAuth: true,
+          ...userData,
+          ...user.user,
+        })) // todo put only what really need
+        localStorage.setItem('credentials', JSON.stringify({
+          public_id: user.public_id,
+          token: user.Authorization,
+        }))
         // navigate(user.user.has_onboard ? '/' : '../pricing');
         navigate('../pricing')
       }

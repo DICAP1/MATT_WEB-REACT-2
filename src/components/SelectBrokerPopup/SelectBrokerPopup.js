@@ -22,7 +22,7 @@ import { toastMessages, toastTypes } from '../../fixtures'
 
 const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { publicId, authToken } = useSelector(selectUserCredentials)
+  const { publicId } = useSelector(selectUserCredentials)
   const dispatch = useDispatch()
 
   const [values, setValues] = React.useState({
@@ -33,9 +33,9 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
     showPassword: false,
   })
 
-  const [postUserBroker] = usePostUserBrokerMutation()
-  const { data: userBrokers } = useGetUserBrokersQuery({ publicId, authToken })
-  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation()
+  const [postUserBroker] = usePostUserBrokerMutation();
+  const {data: userBrokers} = useGetUserBrokersQuery({publicId});
+  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation();
 
   const style = {
     position: 'absolute',
@@ -63,11 +63,11 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
           (data) => data.broker_setting.option_name.toLowerCase() === key
         )
 
-        await patchUserBrokerById(publicId, authToken, {
+        await patchUserBrokerById({publicId, data : {
           id: currentField.id,
           broker_setting_id: currentField.broker_setting_id,
           option_value: value,
-        })
+        }})
       }
     } catch (err) {
       console.log('error: ', err.message)

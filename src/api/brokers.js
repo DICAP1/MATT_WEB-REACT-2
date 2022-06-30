@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
+import { getIdToken } from '../utils';
 import { pushToast } from '../slices/toastSlice'
 import { toastMessages, toastTypes } from '../fixtures'
 
@@ -7,6 +8,13 @@ export const brokerApi = createApi({
   reducerPath: 'brokerApi',
   baseQuery: fetchBaseQuery({
     baseUrl: getConfig().API_URL,
+    prepareHeaders: (headers) => {
+      const token = getIdToken();
+      if (token) {
+        headers.set('authorization', `${token}`)
+      }
+      return headers
+    }
   }),
   endpoints: (builder) => ({
     getAllBrokes: builder.query({
@@ -28,11 +36,9 @@ export const brokerApi = createApi({
       },
     }),
     getUserBrokers: builder.query({
-      query: ({ publicId, authToken }) => ({
+      query: ({publicId}) => ({
         url: `users/brokers/${publicId}`,
-        headers: {
-          Authorization: authToken,
-        },
+        method: 'GET',
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
@@ -48,12 +54,12 @@ export const brokerApi = createApi({
       },
     }),
     postUserBroker: builder.mutation({
-      query: ({ publicId, authToken, brokerId }) => ({
+      query: ({publicId, broker_id}) => ({
         url: `users/brokers/${publicId}`,
-        body: brokerId,
-        headers: {
-          Authorization: authToken,
+        body: {
+          broker_id : broker_id
         },
+        method: 'POST',
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {

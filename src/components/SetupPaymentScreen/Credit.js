@@ -26,21 +26,14 @@ import { pushToast } from '../../slices/toastSlice'
 import { toastTypes } from '../../fixtures'
 
 export default function Credit() {
-  const [isLoading, setIsLoading] = useState(false)
-  const billing = useSelector((state) => state.billing)
-  const { publicId, authToken } = useSelector(selectUserCredentials)
-  const dispatch = useDispatch()
-  const stripe = useStripe()
-  const elements = useElements()
-  const navigate = useNavigate()
-  const [postSubscription] = usePostSubscriptionMutation()
-  const { data: dataSubscription } = useGetSubscriptionQuery(
-    {
-      publicId,
-      authToken,
-    },
-    { skip: !publicId || !authToken }
-  )
+  const [isLoading, setIsLoading] = useState(false);
+  const billing = useSelector((state) => state.billing);
+  const {publicId} = useSelector(selectUserCredentials);
+  const stripe = useStripe();
+  const elements = useElements();
+  const navigate = useNavigate();
+  const [postSubscription] = usePostSubscriptionMutation();
+  const {data : dataSubscription} = useGetSubscriptionQuery({publicId}, {skip: (!publicId)})
 
   const inputStyles = {
     style: {

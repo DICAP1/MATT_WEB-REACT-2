@@ -21,17 +21,18 @@ export const RequireAuth = ({
     } else {
       const {
         public_id,
-        token
       } = JSON.parse(credentials);
-      getUser({publicId: public_id, authToken: token});
+      getUser({publicId: public_id});
     }
   }, []);
 
   useEffect(() => {
     try {
+      console.log(user?.data);
       if (user?.data?.confirmed) {
         dispatch(setUser({
           isAuth: true,
+          ...user?.data 
         }));
       }
     } catch (err) {
