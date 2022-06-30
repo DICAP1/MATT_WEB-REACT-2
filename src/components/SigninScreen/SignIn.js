@@ -118,14 +118,8 @@ export default function SignIn() {
   }, [])
 
   useEffect(() => {
-    try {
-      if (confirmEmail?.status === 'success') {
-        //TODO: add toast
-        console.log(confirmEmail.message)
-        setSearchParams('', { replace: true })
-      }
-    } catch (error) {
-      console.error(error)
+    if (confirmEmail?.status === 'success') {
+      setSearchParams('', { replace: true })
     }
   }, [confirmEmail])
 

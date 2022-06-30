@@ -5,11 +5,11 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Logo from '../Logo/Logo'
 import MainScreen from '../MainScreen/MainScreen'
-import { useNavigate } from 'react-router-dom'
 import { useResetPasswordMutation } from '../../api/auth'
 import { pushToast } from '../../slices/toastSlice'
 import { toastMessages, toastTypes } from '../../fixtures'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 // const theme = createTheme();
 
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
           navigate('../signin')
         }
       })
-      .catch((err) => console.log(err)) // todo add logic;
+      .catch((err) => console.log(err))
   }
 
   return (

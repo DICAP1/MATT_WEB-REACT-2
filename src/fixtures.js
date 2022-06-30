@@ -61,15 +61,15 @@ export const toastMessages = {
     warningEmail: 'Check your email address',
     warningAllFields: 'All fields should be filled in',
     warningPassword: 'Passwords should be the same',
-    error: 'Server error',
+    error: 'Try again. Server error',
   },
   signIn: {
     success: 'You are successfully logged in',
     warning: 'Check your password and/or email',
   },
   confirmEmail: {
-    success: 'Email has been confirmed',
-    error: 'Server error',
+    success: 'You have confirmed your account. Thanks!',
+    error: 'Try again. Server error',
   },
   resetPassword: {
     success: 'Success! Check your inbox email',
@@ -77,5 +77,13 @@ export const toastMessages = {
   },
   setPassword: {
     success: 'Password has been reset',
+    warningPassword: 'Passwords should be the same',
+    warningToken: 'Please check link in email and try again',
+    error: 'Try again. Server error',
+  },
+  postBroker: {
+    success: "Broker's data has successfully set",
+    warningAllFields: 'All fields should be filled in',
+    error: 'Try again. Server error',
   },
 }

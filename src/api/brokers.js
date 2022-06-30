@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
 import { pushToast } from '../slices/toastSlice'
-import { toastTypes } from '../fixtures'
+import { toastMessages, toastTypes } from '../fixtures'
 
 export const brokerApi = createApi({
   reducerPath: 'brokerApi',
@@ -58,11 +58,17 @@ export const brokerApi = createApi({
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
         try {
           await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.postBroker.success,
+            })
+          )
         } catch (error) {
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message: toastMessages.postBroker.error,
             })
           )
         }
