@@ -1,42 +1,53 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Logo from '../Logo/Logo';
-import MainScreen from '../MainScreen/MainScreen';
-import { useNavigate } from 'react-router-dom';
-import { useResetPasswordMutation } from '../../api/auth';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Logo from '../Logo/Logo'
+import MainScreen from '../MainScreen/MainScreen'
+import { useResetPasswordMutation } from '../../api/auth'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 // const theme = createTheme();
 
 export default function ForgotPassword() {
-  const navigate = useNavigate();
-  const [resetPassword] = useResetPasswordMutation();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [resetPassword] = useResetPasswordMutation()
 
   const handleSubmit = (event) => {
     event.preventDefault()
     const form = event.currentTarget
     const isValid = form.checkValidity()
 
-    if (isValid) {
-      const data = new FormData(form)
-      const email = data.get('email')
-
-      resetPassword({email: email})
-        .then((data) => {
-          if (data.status === 'success') {
-            navigate('../login')
-          }
+    if (!isValid) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.resetPassword.warningEmail,
         })
-        .catch((err) => console.log(err)) // todo add logic;
+      )
+      return
     }
+    const data = new FormData(form)
+    const email = data.get('email')
+
+    resetPassword({ email: email })
+      .then((data) => {
+        if (data.status === 'success') {
+          navigate('../signin')
+        }
+      })
+      .catch((err) => console.log(err))
   }
 
   return (
     <MainScreen>
       <Grid
-        className='leftSide'
+        className="leftSide"
         xs={12}
         sm={12}
         md={6}
@@ -51,9 +62,9 @@ export default function ForgotPassword() {
         }}
         square
         container
-        direction='row'
-        justifyContent='center'
-        alignItems='center'
+        direction="row"
+        justifyContent="center"
+        alignItems="center"
       >
         <Box
           sx={{
@@ -66,14 +77,14 @@ export default function ForgotPassword() {
 
           <Grid
             container
-            direction='column'
-            justifyContent='space-between'
+            direction="column"
+            justifyContent="space-between"
             sx={{ height: '88vh' }}
           >
             <Grid>
               {' '}
               <Box
-                component='form'
+                component="form"
                 noValidate
                 onSubmit={handleSubmit}
                 sx={{
@@ -114,21 +125,22 @@ export default function ForgotPassword() {
                       height: 30,
                     },
                   }}
-                  className='inputField'
-                  margin='normal'
-                  placeholder='Enter email address'
+                  className="inputField"
+                  margin="normal"
+                  placeholder="Enter email address"
                   required
                   fullWidth
-                  id='email'
-                  size='small'
-                  name='email'
-                  autoComplete='email'
+                  id="email"
+                  size="small"
+                  name="email"
+                  autoComplete="email"
+                  type="email"
                 />
 
                 <Button
-                  type='submit'
+                  type="submit"
                   fullWidth
-                  variant='contained'
+                  variant="contained"
                   sx={{
                     mt: 3,
                     mb: 2,
@@ -144,9 +156,9 @@ export default function ForgotPassword() {
             <Grid>
               <Grid
                 container
-                direction='row'
-                justifyContent='center'
-                alignItems='center'
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
               >
                 <p>Copyright &copy; 2022 Traider. All Rights Reserved</p>
               </Grid>

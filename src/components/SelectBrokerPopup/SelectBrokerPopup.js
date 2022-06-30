@@ -1,30 +1,29 @@
-import React, { useState } from 'react';
-import Modal from '@mui/material/Modal';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import CloseIcon from '@mui/icons-material/Close';
-import TextField from '@mui/material/TextField';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
-import './style.css';
-import { useGetUserBrokersQuery, usePostUserBrokerMutation } from '../../api/brokers';
-import { useSelector } from 'react-redux';
-import { selectUserCredentials } from '../../slices/authSlice';
-import { usePatchUserBrokerByIdMutation } from '../../api/users';
-import { LoadingButton } from '@mui/lab';
+import React, { useState } from 'react'
+import Modal from '@mui/material/Modal'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import CloseIcon from '@mui/icons-material/Close'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import Visibility from '@mui/icons-material/Visibility'
+import './style.css'
+import {
+  useGetUserBrokersQuery,
+  usePostUserBrokerMutation,
+} from '../../api/brokers'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectUserCredentials } from '../../slices/authSlice'
+import { usePatchUserBrokerByIdMutation } from '../../api/users'
+import { LoadingButton } from '@mui/lab'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
 
-const SelectBrokerPopup = ({
-  open,
-  handleClose,
-  brokerConfig,
-  onSubmit,
-}) => {
+const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false)
-  const {
-    publicId,
-  } = useSelector(selectUserCredentials)
+  const { publicId } = useSelector(selectUserCredentials)
+  const dispatch = useDispatch()
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -49,26 +48,26 @@ const SelectBrokerPopup = ({
     p: 4,
   }
 
-  const isOanda = brokerConfig.name?.toLowerCase()
-    .includes('oanda')
+  const isOanda = brokerConfig.name?.toLowerCase().includes('oanda')
 
   const patchBrokerCredentials = async (brokerId, patchData, userBrokers) => {
     try {
-      const brokerToUpdate = userBrokers.find(data => data.broker_id === brokerId)
+      const brokerToUpdate = userBrokers.find(
+        (data) => data.broker_id === brokerId
+      )
       console.log('brokerToUpdate: ', brokerToUpdate)
       console.log('patchData: ', patchData)
 
       for (const [key, value] of Object.entries(patchData)) {
-
-        const currentField = brokerToUpdate.user_broker_setting.find(data => data.broker_setting.option_name.toLowerCase() === key)
-        console.log('currentField ', currentField)
+        const currentField = brokerToUpdate.user_broker_setting.find(
+          (data) => data.broker_setting.option_name.toLowerCase() === key
+        )
 
         await patchUserBrokerById({publicId, data : {
           id: currentField.id,
           broker_setting_id: currentField.broker_setting_id,
           option_value: value,
         }})
-        console.log(`${key}: ${value}`)
       }
     } catch (err) {
       console.log('error: ', err.message)
@@ -76,7 +75,6 @@ const SelectBrokerPopup = ({
   }
 
   const handleSubmit = async (event) => {
-    setIsLoading(true)
     try {
       event.preventDefault()
 
@@ -84,27 +82,39 @@ const SelectBrokerPopup = ({
       const isValid = form.checkValidity()
 
       if (!isValid) {
-        setIsLoading(false)
-        console.log('not valid inputs') // todo add logic
+        dispatch(
+          pushToast({
+            type: toastTypes.warning,
+            message: toastMessages.postBroker.warningAllFields,
+          })
+        )
         return
       }
+      setIsLoading(true)
 
-      let userData = Object.fromEntries(new FormData(form));
-      console.log('userData: ', userData, '\nbrokerConfig: ', brokerConfig);
-      const postBroker = await postUserBroker({publicId, broker_id: brokerConfig.id});
+      let userData = Object.fromEntries(new FormData(form))
+      const postBroker = await postUserBroker({
+        publicId,
+        authToken,
+        brokerId: brokerConfig.id,
+      })
 
       if (postBroker === null) {
-        console.log('ok')
         setValues({
           ...values,
-          password: ''
-        });
-        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers);
-        onSubmit();
+          password: '',
+        })
+        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers)
+        onSubmit()
       }
       handleClose()
     } catch (err) {
-      console.log('error when submit: ', err.message)
+      dispatch(
+        pushToast({
+          type: toastTypes.error,
+          message: toastMessages.postBroker.error,
+        })
+      )
     }
     setIsLoading(false)
   }
@@ -130,8 +140,8 @@ const SelectBrokerPopup = ({
   return (
     <Modal
       open={open}
-      aria-labelledby='modal-modal-title'
-      aria-describedby='modal-modal-description'
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
     >
       <Box sx={style}>
         <Box
@@ -147,9 +157,9 @@ const SelectBrokerPopup = ({
         >
           <Grid
             container
-            direction='row'
-            justifyContent='flex-end'
-            alignItems='center'
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
           >
             <CloseIcon
               onClick={handleClose}
@@ -161,7 +171,7 @@ const SelectBrokerPopup = ({
             />
           </Grid>
           <Box
-            component='form'
+            component="form"
             onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
@@ -174,163 +184,171 @@ const SelectBrokerPopup = ({
               </p>
               <Grid
                 container
-                direction='row'
-                justifyContent='space-between'
-                alignItems='center'
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
               >
-                {isOanda && <><Grid>
-                  <h5>Token</h5>
-                </Grid>
-                  <TextField
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                {isOanda && (
+                  <>
+                    <Grid>
+                      <h5>Token</h5>
+                    </Grid>
+                    <TextField
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                      '& .MuiOutlinedInput-root:hover': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                        '& .MuiOutlinedInput-root:hover': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                    }}
-                    inputProps={{
-                      style: {
-                        color: 'white',
-                        fontSize: 15,
-                        height: 30,
-                      },
-                    }}
-                    className='inputField1'
-                    margin='normal'
-                    placeholder='Enter token'
-                    required
-                    fullWidth
-                    id='token'
-                    type='text'
-                    size='small'
-                    name='token'
-                  /></>}
-                {!isOanda && <><Grid>
-                  <h5>Username</h5>
-                </Grid>
-                  <TextField
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                      }}
+                      inputProps={{
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30,
                         },
-                      },
-                      '& .MuiOutlinedInput-root:hover': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                      }}
+                      className="inputField1"
+                      margin="normal"
+                      placeholder="Enter token"
+                      required
+                      fullWidth
+                      id="token"
+                      type="text"
+                      size="small"
+                      name="token"
+                    />
+                  </>
+                )}
+                {!isOanda && (
+                  <>
+                    <Grid>
+                      <h5>Username</h5>
+                    </Grid>
+                    <TextField
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                    }}
-                    inputProps={{
-                      style: {
-                        color: 'white',
-                        fontSize: 15,
-                        height: 30,
-                      },
-                    }}
-                    className='inputField1'
-                    margin='normal'
-                    placeholder='Enter username'
-                    required
-                    fullWidth
-                    id='username'
-                    type='text'
-                    size='small'
-                    name='username'
-                  />
-                  <Grid>
-                    <h5>Password</h5>
-                  </Grid>
-                  <TextField
-                    sx={{
-                      '& .MuiOutlinedInput-root ': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                        '& .MuiOutlinedInput-root:hover': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                      '& .MuiOutlinedInput-root:hover': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                      }}
+                      inputProps={{
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30,
                         },
-                      },
-                    }}
-                    inputProps={{
-                      style: {
-                        color: 'white',
-                        fontSize: 15,
-                        height: 30,
-                      },
-                    }}
-                    className='inputField1'
-                    margin='normal'
-                    placeholder='Enter password'
-                    required
-                    fullWidth
-                    size='small'
-                    name='password'
-                    type={values.showPassword ? 'text' : 'password'}
-                    value={values.password}
-                    onChange={handleChange('password')}
-                    id='password'
-                    autoComplete='current-password'
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment position='end'>
-                          <IconButton
-                            aria-label='toggle password visibility'
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge='end'
-                          >
-                            {values.showPassword ? (
-                              <VisibilityOff sx={{ color: 'gray' }} />
-                            ) : (
-                              <Visibility sx={{ color: 'gray' }} />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <Grid>
-                    <h5>API key</h5>
-                  </Grid>
-                  <TextField
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                      }}
+                      className="inputField1"
+                      margin="normal"
+                      placeholder="Enter username"
+                      required
+                      fullWidth
+                      id="username"
+                      type="text"
+                      size="small"
+                      name="username"
+                    />
+                    <Grid>
+                      <h5>Password</h5>
+                    </Grid>
+                    <TextField
+                      sx={{
+                        '& .MuiOutlinedInput-root ': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                      '& .MuiOutlinedInput-root:hover': {
-                        '& > fieldset': {
-                          borderColor: 'rgb(39, 39, 39)',
+                        '& .MuiOutlinedInput-root:hover': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
                         },
-                      },
-                    }}
-                    inputProps={{
-                      style: {
-                        color: 'white',
-                        fontSize: 15,
-                        height: 30,
-                      },
-                    }}
-                    className='inputField1'
-                    margin='normal'
-                    placeholder='Enter API key'
-                    required
-                    fullWidth
-                    id='api_key'
-                    type='text'
-                    size='small'
-                    name='api_key'
-                  /></>}
+                      }}
+                      inputProps={{
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30,
+                        },
+                      }}
+                      className="inputField1"
+                      margin="normal"
+                      placeholder="Enter password"
+                      required
+                      fullWidth
+                      size="small"
+                      name="password"
+                      type={values.showPassword ? 'text' : 'password'}
+                      value={values.password}
+                      onChange={handleChange('password')}
+                      id="password"
+                      autoComplete="current-password"
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {values.showPassword ? (
+                                <VisibilityOff sx={{ color: 'gray' }} />
+                              ) : (
+                                <Visibility sx={{ color: 'gray' }} />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <Grid>
+                      <h5>API key</h5>
+                    </Grid>
+                    <TextField
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
+                        },
+                        '& .MuiOutlinedInput-root:hover': {
+                          '& > fieldset': {
+                            borderColor: 'rgb(39, 39, 39)',
+                          },
+                        },
+                      }}
+                      inputProps={{
+                        style: {
+                          color: 'white',
+                          fontSize: 15,
+                          height: 30,
+                        },
+                      }}
+                      className="inputField1"
+                      margin="normal"
+                      placeholder="Enter API key"
+                      required
+                      fullWidth
+                      id="api_key"
+                      type="text"
+                      size="small"
+                      name="api_key"
+                    />
+                  </>
+                )}
                 <Grid>
                   <h5>Default account</h5>
                 </Grid>
@@ -354,22 +372,22 @@ const SelectBrokerPopup = ({
                       height: 30,
                     },
                   }}
-                  className='inputField1'
-                  margin='normal'
-                  placeholder='Enter Default account'
+                  className="inputField1"
+                  margin="normal"
+                  placeholder="Enter Default account"
                   required
                   fullWidth
-                  id='accountid'
-                  type='text'
-                  size='small'
-                  name='accountid'
+                  id="accountid"
+                  type="text"
+                  size="small"
+                  name="accountid"
                 />
               </Grid>
               <LoadingButton
-                type='submit'
+                type="submit"
                 fullWidth
                 loading={isLoading}
-                variant='text'
+                variant="text"
                 sx={{
                   mt: 3,
                   mb: 2,

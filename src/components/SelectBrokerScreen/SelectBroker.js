@@ -1,28 +1,26 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import './style.css';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import RenderBrokers from '../RenderBrokers/RenderBrokers';
-import { useGetAllBrokesQuery, useGetUserBrokersQuery } from '../../api/brokers';
-import { useSelector } from 'react-redux';
-import { selectUserCredentials } from '../../slices/authSlice';
-import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
-import { useGetUserByIdQuery, usePatchUserByIdMutation } from '../../api/users';
-import { useNavigate } from 'react-router-dom';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import './style.css'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
+import RenderBrokers from '../RenderBrokers/RenderBrokers'
+import { useGetAllBrokesQuery, useGetUserBrokersQuery } from '../../api/brokers'
+import { useSelector } from 'react-redux'
+import { selectUserCredentials } from '../../slices/authSlice'
+import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup'
+import { useGetUserByIdQuery, usePatchUserByIdMutation } from '../../api/users'
+import { useNavigate } from 'react-router-dom'
 
 export default function SelectBroker() {
-  const [popupIsOpen, setPopupIsOpen] = useState(false);
-  const [brokerSelected, setBrokerSelected] = useState(false);
-  const [brokerConfig, setBrokerConfig] = useState({});
-  const navigate = useNavigate();
+  const [popupIsOpen, setPopupIsOpen] = useState(false)
+  const [brokerSelected, setBrokerSelected] = useState(false)
+  const [brokerConfig, setBrokerConfig] = useState({})
+  const navigate = useNavigate()
 
-  const {
-    publicId,
-  } = useSelector(selectUserCredentials);
+  const {publicId} = useSelector(selectUserCredentials);
   const {data : brokers} = useGetAllBrokesQuery();
   const {data : userBrokers, refetchUserBrokers} = useGetUserBrokersQuery({publicId}, {skip: !publicId})
   const {data : user} = useGetUserByIdQuery({publicId}, {skip: !publicId});
@@ -38,8 +36,8 @@ export default function SelectBroker() {
   }
 
   const handlePopupSubmit = async () => {
-    refetchUserBrokers();
-  };
+    refetchUserBrokers()
+  }
 
   const handleClick = () => {
     navigate('../')
@@ -49,11 +47,11 @@ export default function SelectBroker() {
     if (!user?.risk) {
       patchUserById({publicId, data : { risk: 2 }})
         .then(() => console.log('risk set'))
-        .catch(err => console.log('broker data not sent', err)); // todo add logic;
-    } else {
-      console.log('risk: ', user.risk);
+        .catch((err) => {
+          console.log('broker data not sent', err)
+        })
     }
-  }, [user]);
+  }, [user])
 
   useEffect(() => {
     setBrokerSelected(userBrokers?.length !== 0)
@@ -63,11 +61,15 @@ export default function SelectBroker() {
     <React.Fragment>
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
-          <SelectBrokerPopup open={popupIsOpen} handleClose={handleClose}
-                             brokerConfig={brokerConfig} onSubmit={handlePopupSubmit} />
+          <SelectBrokerPopup
+            open={popupIsOpen}
+            handleClose={handleClose}
+            brokerConfig={brokerConfig}
+            onSubmit={handlePopupSubmit}
+          />
           <Container
-            maxWidth='lg'
-            component='main'
+            maxWidth="lg"
+            component="main"
             sx={{
               backgroundColor: 'none',
               height: '100vh',
@@ -75,22 +77,22 @@ export default function SelectBroker() {
           >
             <Grid
               container
-              direction='row'
-              justifyContent='center'
-              alignItems='center'
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
             >
               <h1>Select your broker</h1>
             </Grid>
 
             <Grid
               container
-              direction='row'
-              justifyContent='center'
-              alignItems='center'
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
             >
               <p>Your membership starts as soon as you set up payment. </p>
             </Grid>
-            <Container component='main' maxWidth='sm'>
+            <Container component="main" maxWidth="sm">
               <Grid sx={{ backgroundColor: '#0f0f11' }}>
                 <Box
                   px={3}
@@ -106,12 +108,15 @@ export default function SelectBroker() {
                 >
                   <Grid
                     container
-                    direction='row'
-                    justifyContent='space-between'
-                    alignItems='center'
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
                   >
-                    <RenderBrokers handleOpen={handleOpen} brokers={brokers}
-                                   userBrokers={userBrokers} />
+                    <RenderBrokers
+                      handleOpen={handleOpen}
+                      brokers={brokers}
+                      userBrokers={userBrokers}
+                    />
                   </Grid>
                 </Box>
                 <Box
@@ -128,9 +133,9 @@ export default function SelectBroker() {
                 >
                   <Grid
                     container
-                    direction='row'
-                    justifyContent='space-between'
-                    alignItems='center'
+                    direction="row"
+                    justifyContent="space-between"
+                    alignItems="center"
                   >
                     <Grid>
                       <p style={{ margin: 0 }}>How does this work?</p>
@@ -150,10 +155,10 @@ export default function SelectBroker() {
                 </Box>
                 {brokerSelected ? (
                   <Button
-                    type='button'
+                    type="button"
                     onClick={handleClick}
                     fullWidth
-                    variant='contained'
+                    variant="contained"
                     sx={{
                       mt: 3,
                       mb: 2,
