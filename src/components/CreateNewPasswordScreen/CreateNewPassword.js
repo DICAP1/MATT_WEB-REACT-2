@@ -1,55 +1,82 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Logo from '../Logo/Logo';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import MainScreen from '../MainScreen/MainScreen';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import InputAdornment from '@mui/material/InputAdornment';
-import IconButton from '@mui/material/IconButton';
-import { setPassword } from '../../api/auth';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Logo from '../Logo/Logo'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import MainScreen from '../MainScreen/MainScreen'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import InputAdornment from '@mui/material/InputAdornment'
+import IconButton from '@mui/material/IconButton'
+import { useSetPasswordMutation } from '../../api/auth'
+import { useDispatch } from 'react-redux'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
 
-const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+const label = { inputProps: { 'aria-label': 'Checkbox demo' } }
 
 // const theme = createTheme();
 
 export default function CreateNewPassword() {
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const [setPassword] = useSetPasswordMutation()
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
-    const form = event.currentTarget;
-    const isValid = form.checkValidity();
-
-    if (isValid) {
-      const data = new FormData(form);
-      const password = data.get('password');
-      const retypePassword = data.get('confirmPassword');
-      const isPasswordEqual = password === retypePassword;
-
-      if (isPasswordEqual && searchParams.has('reset-token')) {
-        const token = searchParams.get('reset-token');
-        const newPassword = { new_password: password };
-
-        setPassword(token, newPassword)
-          .then((data) => {
-            if (data.status === 'success') {
-              navigate('../login');
-            }
-          })
-          .catch((err) => console.log(err)); // todo add logic
-      } else {
-        console.log('passwords are not the same'); // todo add logic
-      }
-    } else {
-      console.log('not valid fields'); // todo add logic
+    if (!searchParams.has('reset-token')) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.setPassword.warningToken,
+        })
+      )
+      return
     }
-  };
+
+    const form = event.currentTarget
+    const isValid = form.checkValidity()
+
+    if (!isValid) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.setPassword.warningPassword,
+        })
+      )
+      return
+    }
+
+    const data = new FormData(form)
+    const password = data.get('password')
+    const retypePassword = data.get('confirmPassword')
+
+    if (password !== retypePassword) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.setPassword.warningPassword,
+        })
+      )
+      return
+    }
+
+    const token = searchParams.get('reset-token')
+    const newPassword = { new_password: password }
+
+    setPassword({ token, newPassword })
+      .unwrap()
+      .then((data) => {
+        if (data.status === 'success') {
+          navigate('../login')
+        }
+      })
+      .catch((err) => console.log('err', err))
+  }
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -59,26 +86,26 @@ export default function CreateNewPassword() {
     weightRange: '',
     showPassword: false,
     showConfirmPassword: false,
-  });
+  })
 
   const handleChange = (prop) => (event) => {
     setValues({
       ...values,
-      [prop]: event.target.value
-    });
-  };
+      [prop]: event.target.value,
+    })
+  }
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
       showConfirmPassword: !values.showConfirmPassword,
-    });
-  };
+    })
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   return (
     <MainScreen>
@@ -93,8 +120,8 @@ export default function CreateNewPassword() {
           paddingRight: {
             lg: 15,
             md: 0,
-            sm: 0
-          }
+            sm: 0,
+          },
         }}
         square
         container
@@ -128,11 +155,11 @@ export default function CreateNewPassword() {
                   width: {
                     md: 450,
                     sm: 450,
-                    xs: 450
-                  }
+                    xs: 450,
+                  },
                 }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Create new password</h1>
                 <p style={{ marginBottom: 20 }}>
                   Lorem ipsum dolor sit amet consectetur, adipisicing elit.
@@ -160,7 +187,7 @@ export default function CreateNewPassword() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
                   className="inputField"
@@ -185,9 +212,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -215,7 +242,7 @@ export default function CreateNewPassword() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
                   className="inputField"
@@ -240,9 +267,9 @@ export default function CreateNewPassword() {
                           edge="end"
                         >
                           {values.showConfirmPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -279,5 +306,5 @@ export default function CreateNewPassword() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }

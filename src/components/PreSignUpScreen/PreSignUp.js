@@ -1,12 +1,7 @@
 import * as React from 'react'
-import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
-import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Checkbox from '@mui/material/Checkbox'
 import { Link, useNavigate } from 'react-router-dom'
-import Paper from '@mui/material/Paper'
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import '../SigninScreen/style.css'
@@ -18,6 +13,8 @@ import warning from '../../assets/Icons/warning1.png'
 import MainScreen from '../MainScreen/MainScreen'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../slices/authSlice'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
 
 export default function PreSignUp() {
   const dispatch = useDispatch()
@@ -28,16 +25,21 @@ export default function PreSignUp() {
     const form = event.currentTarget
     const isValid = form.checkValidity()
 
-    if (isValid) {
-      const data = new FormData(form)
-      const email = data.get('email')
-
-      dispatch(setUser({ email }))
-      navigate('../create-account')
-    } else {
-      // todo add logic
-      console.log('not valid email address')
+    if (!isValid) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.register.warningEmail,
+        })
+      )
+      return
     }
+
+    const data = new FormData(form)
+    const email = data.get('email')
+
+    dispatch(setUser({ email }))
+    navigate('../create-account')
   }
 
   return (

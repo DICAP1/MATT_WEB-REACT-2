@@ -1,77 +1,75 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import Button from '@mui/material/Button';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import './style.css';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import RenderBrokers from '../RenderBrokers/RenderBrokers';
-import { getAllBrokers, getUserBrokers } from '../../api/brokers';
-import { useSelector } from 'react-redux';
-import { selectUserCredentials } from '../../slices/authSlice';
-import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup';
-import { getUserById, patchUserById } from '../../api/users';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import Button from '@mui/material/Button'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import Container from '@mui/material/Container'
+import './style.css'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
+import RenderBrokers from '../RenderBrokers/RenderBrokers'
+import { useGetAllBrokesQuery, useGetUserBrokersQuery } from '../../api/brokers'
+import { useSelector } from 'react-redux'
+import { selectUserCredentials } from '../../slices/authSlice'
+import SelectBrokerPopup from '../SelectBrokerPopup/SelectBrokerPopup'
+import { useGetUserByIdQuery, usePatchUserByIdMutation } from '../../api/users'
+import { useNavigate } from 'react-router-dom'
 
 export default function SelectBroker() {
-  const [popupIsOpen, setPopupIsOpen] = useState(false);
-  const [brokerSelected, setBrokerSelected] = useState(false);
-  const [brokerConfig, setBrokerConfig] = useState({});
-  const [brokers, setBrokers] = useState([]);
-  const [userBrokers, setUserBrokers] = useState([]);
+  const [popupIsOpen, setPopupIsOpen] = useState(false)
+  const [brokerSelected, setBrokerSelected] = useState(false)
+  const [brokerConfig, setBrokerConfig] = useState({})
+  const navigate = useNavigate()
 
-  const {
-    publicId,
-    authToken
-  } = useSelector(selectUserCredentials);
-
-  const user = useSelector(state => state);
-  console.log('state: ', user);
-  console.log('All brokers: ', brokers);
-  console.log('User brokers: ', userBrokers);
+  const {publicId} = useSelector(selectUserCredentials);
+  const {data : brokers} = useGetAllBrokesQuery();
+  const {data : userBrokers, refetch : refetchUserBrokers} = useGetUserBrokersQuery({publicId}, {skip: !publicId})
+  const {data : user} = useGetUserByIdQuery({publicId}, {skip: !publicId});
+  const [patchUserById] = usePatchUserByIdMutation();
 
   const handleOpen = (config) => {
-    setPopupIsOpen(true);
-    setBrokerConfig(config);
-  };
-  const handleClose = () => setPopupIsOpen(false);
+    setPopupIsOpen(true)
+    setBrokerConfig(config)
+  }
+  const handleClose = () => {
+    setPopupIsOpen(false)
+    refetchUserBrokers()
+  }
 
   const handlePopupSubmit = async () => {
-    const userBrokersData = await getUserBrokers(publicId, authToken);
-    setUserBrokers(userBrokersData);
-  };
+    refetchUserBrokers()
+    if (!user?.risk || !user.has_onboard) {
+      patchUserById({publicId, data : { risk: 2, has_onboard: true }})
+        .then((data) => console.log('data patch user by id', data))
+        .catch((err) => {
+          console.log('broker data not sent', err)
+        })
+    }
+  }
+
+  const handleClick = () => {
+    navigate('../')
+  }
 
   useEffect(() => {
-    (async () => {
-      const brokersData = await getAllBrokers();
-      const userBrokersData = await getUserBrokers(publicId, authToken);
-      const user = await getUserById(publicId, authToken);
-
-      setBrokers(brokersData);
-      setUserBrokers(userBrokersData);
-      setBrokerSelected(userBrokersData.length !== 0);
-      if (!user.risk) {
-        patchUserById(publicId, authToken, { risk: 2 })
-          .then(() => console.log('risk set'))
-          .catch(err => console.log('broker data not sent', err)); // todo add logic;
-      } else {
-        console.log('risk: ', user.risk);
-      }
-    })();
-  }, []);
+    setBrokerSelected(userBrokers?.length !== 0)
+  }, [userBrokers])
 
   return (
     <React.Fragment>
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
-          <SelectBrokerPopup open={popupIsOpen} handleClose={handleClose}
-                             brokerConfig={brokerConfig} onSubmit={handlePopupSubmit}/>
+          <SelectBrokerPopup
+            open={popupIsOpen}
+            handleClose={handleClose}
+            brokerConfig={brokerConfig}
+            onSubmit={handlePopupSubmit}
+          />
           <Container
             maxWidth="lg"
             component="main"
             sx={{
               backgroundColor: 'none',
-              height: '100vh'
+              height: '100vh',
             }}
           >
             <Grid
@@ -111,8 +109,11 @@ export default function SelectBroker() {
                     justifyContent="space-between"
                     alignItems="center"
                   >
-                    <RenderBrokers handleOpen={handleOpen} brokers={brokers}
-                                   userBrokers={userBrokers}/>
+                    <RenderBrokers
+                      handleOpen={handleOpen}
+                      brokers={brokers}
+                      userBrokers={userBrokers}
+                    />
                   </Grid>
                 </Box>
                 <Box
@@ -150,29 +151,26 @@ export default function SelectBroker() {
                   </Grid>
                 </Box>
                 {brokerSelected ? (
-                  <a href="https://demotraider.divergencecapital.com/#/get-started"
-                    // target="_blank"
-                     style={{ textDecoration: 'none' }}>
-                    <Button
-                      type="submit"
-                      fullWidth
-                      variant="contained"
-                      sx={{
-                        mt: 3,
-                        mb: 2,
-                        backgroundColor: '#ee6535',
-                        textTransform: 'capitalize',
-                      }}
-                      style={{
-                        textDecoration: 'none',
-                        fontSize: '12px',
-                        height: '40px',
-                        borderRadius: '7px',
-                      }}
-                    >
-                      Let's Get Started
-                    </Button>
-                  </a>
+                  <Button
+                    type="button"
+                    onClick={handleClick}
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      backgroundColor: '#ee6535',
+                      textTransform: 'capitalize',
+                    }}
+                    style={{
+                      textDecoration: 'none',
+                      fontSize: '12px',
+                      height: '40px',
+                      borderRadius: '7px',
+                    }}
+                  >
+                    Let's Get Started
+                  </Button>
                 ) : null}
               </Grid>
             </Container>
@@ -180,5 +178,5 @@ export default function SelectBroker() {
         </Grid>
       </MainPricingDashboard>
     </React.Fragment>
-  );
+  )
 }

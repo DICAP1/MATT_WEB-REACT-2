@@ -1,59 +1,145 @@
-const BASE_URL = 'https://demotraider.divergencecapital.com:5000/api/v1'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { getConfig } from '../config/app-config'
+import { pushToast } from '../slices/toastSlice'
+import { toastMessages, toastTypes } from '../fixtures'
 
-export function register(userData) {
-  return fetch(`${BASE_URL}/users/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  }).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
-  )
-}
+export const authApi = createApi({
+  reducerPath: 'authApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: getConfig().API_URL,
+  }),
+  endpoints: (builder) => ({
+    register: builder.mutation({
+      query: (userData) => ({
+        url: `/users/`,
+        method: 'POST',
+        body: userData,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.register.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: toastMessages.register.error,
+            })
+          )
+        }
+      },
+    }),
+    confirmEmail: builder.query({
+      query: (token) => ({
+        method: 'GET',
+        url: `/users/confirm/${token}`,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.confirmEmail.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    signIn: builder.mutation({
+      query: (userData) => ({
+        url: `/auth/login`,
+        method: 'POST',
+        body: userData,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.signIn.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    resetPassword: builder.mutation({
+      query: (params) => ({
+        url: `/users/forgotPw`,
+        method: 'POST',
+        params,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.resetPassword.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    setPassword: builder.mutation({
+      query: ({ token, newPassword }) => ({
+        url: `/users/resetPw/${token}`,
+        method: 'POST',
+        body: newPassword,
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.setPassword.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: toastMessages.setPassword.error,
+            })
+          )
+        }
+      },
+    }),
+  }),
+})
 
-export function confirmEmail(token) {
-  return fetch(`${BASE_URL}/users/confirm/${token}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
-  )
-}
-
-export function signIn(userData) {
-  return fetch(`${BASE_URL}/auth/login`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(userData),
-  }).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
-  )
-}
-
-export function resetPassword(email) {
-  return fetch(`${BASE_URL}/users/forgotPw?email=${email}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  }).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
-  )
-}
-
-export function setPassword(token, password) {
-  return fetch(`${BASE_URL}/users/resetPw/${token}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(password),
-  }).then((res) =>
-    res.ok ? res.json() : Promise.reject(new Error(`Error ${res.status}`))
-  )
-}
+export const {
+  useRegisterMutation,
+  useConfirmEmailQuery,
+  useSignInMutation,
+  useResetPasswordMutation,
+  useSetPasswordMutation,
+} = authApi

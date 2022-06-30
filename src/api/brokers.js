@@ -1,34 +1,90 @@
-import axios from 'axios';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { getConfig } from '../config/app-config'
+import { getIdToken } from '../utils';
+import { pushToast } from '../slices/toastSlice'
+import { toastMessages, toastTypes } from '../fixtures'
 
-const brokerAPI = axios.create({
-  baseURL: 'https://demotraider.divergencecapital.com:5000/api/v1',
-});
-
-export function getAllBrokers() {
-  return brokerAPI.get('/brokers/')
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function getUserBrokers(publicId, authToken) {
-  return brokerAPI.get(`users/brokers/${publicId}`, {
-    headers: {
-      'Authorization': authToken
+export const brokerApi = createApi({
+  reducerPath: 'brokerApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: getConfig().API_URL,
+    prepareHeaders: (headers) => {
+      const token = getIdToken();
+      if (token) {
+        headers.set('authorization', `${token}`)
+      }
+      return headers
     }
-  })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+  }),
+  endpoints: (builder) => ({
+    getAllBrokes: builder.query({
+      query: () => ({
+        url: `brokers/`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    getUserBrokers: builder.query({
+      query: ({publicId}) => ({
+        url: `users/brokers/${publicId}`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    postUserBroker: builder.mutation({
+      query: ({publicId, broker_id}) => ({
+        url: `users/brokers/${publicId}`,
+        body: {
+          broker_id : broker_id
+        },
+        method: 'POST',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.postBroker.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: toastMessages.postBroker.error,
+            })
+          )
+        }
+      },
+    }),
+  }),
+})
 
-export function postUserBroker(publicId, authToken, brokerId) {
-  return brokerAPI.post(`users/brokers/${publicId}`, { broker_id: brokerId }, {
-    headers: {
-      'Authorization': authToken
-    }
-  })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+export const {
+  useGetAllBrokesQuery,
+  useGetUserBrokersQuery,
+  usePostUserBrokerMutation,
+} = brokerApi

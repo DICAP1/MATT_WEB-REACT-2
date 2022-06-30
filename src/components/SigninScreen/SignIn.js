@@ -1,62 +1,85 @@
-import * as React from 'react';
-import { useEffect } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import './style.css';
-import InputAdornment from '@mui/material/InputAdornment';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import IconButton from '@mui/material/IconButton';
-import { useDispatch } from 'react-redux';
-import facebook from '../../assets/Icons/facebook.png';
-import google from '../../assets/Icons/google.png';
-import linkedin from '../../assets/Icons/linkedin.png';
-import Logo from '../Logo/Logo';
-import MainScreen from '../MainScreen/MainScreen';
-import { confirmEmail, signIn } from '../../api/auth';
-import { setUser } from '../../slices/authSlice';
-
-// const theme = createTheme();
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import './style.css'
+import InputAdornment from '@mui/material/InputAdornment'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import IconButton from '@mui/material/IconButton'
+import { useDispatch } from 'react-redux'
+import facebook from '../../assets/Icons/facebook.png'
+import google from '../../assets/Icons/google.png'
+import linkedin from '../../assets/Icons/linkedin.png'
+import Logo from '../Logo/Logo'
+import MainScreen from '../MainScreen/MainScreen'
+import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth'
+import { setUser } from '../../slices/authSlice'
+import { LoadingButton } from '@mui/lab'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
 
 export default function SignIn() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [signIn] = useSignInMutation()
+  const [confirmEmailToken, setConfirmEmailToken] = useState('')
+  const { data: confirmEmail } = useConfirmEmailQuery(confirmEmailToken, {
+    skip: !confirmEmailToken,
+  })
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault()
 
-    const form = event.currentTarget;
-    const isValid = form.checkValidity();
+    const form = event.currentTarget
+    const isValid = form.checkValidity()
 
-    if (isValid) {
-      const formData = new FormData(form);
-      const email = formData.get('email');
-      const password = formData.get('password');
+    if (!isValid) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.signIn.warning,
+        })
+      )
+      return
+    }
+    try {
+      const formData = new FormData(form)
+      const email = formData.get('email')
+      const password = formData.get('password')
       const userData = {
         email,
-        password
-      };
-
-      signIn(userData)
-        .then((data) => {
-          if (data.status === 'success') {
-            console.log(data);
-            dispatch(setUser({
-              isAuthenticated: true,
-              auth_token: data.Authorization, ...userData, ...data.user
-            })); // todo put only what really need
-            navigate('../pricing');
-          }
-        })
-        .catch((err) => console.log(err)); // todo add logic
-    } else {
-      console.log('not valid inputs'); // todo add logic
+        password,
+      }
+      setIsLoading(true)
+      const { data: user } = await signIn(userData)
+      if (user?.status === 'success') {
+        dispatch(
+          setUser({
+            isAuth: true,
+            ...userData,
+            ...user.user,
+          })
+        ) // todo put only what really need
+        localStorage.setItem(
+          'credentials',
+          JSON.stringify({
+            public_id: user.public_id,
+            token: user.Authorization,
+          })
+        )
+        navigate(user.user.has_onboard ? '/' : '../pricing')
+      }
+      setIsLoading(false)
+    } catch (err) {
+      console.error(err)
+      setIsLoading(false)
     }
-  };
+  }
 
   const [values, setValues] = React.useState({
     amount: '',
@@ -64,39 +87,39 @@ export default function SignIn() {
     weight: '',
     weightRange: '',
     showPassword: false,
-  });
+  })
 
   const handleChange = (prop) => (event) => {
     setValues({
       ...values,
-      [prop]: event.target.value
-    });
-  };
+      [prop]: event.target.value,
+    })
+  }
 
   const handleClickShowPassword = () => {
     setValues({
       ...values,
       showPassword: !values.showPassword,
-    });
-  };
+    })
+  }
 
   const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
+    event.preventDefault()
+  }
 
   useEffect(() => {
     if (searchParams.has('confirm')) {
-      const token = searchParams.get('confirm');
+      const token = searchParams.get('confirm')
 
-      confirmEmail(token)
-        .then((data) => {
-          if (data) {
-            setSearchParams('', { replace: true });
-          }
-        })
-        .catch((err) => console.log(err)); // todo add logic
+      setConfirmEmailToken(token)
     }
-  }, []);
+  }, [])
+
+  useEffect(() => {
+    if (confirmEmail?.status === 'success') {
+      setSearchParams('', { replace: true })
+    }
+  }, [confirmEmail])
 
   return (
     <MainScreen>
@@ -111,8 +134,8 @@ export default function SignIn() {
           paddingRight: {
             lg: 15,
             md: 0,
-            sm: 0
-          }
+            sm: 0,
+          },
         }}
         square
         container
@@ -146,11 +169,11 @@ export default function SignIn() {
                   width: {
                     md: 450,
                     sm: 450,
-                    xs: 450
-                  }
+                    xs: 450,
+                  },
                 }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Welcome Back!</h1>
                 <p style={{ marginBottom: 20 }}>
                   Stocks, Forex, Indices, Bonds, Equities
@@ -176,7 +199,7 @@ export default function SignIn() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
                   className="inputField"
@@ -187,6 +210,7 @@ export default function SignIn() {
                   id="email"
                   size="small"
                   name="email"
+                  type="email"
                   autoComplete="email"
                 />
 
@@ -210,7 +234,7 @@ export default function SignIn() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
                   className="inputField"
@@ -235,9 +259,9 @@ export default function SignIn() {
                           edge="end"
                         >
                           {values.showPassword ? (
-                            <VisibilityOff sx={{ color: 'gray' }}/>
+                            <VisibilityOff sx={{ color: 'gray' }} />
                           ) : (
-                            <Visibility sx={{ color: 'gray' }}/>
+                            <Visibility sx={{ color: 'gray' }} />
                           )}
                         </IconButton>
                       </InputAdornment>
@@ -261,20 +285,26 @@ export default function SignIn() {
                     Forgot password?
                   </Link>
                 </Grid>
-                <Button
+                <LoadingButton
                   type="submit"
                   fullWidth
-                  variant="contained"
+                  loading={isLoading}
+                  variant="text"
                   sx={{
                     mt: 3,
                     mb: 2,
                     backgroundColor: '#ff6838',
                     textTransform: 'none',
                     fontWeight: 'normal',
+                    color: '#ffffff',
+                    '&:hover': {
+                      backgroundColor: 'primary.main',
+                      opacity: [0.9, 0.8, 0.7],
+                    },
                   }}
                 >
                   Sign In
-                </Button>
+                </LoadingButton>
 
                 <Grid
                   container
@@ -286,13 +316,13 @@ export default function SignIn() {
                 </Grid>
                 <Grid container direction="row" justifyContent="center">
                   <span className="icon">
-                    <img src={google} width="25px" height="25px"/>
+                    <img src={google} width="25px" height="25px" />
                   </span>
                   <span className="icon">
-                    <img src={facebook} width="25px" height="25px"/>
+                    <img src={facebook} width="25px" height="25px" />
                   </span>
                   <span className="icon">
-                    <img src={linkedin} width="25px" height="25px"/>{' '}
+                    <img src={linkedin} width="25px" height="25px" />{' '}
                   </span>
                 </Grid>
               </Box>
@@ -332,5 +362,5 @@ export default function SignIn() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }

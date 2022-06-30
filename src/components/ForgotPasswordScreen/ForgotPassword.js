@@ -1,36 +1,48 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import Logo from '../Logo/Logo';
-import MainScreen from '../MainScreen/MainScreen';
-import { useNavigate } from 'react-router-dom';
-import { resetPassword } from '../../api/auth';
+import * as React from 'react'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import Grid from '@mui/material/Grid'
+import Logo from '../Logo/Logo'
+import MainScreen from '../MainScreen/MainScreen'
+import { useResetPasswordMutation } from '../../api/auth'
+import { pushToast } from '../../slices/toastSlice'
+import { toastMessages, toastTypes } from '../../fixtures'
+import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 // const theme = createTheme();
 
 export default function ForgotPassword() {
-  const navigate = useNavigate();
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const [resetPassword] = useResetPasswordMutation()
 
   const handleSubmit = (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    const isValid = form.checkValidity();
+    event.preventDefault()
+    const form = event.currentTarget
+    const isValid = form.checkValidity()
 
-    if (isValid) {
-      const data = new FormData(form);
-      const email = data.get('email');
-
-      resetPassword(email)
-        .then((data) => {
-          if (data.status === 'success') {
-            navigate('../login');
-          }
+    if (!isValid) {
+      dispatch(
+        pushToast({
+          type: toastTypes.warning,
+          message: toastMessages.resetPassword.warningEmail,
         })
-        .catch((err) => console.log(err)); // todo add logic;
+      )
+      return
     }
-  };
+    const data = new FormData(form)
+    const email = data.get('email')
+
+    resetPassword({ email: email })
+      .then((data) => {
+        if (data.status === 'success') {
+          navigate('../signin')
+        }
+      })
+      .catch((err) => console.log(err))
+  }
 
   return (
     <MainScreen>
@@ -45,8 +57,8 @@ export default function ForgotPassword() {
           paddingRight: {
             lg: 15,
             md: 0,
-            sm: 0
-          }
+            sm: 0,
+          },
         }}
         square
         container
@@ -80,11 +92,11 @@ export default function ForgotPassword() {
                   width: {
                     md: 450,
                     sm: 450,
-                    xs: 450
-                  }
+                    xs: 450,
+                  },
                 }}
               >
-                <Logo/>
+                <Logo />
                 <h1>Forgot Password</h1>
                 <p style={{ marginBottom: 20 }}>
                   Enter the email address you have registered with Traider
@@ -110,7 +122,7 @@ export default function ForgotPassword() {
                     style: {
                       color: 'white',
                       fontSize: 15,
-                      height: 30
+                      height: 30,
                     },
                   }}
                   className="inputField"
@@ -122,6 +134,7 @@ export default function ForgotPassword() {
                   size="small"
                   name="email"
                   autoComplete="email"
+                  type="email"
                 />
 
                 <Button
@@ -154,5 +167,5 @@ export default function ForgotPassword() {
         </Box>
       </Grid>
     </MainScreen>
-  );
+  )
 }

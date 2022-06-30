@@ -14,64 +14,19 @@ import { useNavigate } from 'react-router-dom';
 import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
 import { useDispatch, useSelector } from 'react-redux';
 import { setBilling } from '../../slices/billingSlice';
-import { getPlans } from '../../api/stripe';
-
-const tiers = [
-  {
-    title: 'Free',
-    price: '0',
-    description: [
-      '10 users included',
-      '2 GB of storage',
-      'Help center access',
-      'Email support',
-    ],
-    buttonText: 'Sign up for free',
-    buttonVariant: 'outlined',
-    btn: 'Try For Free',
-  },
-  {
-    title: 'Pro',
-    subheader: 'Most popular',
-    price: '15',
-    description: [
-      '20 users included',
-      '10 GB of storage',
-      'Help center access',
-      'Priority email support',
-      '10 GB of storage',
-      'Help center access',
-    ],
-    buttonText: 'Get started',
-    buttonVariant: 'contained',
-    btn: 'Get Started Now',
-  },
-  {
-    title: 'Enterprise',
-    price: '30',
-    description: [
-      '50 users included',
-      '30 GB of storage',
-      'Help center access',
-      'Help center access',
-      'Priority email support',
-      '10 GB of storage',
-      'Help center access',
-    ],
-    buttonText: 'Contact us',
-    buttonVariant: 'outlined',
-    btn: 'Get Pro Plan',
-  },
-];
+import { useGetPlansQuery } from '../../api/stripe';
+import { plansDescription } from '../../fixtures';
 
 export default function Pricing() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isMonthlyInit = useSelector((state) => state.billing.isMonthly);
   const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
-  const [plans, setPlans] = useState([]);
+  const [monthlyPlans, setMonthlyPlans] = useState([]);
+  const [yearPlans, setYearPlans] = useState([]);
+  const {data: plans} = useGetPlansQuery();
 
-  console.log('global state: ', useSelector(state => state));
+  const plansToRender = isMonthly ? monthlyPlans : yearPlans;
 
   function handleTerm() {
     setIsMonthly(!isMonthly);
@@ -80,7 +35,6 @@ export default function Pricing() {
   function handleClick(planData) {
     return function (event) {
       event.preventDefault();
-
       dispatch(
         setBilling({
           price: planData.price,
@@ -93,28 +47,38 @@ export default function Pricing() {
     };
   }
 
+  function setPlan(interval, initialDescription, fetchedData) {
+    const joinedPlans = initialDescription.map((plan, ind) => {
+      if (fetchedData[ind]) {
+        return {
+          ...plan,
+          title: fetchedData[ind].nickname,
+          price: fetchedData[ind].amount / 100,
+          id: fetchedData[ind].id,
+        };
+      } else {
+        return plan;
+      }
+    });
+    switch (interval) {
+      case 'month':
+        setMonthlyPlans(joinedPlans);
+        break;
+      case 'year':
+        setYearPlans(joinedPlans);
+        break;
+    }
+  }
+
   useEffect(() => {
-    getPlans()
-      .then((data) => {
-        if (Array.isArray(data.data)) {
-          const plansData = data.data;
-          console.log(plansData);
-          setPlans(tiers.map((plan, ind) => {
-            if (plansData[ind]) {
-              return {
-                ...plan,
-                title: plansData[ind].nickname,
-                price: plansData[ind].amount / 100,
-                id: plansData[ind].id,
-              };
-            } else {
-              return plan;
-            }
-          }));
-        }
-      })
-      .catch((err) => console.log(err)); // todo add logic;
-  }, []);
+    if (Array.isArray(plans?.data)) {
+      const plansData = plans.data;
+      const monthlyPlansData = plansData.filter(plan => plan.interval === 'month');
+      const yearPlansData = plansData.filter(plan => plan.interval === 'year');
+      setPlan('month', plansDescription, monthlyPlansData);
+      setPlan('year', plansDescription, yearPlansData);
+    }
+  }, [plans]);
 
   return (
     <MainPricingDashboard>
@@ -201,11 +165,11 @@ export default function Pricing() {
             alignItems="center"
             spacing={5}
           >
-            {plans.map((tier) => (
+            {plansToRender.map((plan) => (
               // Enterprise card is full width at sm breakpoint
               <Grid
                 item
-                key={tier.title}
+                key={plan.title}
                 xs={12}
                 // sm={tier.title === "Enterprise" ? 12 : 6}
                 sm={12}
@@ -218,10 +182,10 @@ export default function Pricing() {
                     borderRadius: '15px 15px 15px 15px',
                   }}
                 >
-                  {tier.subheader === 'Most popular' ? (
+                  {plan.subheader === 'Most popular' ? (
                     <CardHeader
                       // title={tier.title}
-                      subheader={tier.subheader}
+                      subheader={plan.subheader}
                       titleTypographyProps={{ align: 'center' }}
                       subheaderTypographyProps={{
                         align: 'center',
@@ -229,7 +193,7 @@ export default function Pricing() {
                       }}
                       sx={{
                         backgroundColor:
-                          tier.subheader === 'Most popular' ? '#ee6535' : null,
+                          plan.subheader === 'Most popular' ? '#ee6535' : null,
                         margin: 0,
                       }}
                     />
@@ -239,13 +203,13 @@ export default function Pricing() {
                     sx={{
                       minHeight: 450,
                       backgroundColor:
-                        tier.subheader === 'Most popular' ? '#181212' : null,
+                        plan.subheader === 'Most popular' ? '#181212' : null,
                       borderRadius:
-                        tier.subheader === 'Most popular'
+                        plan.subheader === 'Most popular'
                           ? '0px 0px 15px 15px'
                           : '15px 15px 15px 15px',
                       border:
-                        tier.subheader === 'Most popular'
+                        plan.subheader === 'Most popular'
                           ? '2px solid #ee6535'
                           : '2px solid rgb(30,30,30)',
                       // width :400
@@ -275,7 +239,7 @@ export default function Pricing() {
                             className="plan-name"
                             style={{ fontSize: '35px' }}
                           >
-                            {tier.title}
+                            {plan.title}
                           </h2>
                           <p style={{
                             marginTop: 0,
@@ -292,15 +256,15 @@ export default function Pricing() {
                           justifyContent="flex-end"
                           alignItems="baseline"
                         >
-                          <h1 className="head price">${tier.price}</h1>
+                          <h1 className="head price">${plan.price}</h1>
                           <p>/{isMonthly ? 'mo' : 'year'}</p>
                         </Grid>{' '}
                         <Button
                           type="button"
-                          onClick={handleClick(tier)}
+                          onClick={handleClick(plan)}
                           // variant="contained"
                           fullWidth
-                          variant={tier.buttonVariant}
+                          variant={plan.buttonVariant}
                           style={{
                             // color: "#ee6535",
                             // fontSize: ,
@@ -313,24 +277,24 @@ export default function Pricing() {
                             mt: 1,
                             mb: 2,
                             backgroundColor:
-                              tier.subheader === 'Most popular'
+                              plan.subheader === 'Most popular'
                                 ? 'none'
                                 : 'rgb(30,30,30)',
                             color: 'white',
                             border:
-                              tier.subheader === 'Most popular'
+                              plan.subheader === 'Most popular'
                                 ? 'none'
                                 : 'rgb(30,30,30)',
                             // fontSize: 12,
                             textDecoration: 'none',
                           }}
                         >
-                          {tier.btn}
+                          {plan.btn}
                         </Button>
                       </Grid>
                     </Box>
                     <ul>
-                      {tier.description.map((line) => (
+                      {plan.description.map((line) => (
                         <Grid
                           container
                           direction="row"

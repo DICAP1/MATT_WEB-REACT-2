@@ -1,87 +1,98 @@
-import * as React from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
-import './style.css';
-import { Link, useNavigate } from 'react-router-dom';
-import visa from '../../assets/Images/credit.png';
-import master from '../../assets/Images/mm.jpg';
-import british from '../../assets/Images/british.png';
-import { useSelector } from 'react-redux';
+import * as React from 'react'
+import { useState } from 'react'
+import TextField from '@mui/material/TextField'
+import Grid from '@mui/material/Grid'
+import Box from '@mui/material/Box'
+import './style.css'
+import { Link, useNavigate } from 'react-router-dom'
+import visa from '../../assets/Images/credit.png'
+import master from '../../assets/Images/mm.jpg'
+import british from '../../assets/Images/british.png'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   CardCvcElement,
   CardExpiryElement,
   CardNumberElement,
   useElements,
-  useStripe
-} from '@stripe/react-stripe-js';
-import { getSubscription, postSubscription } from '../../api/stripe';
-import { selectUserCredentials } from '../../slices/authSlice';
+  useStripe,
+} from '@stripe/react-stripe-js'
+import {
+  useGetSubscriptionQuery,
+  usePostSubscriptionMutation,
+} from '../../api/stripe'
+import { selectUserCredentials } from '../../slices/authSlice'
+import { LoadingButton } from '@mui/lab'
+import { pushToast } from '../../slices/toastSlice'
+import { toastTypes } from '../../fixtures'
 
 export default function Credit() {
-
-  const billing = useSelector((state) => state.billing);
-  const {
-    publicId,
-    authToken
-  } = useSelector(selectUserCredentials);
-  const stripe = useStripe();
-  const elements = useElements();
-  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false)
+  const billing = useSelector((state) => state.billing)
+  const { publicId } = useSelector(selectUserCredentials)
+  const dispatch = useDispatch()
+  const stripe = useStripe()
+  const elements = useElements()
+  const navigate = useNavigate()
+  const [postSubscription] = usePostSubscriptionMutation()
+  const { data: dataSubscription } = useGetSubscriptionQuery(
+    { publicId },
+    { skip: !publicId }
+  )
 
   const inputStyles = {
     style: {
       base: {
         color: '#fff',
-        fontSize: '16px'
+        fontSize: '16px',
       },
       invalid: {
-        color: '#e01c1c'
-      }
-    }
-  };
+        color: '#e01c1c',
+      },
+    },
+  }
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     if (!stripe || !elements) {
-      return;
+      return
     }
 
-    const cardElement = elements.getElement('cardNumber');
-
-    const {
-      error,
-      token
-    } = await stripe.createToken(cardElement);
+    const cardElement = elements.getElement('cardNumber')
+    setIsLoading(true)
+    const { error, token } = await stripe.createToken(cardElement)
 
     if (error) {
-      console.log('Error: ', error.message);
-    } else {
-      console.log(token);
-      postSubscription({
-          public_id: publicId,
-          token_card: token.id,
-          trial_days: 0,
-          plans: [billing.plan_id]
-        }
-      )
-        .then(() => {
-          getSubscription(publicId, authToken)
-            .then(data => console.log(data)); // todo for dev needs
-          navigate('../select-broker');
+      dispatch(
+        pushToast({
+          type: toastTypes.error,
+          message: error.message,
         })
-        .catch((err) => console.log(err)); // todo add logic
+      )
+      setIsLoading(false)
+    } else {
+      postSubscription({
+        public_id: publicId,
+        token_card: token.id,
+        trial_days: 0,
+        plans: [billing.plan_id],
+      })
+        .then(() => {
+          navigate('../select-broker')
+        })
+        .catch((err) => console.log(err))
+        .finally(() => setIsLoading(false))
     }
-  };
+  }
 
   return (
     <React.Fragment>
-      <Grid sx={{ backgroundColor: '#0f0f11' }}
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate>
+      <Grid
+        sx={{ backgroundColor: '#0f0f11' }}
+        component="form"
+        onSubmit={handleSubmit}
+        noValidate
+      >
         <Box
           sx={{
             marginTop: 3,
@@ -93,9 +104,7 @@ export default function Credit() {
             border: '1px solid rgb(41, 41, 41)',
           }}
         >
-          <Box
-            sx={{ mt: 1 }}
-          >
+          <Box sx={{ mt: 1 }}>
             <Grid>
               <Grid
                 container
@@ -110,7 +119,7 @@ export default function Credit() {
                   height="25px"
                   style={{
                     borderRadius: 3,
-                    margin: '5px'
+                    margin: '5px',
                   }}
                   alt="visa logo"
                 />
@@ -120,7 +129,7 @@ export default function Credit() {
                   height="25px"
                   style={{
                     borderRadius: 3,
-                    margin: '5px'
+                    margin: '5px',
                   }}
                   alt="mastercard logo"
                 />
@@ -130,7 +139,7 @@ export default function Credit() {
                   height="25px"
                   style={{
                     borderRadius: 3,
-                    margin: '5px'
+                    margin: '5px',
                   }}
                   alt="british business bank logo"
                 />
@@ -170,7 +179,7 @@ export default function Credit() {
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
                     className="inputField"
@@ -204,7 +213,7 @@ export default function Credit() {
                       style: {
                         color: 'white',
                         fontSize: 15,
-                        height: 30
+                        height: 30,
                       },
                     }}
                     className="inputField"
@@ -221,39 +230,43 @@ export default function Credit() {
                   <Grid>
                     <h5>Card number</h5>
                   </Grid>
-                  <Box sx={{
-                    border: '1px solid rgb(39, 39, 39)',
-                  }}
-                       mt={1.8}
-                       p={1.5}>
-                    <CardNumberElement options={inputStyles}/>
+                  <Box
+                    sx={{
+                      border: '1px solid rgb(39, 39, 39)',
+                    }}
+                    mt={1.8}
+                    p={1.5}
+                  >
+                    <CardNumberElement options={inputStyles} />
                   </Box>
                 </Grid>
-                <Grid item xs={12}>
-
-                </Grid>
+                <Grid item xs={12}></Grid>
                 <Grid item xs={6}>
                   <Grid>
                     <h5>Expiration Date</h5>
                   </Grid>
-                  <Box sx={{
-                    border: '1px solid rgb(39, 39, 39)',
-                  }}
-                       mt={1.8}
-                       p={1.5}>
-                    <CardExpiryElement options={inputStyles}/>
+                  <Box
+                    sx={{
+                      border: '1px solid rgb(39, 39, 39)',
+                    }}
+                    mt={1.8}
+                    p={1.5}
+                  >
+                    <CardExpiryElement options={inputStyles} />
                   </Box>
                 </Grid>
                 <Grid item xs={6}>
                   <Grid>
                     <h5>CVC</h5>
                   </Grid>
-                  <Box sx={{
-                    border: '1px solid rgb(39, 39, 39)'
-                  }}
-                       mt={1.8}
-                       p={1.5}>
-                    <CardCvcElement options={inputStyles}/>
+                  <Box
+                    sx={{
+                      border: '1px solid rgb(39, 39, 39)',
+                    }}
+                    mt={1.8}
+                    p={1.5}
+                  >
+                    <CardCvcElement options={inputStyles} />
                   </Box>
                 </Grid>
               </Grid>
@@ -317,18 +330,25 @@ export default function Credit() {
             </Link>
           </Grid>
         </Box>
-        <Button
+        <LoadingButton
           type="submit"
           fullWidth
-          variant="contained"
+          loading={isLoading}
+          variant="text"
           sx={{
             mt: 3,
             mb: 2,
-            backgroundColor: '#ee6535'
-          }}>
+            backgroundColor: '#ee6535',
+            color: '#ffffff',
+            '&:hover': {
+              backgroundColor: 'primary.main',
+              opacity: [0.9, 0.8, 0.7],
+            },
+          }}
+        >
           Start Membership
-        </Button>
+        </LoadingButton>
       </Grid>
     </React.Fragment>
-  );
-};
+  )
+}

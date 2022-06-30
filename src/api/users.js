@@ -1,38 +1,86 @@
-import axios from 'axios';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { getConfig } from '../config/app-config'
+import { getIdToken } from '../utils'
+import { pushToast } from '../slices/toastSlice'
+import { toastTypes } from '../fixtures'
 
-const userAPI = axios.create({
-  baseURL: 'https://demotraider.divergencecapital.com:5000/api/v1/users',
-});
+export const usersApi = createApi({
+  reducerPath: 'usersApi',
+  baseQuery: fetchBaseQuery({
+    baseUrl: getConfig().API_URL,
+    prepareHeaders: (headers) => {
+      const token = getIdToken()
+      if (token) {
+        headers.set('authorization', `${token}`)
+      }
+      return headers
+    },
+  }),
+  endpoints: (builder) => ({
+    getUserById: builder.query({
+      query: ({ publicId }) => {
+        return {
+          url: `users/${publicId}`,
+          method: 'GET',
+        }
+      },
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    patchUserById: builder.mutation({
+      query: ({ publicId, data }) => ({
+        url: `users/${publicId}`,
+        body: data,
+        method: 'PATCH',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+    patchUserBrokerById: builder.mutation({
+      query: ({ publicId, data }) => ({
+        url: `users/brokers/${publicId}`,
+        body: data,
+        method: 'PATCH',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message: error.error.data.message,
+            })
+          )
+        }
+      },
+    }),
+  }),
+})
 
-export function getUserById(publicId, authToken) {
-  return userAPI.get(`/${publicId}`, {
-    headers: {
-      'Authorization': authToken
-    }
-  })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function patchUserById(publicId, authToken, data) {
-  return userAPI.patch(`/${publicId}`, data, {
-    headers: {
-      'Authorization': authToken
-    }
-  })
-    .then((res) =>
-      res.status === 200 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
-
-export function patchUserBrokerById(publicId, authToken, data) {
-  return userAPI.patch(`/brokers/${publicId}`, data, {
-    headers: {
-      'Authorization': authToken
-    }
-  })
-    .then((res) =>
-      res.status === 201 ? res.data : Promise.reject(new Error(`Error ${res.statusText}`))
-    );
-}
+export const {
+  useGetUserByIdQuery,
+  usePatchUserByIdMutation,
+  usePatchUserBrokerByIdMutation,
+  useLazyGetUserByIdQuery,
+} = usersApi
