@@ -1,6 +1,6 @@
 {
   "name": "forex-trading-app",
-  "homepage": "https://demotraider.divergencecapital.com/",
+  "homepage": "https://demotraider.divergencecapital.com/auth",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
