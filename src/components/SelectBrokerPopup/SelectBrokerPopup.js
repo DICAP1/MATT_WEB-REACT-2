@@ -33,9 +33,9 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
     showPassword: false,
   })
 
-  const [postUserBroker] = usePostUserBrokerMutation();
-  const {data: userBrokers} = useGetUserBrokersQuery({publicId});
-  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation();
+  const [postUserBroker] = usePostUserBrokerMutation()
+  const { data: userBrokers } = useGetUserBrokersQuery({ publicId })
+  const [patchUserBrokerById] = usePatchUserBrokerByIdMutation()
 
   const style = {
     position: 'absolute',
@@ -63,11 +63,14 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
           (data) => data.broker_setting.option_name.toLowerCase() === key
         )
 
-        await patchUserBrokerById({publicId, data : {
-          id: currentField.id,
-          broker_setting_id: currentField.broker_setting_id,
-          option_value: value,
-        }})
+        await patchUserBrokerById({
+          publicId,
+          data: {
+            id: currentField.id,
+            broker_setting_id: currentField.broker_setting_id,
+            option_value: value,
+          },
+        })
       }
     } catch (err) {
       console.log('error: ', err.message)
@@ -96,7 +99,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
       const postBroker = await postUserBroker({
         publicId,
         authToken,
-        brokerId: brokerConfig.id,
+        broker_id: brokerConfig.id,
       })
 
       if (postBroker === null) {
