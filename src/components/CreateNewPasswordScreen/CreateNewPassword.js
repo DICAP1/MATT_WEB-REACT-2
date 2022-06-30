@@ -40,6 +40,7 @@ export default function CreateNewPassword() {
         console.log(newPassword);
         setPassword({token, newPassword})
           .then((data) => {
+            console.log(data);
             if (data.status === 'success') {
               navigate('../login');
             }

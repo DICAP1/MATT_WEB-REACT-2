@@ -25,13 +25,12 @@ export default function Credit() {
   const billing = useSelector((state) => state.billing);
   const {
     publicId,
-    authToken
   } = useSelector(selectUserCredentials);
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [postSubscription] = usePostSubscriptionMutation();
-  const {data : dataSubscription} = useGetSubscriptionQuery({publicId, authToken}, {skip: (!publicId || !authToken)})
+  const {data : dataSubscription} = useGetSubscriptionQuery({publicId}, {skip: (!publicId)})
 
   const inputStyles = {
     style: {

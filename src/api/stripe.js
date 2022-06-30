@@ -5,6 +5,13 @@ export const stripeApi = createApi({
   reducerPath: 'stripeApi',
   baseQuery: fetchBaseQuery({
     baseUrl: getConfig().API_URL,
+    prepareHeaders: (headers) => {
+      const token = getIdToken();
+      if (token) {
+        headers.set('authorization', `${token}`)
+      }
+      return headers
+    }
   }),
   endpoints: (builder) => ({
     getPlans: builder.query({
@@ -35,12 +42,9 @@ export const stripeApi = createApi({
       }
     }),
     getSubscription: builder.query({
-      query: ({publicId, authToken}) => ({
+      query: ({publicId}) => ({
         url: `stripe/subscriptions/${publicId}`,
         method: 'GET',
-        headers: {
-          'Authorization' : authToken,
-        }
       }),
       async onQueryStarted(arg, {dispatch, queryFulfilled}) {
         try {
