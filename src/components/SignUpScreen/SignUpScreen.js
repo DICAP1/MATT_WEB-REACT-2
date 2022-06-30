@@ -155,8 +155,6 @@ export default function SignUp() {
             flexDirection: 'column',
           }}
         >
-          {/* </Grid> */}
-
           <Grid
             container
             direction="column"
@@ -164,7 +162,6 @@ export default function SignUp() {
             sx={{ height: '88vh' }}
           >
             <Grid>
-              {' '}
               <Box
                 component="form"
                 noValidate
@@ -183,13 +180,7 @@ export default function SignUp() {
                 <p style={{ marginBottom: 20 }}>
                   Stocks, Forex, Indices, Bonds, Equities
                 </p>
-                <Grid
-                  container
-                  spacing={1}
-                  direction="row"
-                  // justifyContent="space-between"
-                  alignItems="center"
-                >
+                <Grid container spacing={1} direction="row" alignItems="center">
                   <Grid item xs={6}>
                     <Grid>
                       <h5>First name</h5>
@@ -316,7 +307,6 @@ export default function SignUp() {
                     ),
                   }}
                 />
-
                 <Grid>
                   <h5>Confirm password</h5>
                 </Grid>
@@ -371,14 +361,13 @@ export default function SignUp() {
                     ),
                   }}
                 />
-
                 <Grid
                   container
                   direction="row"
                   //   justifyContent="center"
                   alignItems="center"
                 >
-                  <Checkbox {...label} />
+                  <Checkbox {...label} required />
                   <p style={{ color: 'rgb(209, 209, 209)' }}>
                     I agree all the statements included in&nbsp;
                   </p>
