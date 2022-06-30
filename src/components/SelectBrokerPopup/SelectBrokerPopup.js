@@ -98,7 +98,6 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
       let userData = Object.fromEntries(new FormData(form))
       const postBroker = await postUserBroker({
         publicId,
-        authToken,
         broker_id: brokerConfig.id,
       })
 

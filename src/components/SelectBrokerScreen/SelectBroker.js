@@ -20,11 +20,12 @@ export default function SelectBroker() {
   const [brokerConfig, setBrokerConfig] = useState({})
   const navigate = useNavigate()
 
-  const {publicId} = useSelector(selectUserCredentials);
-  const {data : brokers} = useGetAllBrokesQuery();
-  const {data : userBrokers, refetchUserBrokers} = useGetUserBrokersQuery({publicId}, {skip: !publicId})
-  const {data : user} = useGetUserByIdQuery({publicId}, {skip: !publicId});
-  const [patchUserById] = usePatchUserByIdMutation();
+  const { publicId } = useSelector(selectUserCredentials)
+  const { data: brokers } = useGetAllBrokesQuery()
+  const { data: userBrokers, refetch: refetchUserBrokers } =
+    useGetUserBrokersQuery({ publicId }, { skip: !publicId })
+  const { data: user } = useGetUserByIdQuery({ publicId }, { skip: !publicId })
+  const [patchUserById] = usePatchUserByIdMutation()
 
   const handleOpen = (config) => {
     setPopupIsOpen(true)
@@ -32,7 +33,7 @@ export default function SelectBroker() {
   }
   const handleClose = () => {
     setPopupIsOpen(false)
-    refetchUserBrokers();
+    refetchUserBrokers()
   }
 
   const handlePopupSubmit = async () => {
@@ -45,7 +46,7 @@ export default function SelectBroker() {
 
   useEffect(() => {
     if (!user?.risk) {
-      patchUserById({publicId, data : { risk: 2 }})
+      patchUserById({ publicId, data: { risk: 2 } })
         .then(() => console.log('risk set'))
         .catch((err) => {
           console.log('broker data not sent', err)

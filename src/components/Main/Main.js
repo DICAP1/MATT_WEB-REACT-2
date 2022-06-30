@@ -1,9 +1,9 @@
 const Main = () => {
+  window.location.replace(
+    'https://demotraider.divergencecapital.com/#/get-started'
+  )
 
-  // window.location.replace('https://demotraider.divergencecapital.com/#/get-started');
+  return null
+}
 
-  return null;
-
-};
-
-export default Main;
+export default Main
