@@ -83,7 +83,7 @@ export default function SignUp() {
       .unwrap()
       .then((data) => {
         if (data) {
-          navigate('../login')
+          navigate('../signin')
         }
       })
       .catch((err) => {

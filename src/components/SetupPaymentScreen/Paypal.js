@@ -250,7 +250,7 @@ export default function Paypal() {
               </Grid>
             </Grid>
             <Link
-              to={'../pricing'}
+              to={'/pricing'}
               style={{
                 color: '#ee6535',
                 fontSize: 13,

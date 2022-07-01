@@ -75,7 +75,7 @@ export default function VerifyEmailOTP() {
                     <p style={{ color: '#ee6535', margin: 0 }}>
                       sumairzahid123@gmail.com &nbsp;
                     </p>
-                    <Link to='../preSignUp'>
+                    <Link to={'/preSignUp'}>
                       {' '}
                       <span>
                         <img src={edit} width="12px" height="12px" />{' '}
@@ -134,7 +134,7 @@ export default function VerifyEmailOTP() {
                   </div>
                 </Grid>
                 <Link
-                  to='../signUp'
+                  to={'/signUp'}
                   style={{
                     color: '#ee6535',
                     fontSize: 13,

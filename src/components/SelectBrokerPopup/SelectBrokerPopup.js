@@ -97,15 +97,13 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
       }
       setIsLoading(true)
 
-      let userData = Object.fromEntries(new FormData(form)) 
+      let userData = Object.fromEntries(new FormData(form))
       const postBroker = await postUserBroker({
         publicId,
         broker_id: brokerConfig.id,
       })
 
-      console.log('postBroker', postBroker)
-
-      if (postBroker?.data === null) {
+      if (postBroker?.data !== null) {
         setValues({
           ...values,
           password: '',
