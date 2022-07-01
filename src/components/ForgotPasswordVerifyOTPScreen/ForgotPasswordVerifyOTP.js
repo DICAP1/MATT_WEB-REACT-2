@@ -74,7 +74,7 @@ export default function ForgotPasswordVeriftOTP() {
                     </p>
 
                     <Link
-                      to="/forgot-password"
+                      to="../forgot-password"
                       variant="body2"
                       underline="none"
                       sx={{ color: '#ee6535', fontSize: 13 }}
@@ -144,7 +144,7 @@ export default function ForgotPasswordVeriftOTP() {
                   />
                 </Grid>
                 <Link
-                  to={'/create-password'}
+                  to={'../create-password'}
                   style={{
                     color: '#ee6535',
                     fontSize: 13,

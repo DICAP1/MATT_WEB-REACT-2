@@ -207,7 +207,7 @@ export default function PreSignUp() {
                 </p>
 
                 <Link
-                  to="/"
+                  to="../login"
                   style={{
                     color: '#ee6535',
                     fontSize: 13,
