@@ -9,7 +9,6 @@ import facebook from '../../assets/Icons/facebook.png'
 import google from '../../assets/Icons/google.png'
 import linkedin from '../../assets/Icons/linkedin.png'
 import Logo from '../Logo/Logo'
-import warning from '../../assets/Icons/warning1.png'
 import MainScreen from '../MainScreen/MainScreen'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../slices/authSlice'
@@ -64,8 +63,6 @@ export default function PreSignUp() {
             flexDirection: 'column',
           }}
         >
-          {/* </Grid> */}
-
           <Grid
             container
             direction="column"
@@ -73,7 +70,6 @@ export default function PreSignUp() {
             sx={{ height: '88vh' }}
           >
             <Grid>
-              {' '}
               <Box
                 component="form"
                 noValidate
@@ -90,48 +86,48 @@ export default function PreSignUp() {
                   Lorem ipsum dolor sit amet consectetur, adipisicing elit.
                   Impedit,
                 </p>
-
-                <Grid
-                  container
-                  direction="row"
-                  justifyContent="flex-start"
-                  alignItems="center"
-                  sx={{ border: 0.5, borderColor: '#8c2522', marginBottom: 3 }}
-                >
-                  <Grid
-                    md={2}
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    <img
-                      src={warning}
-                      width="35px"
-                      height="35px"
-                      style={{
-                        backgroundColor: 'rgb(140,37,34, 0.3)',
-                        padding: 5,
-                        borderRadius: '50%',
-                      }}
-                    />
-                  </Grid>
-                  <Grid
-                    md={10}
-                    container
-                    direction="row"
-                    justifyContent="flex-start"
-                    alignItems="center"
-                    sx={{
-                      pr: 5,
-                    }}
-                  >
-                    <p style={{}}>
-                      Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                      Imped itdolor sit amet consectetur. Impedit,
-                    </p>
-                  </Grid>
-                </Grid>
+                {/* ERROR STATEMENT */}
+                {/* <Grid */}
+                {/*   container */}
+                {/*   direction="row" */}
+                {/*   justifyContent="flex-start" */}
+                {/*   alignItems="center" */}
+                {/*   sx={{ border: 0.5, borderColor: '#8c2522', marginBottom: 3 }} */}
+                {/* > */}
+                {/*   <Grid */}
+                {/*     md={2} */}
+                {/*     container */}
+                {/*     direction="row" */}
+                {/*     justifyContent="center" */}
+                {/*     alignItems="center" */}
+                {/*   > */}
+                {/*     <img */}
+                {/*       src={warning} */}
+                {/*       width="35px" */}
+                {/*       height="35px" */}
+                {/*       style={{ */}
+                {/*         backgroundColor: 'rgb(140,37,34, 0.3)', */}
+                {/*         padding: 5, */}
+                {/*         borderRadius: '50%', */}
+                {/*       }} */}
+                {/*     /> */}
+                {/*   </Grid> */}
+                {/*   <Grid */}
+                {/*     md={10} */}
+                {/*     container */}
+                {/*     direction="row" */}
+                {/*     justifyContent="flex-start" */}
+                {/*     alignItems="center" */}
+                {/*     sx={{ */}
+                {/*       pr: 5, */}
+                {/*     }} */}
+                {/*   > */}
+                {/*     <p style={{}}> */}
+                {/*       Lorem ipsum dolor sit amet consectetur, adipisicing elit. */}
+                {/*       Imped itdolor sit amet consectetur. Impedit, */}
+                {/*     </p> */}
+                {/*   </Grid> */}
+                {/* </Grid> */}
 
                 <Grid>
                   <h5>Email address</h5>

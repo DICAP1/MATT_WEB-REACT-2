@@ -59,7 +59,7 @@ export const toastMessages = {
   register: {
     success: 'You are successfully registered',
     warningEmail: 'Check your email address',
-    warningAllFields: 'All fields should be filled in',
+    warningAllFields: 'All fields should be filled in and checkbox is checked',
     warningPassword: 'Passwords should be the same',
     error: 'Try again. Server error',
   },

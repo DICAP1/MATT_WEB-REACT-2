@@ -2,19 +2,19 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
 import { pushToast } from '../slices/toastSlice'
 import { toastTypes } from '../fixtures'
-import { getIdToken } from '../utils';
+import { getIdToken } from '../utils'
 
 export const stripeApi = createApi({
   reducerPath: 'stripeApi',
   baseQuery: fetchBaseQuery({
     baseUrl: getConfig().API_URL,
     prepareHeaders: (headers) => {
-      const token = getIdToken();
+      const token = getIdToken()
       if (token) {
         headers.set('authorization', `${token}`)
       }
       return headers
-    }
+    },
   }),
   endpoints: (builder) => ({
     getPlans: builder.query({
@@ -55,7 +55,7 @@ export const stripeApi = createApi({
       },
     }),
     getSubscription: builder.query({
-      query: ({publicId}) => ({
+      query: ({ publicId }) => ({
         url: `stripe/subscriptions/${publicId}`,
         method: 'GET',
       }),
@@ -79,4 +79,5 @@ export const {
   useGetPlansQuery,
   usePostSubscriptionMutation,
   useGetSubscriptionQuery,
+  useLazyGetSubscriptionQuery,
 } = stripeApi
