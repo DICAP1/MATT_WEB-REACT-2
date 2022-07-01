@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import { HashRouter } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -33,7 +33,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <HashRouter>
+      <BrowserRouter>
         <ThemeProvider theme={theme}>
           <Elements stripe={stripePromise}>
             <PayPalScriptProvider options={payPalConfig}>
@@ -41,7 +41,7 @@ root.render(
             </PayPalScriptProvider>
           </Elements>
         </ThemeProvider>
-      </HashRouter>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>
 );
