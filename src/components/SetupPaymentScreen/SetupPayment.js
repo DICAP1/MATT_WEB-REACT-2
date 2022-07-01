@@ -1,29 +1,26 @@
-import * as React from 'react';
-import { useState } from 'react';
-import Grid from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import './style.css';
-import Credit from './Credit';
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
+import * as React from 'react'
+import { useState } from 'react'
+import Grid from '@mui/material/Grid'
+import Container from '@mui/material/Container'
+import './style.css'
+import Credit from './Credit'
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
 
 export default function SetupPayment(props) {
-  const [credit, setCredit] = useState(true);
-  const [debit, setDebit] = useState(false);
+  const [credit, setCredit] = useState(true)
+  const [debit, setDebit] = useState(false)
 
   return (
     <React.Fragment>
       <MainPricingDashboard>
         <Grid sx={{ backgroundColor: '#0f0f11' }}>
-          {/* Hero unit */}
-
-          {/* End hero unit */}
           <Container
             maxWidth="lg"
             component="main"
             sx={{
               backgroundColor: 'none',
-              height: '100vh'
+              height: '100vh',
             }}
           >
             <Grid
@@ -141,14 +138,13 @@ export default function SetupPayment(props) {
               {/* </Grid> */}
               {/* </Box> */}
               {/* {props.children} */}
-              {credit ?
-                <Credit/> :
-                '' // <Paypal/>
+              {
+                credit ? <Credit /> : '' // <Paypal/>
               }
             </Container>
           </Container>
         </Grid>
       </MainPricingDashboard>
     </React.Fragment>
-  );
+  )
 }

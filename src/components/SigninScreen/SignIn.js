@@ -20,6 +20,7 @@ import { setUser } from '../../slices/authSlice'
 import { LoadingButton } from '@mui/lab'
 import { pushToast } from '../../slices/toastSlice'
 import { toastMessages, toastTypes } from '../../fixtures'
+import { useLazyGetSubscriptionQuery } from '../../api/stripe'
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
@@ -30,6 +31,7 @@ export default function SignIn() {
   const { data: confirmEmail } = useConfirmEmailQuery(confirmEmailToken, {
     skip: !confirmEmailToken,
   })
+  const [getUserSubscription] = useLazyGetSubscriptionQuery()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const handleSubmit = async (event) => {
@@ -57,6 +59,7 @@ export default function SignIn() {
       }
       setIsLoading(true)
       const { data: user } = await signIn(userData)
+      const publicId = user.public_id
       if (user?.status === 'success') {
         dispatch(
           setUser({
@@ -64,15 +67,32 @@ export default function SignIn() {
             ...userData,
             ...user.user,
           })
-        ) // todo put only what really need
+        )
         localStorage.setItem(
           'credentials',
           JSON.stringify({
-            public_id: user.public_id,
+            public_id: publicId,
             token: user.Authorization,
           })
         )
-        navigate(user.user.has_onboard ? '/' : '../pricing')
+
+        if (user.user.has_onboard) {
+          navigate('./')
+          return
+        }
+
+        const userSubscription = await getUserSubscription({ publicId })
+        const isActive = userSubscription?.data?.data.some(
+          (subscription) => subscription.plan.active
+        )
+
+        if (isActive) {
+          navigate('../select-broker')
+          return
+        }
+
+        navigate('../pricing')
+        return
       }
       setIsLoading(false)
     } catch (err) {
