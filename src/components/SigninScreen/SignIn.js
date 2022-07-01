@@ -59,7 +59,7 @@ export default function SignIn() {
       }
       setIsLoading(true)
       const { data: user } = await signIn(userData)
-      const publicId = user.public_id
+      const publicId = user?.public_id
       if (user?.status === 'success') {
         dispatch(
           setUser({

@@ -66,6 +66,7 @@ export const toastMessages = {
   signIn: {
     success: 'You are successfully logged in',
     warning: 'Check your password and/or email',
+    error: 'Try again. Server error',
   },
   confirmEmail: {
     success: 'You have confirmed your account. Thanks!',

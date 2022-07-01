@@ -1,50 +1,50 @@
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardHeader from '@mui/material/CardHeader';
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
-import Switch from '@mui/material/Switch';
-import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard';
-import { useNavigate } from 'react-router-dom';
-import DoneRoundedIcon from '@mui/icons-material/DoneRounded';
-import { useDispatch, useSelector } from 'react-redux';
-import { setBilling } from '../../slices/billingSlice';
-import { useGetPlansQuery } from '../../api/stripe';
-import { plansDescription } from '../../fixtures';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardContent from '@mui/material/CardContent'
+import CardHeader from '@mui/material/CardHeader'
+import Grid from '@mui/material/Grid'
+import Typography from '@mui/material/Typography'
+import Container from '@mui/material/Container'
+import Switch from '@mui/material/Switch'
+import MainPricingDashboard from '../MainPricingDashboard/MainPricingDashboard'
+import { useNavigate } from 'react-router-dom'
+import DoneRoundedIcon from '@mui/icons-material/DoneRounded'
+import { useDispatch, useSelector } from 'react-redux'
+import { setBilling } from '../../slices/billingSlice'
+import { useGetPlansQuery } from '../../api/stripe'
+import { plansDescription } from '../../fixtures'
 
 export default function Pricing() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const isMonthlyInit = useSelector((state) => state.billing.isMonthly);
-  const [isMonthly, setIsMonthly] = useState(isMonthlyInit);
-  const [monthlyPlans, setMonthlyPlans] = useState([]);
-  const [yearPlans, setYearPlans] = useState([]);
-  const {data: plans} = useGetPlansQuery();
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const isMonthlyInit = useSelector((state) => state.billing.isMonthly)
+  const [isMonthly, setIsMonthly] = useState(isMonthlyInit)
+  const [monthlyPlans, setMonthlyPlans] = useState([])
+  const [yearPlans, setYearPlans] = useState([])
+  const { data: plans } = useGetPlansQuery()
 
-  const plansToRender = isMonthly ? monthlyPlans : yearPlans;
+  const plansToRender = isMonthly ? monthlyPlans : yearPlans
 
   function handleTerm() {
-    setIsMonthly(!isMonthly);
+    setIsMonthly(!isMonthly)
   }
 
   function handleClick(planData) {
     return function (event) {
-      event.preventDefault();
+      event.preventDefault()
       dispatch(
         setBilling({
           price: planData.price,
           plan: planData.title,
           plan_id: planData.id,
-          isMonthly
+          isMonthly,
         })
-      );
-      navigate('../setup-payment');
-    };
+      )
+      navigate('../setup-payment')
+    }
   }
 
   function setPlan(interval, initialDescription, fetchedData) {
@@ -55,30 +55,32 @@ export default function Pricing() {
           title: fetchedData[ind].nickname,
           price: fetchedData[ind].amount / 100,
           id: fetchedData[ind].id,
-        };
+        }
       } else {
-        return plan;
+        return plan
       }
-    });
+    })
     switch (interval) {
       case 'month':
-        setMonthlyPlans(joinedPlans);
-        break;
+        setMonthlyPlans(joinedPlans)
+        break
       case 'year':
-        setYearPlans(joinedPlans);
-        break;
+        setYearPlans(joinedPlans)
+        break
     }
   }
 
   useEffect(() => {
     if (Array.isArray(plans?.data)) {
-      const plansData = plans.data;
-      const monthlyPlansData = plansData.filter(plan => plan.interval === 'month');
-      const yearPlansData = plansData.filter(plan => plan.interval === 'year');
-      setPlan('month', plansDescription, monthlyPlansData);
-      setPlan('year', plansDescription, yearPlansData);
+      const plansData = plans.data
+      const monthlyPlansData = plansData.filter(
+        (plan) => plan.interval === 'month'
+      )
+      const yearPlansData = plansData.filter((plan) => plan.interval === 'year')
+      setPlan('month', plansDescription, monthlyPlansData)
+      setPlan('year', plansDescription, yearPlansData)
     }
-  }, [plans]);
+  }, [plans])
 
   return (
     <MainPricingDashboard>
@@ -91,7 +93,7 @@ export default function Pricing() {
           component="main"
           sx={{
             backgroundColor: 'none',
-            height: '100vh'
+            height: '100vh',
           }}
         >
           <Grid
@@ -155,7 +157,7 @@ export default function Pricing() {
             alignItems="center"
           >
             <h3>Monthly</h3>
-            <Switch checked={!isMonthly} onChange={handleTerm}/>
+            <Switch checked={!isMonthly} onChange={handleTerm} />
             <h3>Anually</h3>
           </Grid>
           <Grid
@@ -169,7 +171,7 @@ export default function Pricing() {
               // Enterprise card is full width at sm breakpoint
               <Grid
                 item
-                key={plan.title}
+                key={plan.id}
                 xs={12}
                 // sm={tier.title === "Enterprise" ? 12 : 6}
                 sm={12}
@@ -241,10 +243,12 @@ export default function Pricing() {
                           >
                             {plan.title}
                           </h2>
-                          <p style={{
-                            marginTop: 0,
-                            fontSize: '17px'
-                          }}>
+                          <p
+                            style={{
+                              marginTop: 0,
+                              fontSize: '17px',
+                            }}
+                          >
                             Free to use for 14 days
                           </p>
                         </Grid>
@@ -337,5 +341,5 @@ export default function Pricing() {
         </Container>
       </Grid>
     </MainPricingDashboard>
-  );
+  )
 }

@@ -63,12 +63,14 @@ export const stripeApi = createApi({
         try {
           await queryFulfilled
         } catch (error) {
-          dispatch(
-            pushToast({
-              type: toastTypes.error,
-              message: error.error.data.message,
-            })
-          )
+          if (!error.error.data.message.includes('requested URL')) {
+            dispatch(
+              pushToast({
+                type: toastTypes.error,
+                message: error.error.data.message,
+              })
+            )
+          }
         }
       },
     }),
