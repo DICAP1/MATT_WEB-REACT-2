@@ -34,6 +34,10 @@ export default function Credit() {
   const elements = useElements()
   const navigate = useNavigate()
   const [postSubscription] = usePostSubscriptionMutation()
+  const { data: dataSubscription } = useGetSubscriptionQuery(
+    { publicId },
+    { skip: !publicId }
+  )
 
   const inputStyles = {
     style: {
@@ -304,7 +308,7 @@ export default function Credit() {
               </Grid>
             </Grid>
             <Link
-              to={'../pricing'}
+              to={'/pricing'}
               style={{
                 color: '#ee6535',
                 fontSize: 13,

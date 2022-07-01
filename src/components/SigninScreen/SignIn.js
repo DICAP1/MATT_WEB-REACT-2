@@ -77,7 +77,7 @@ export default function SignIn() {
         )
 
         if (user.user.has_onboard) {
-          navigate('../')
+          navigate('./')
           return
         }
 
@@ -293,7 +293,7 @@ export default function SignIn() {
                   alignItems="flex-end"
                 >
                   <Link
-                    to="../forgot-password"
+                    to="/forgot-password"
                     style={{
                       textDecoration: 'none',
                       color: 'white',
@@ -357,7 +357,7 @@ export default function SignIn() {
                 </p>
 
                 <Link
-                  to="../register"
+                  to="/register"
                   style={{
                     color: '#ee6535',
                     fontSize: 13,
