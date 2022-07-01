@@ -93,7 +93,7 @@ export default function VerifyPhoneNumber() {
                   // autoComplete="email"
                 />
                 <Link
-                  to={'/verifyPhoneOTP'}
+                  to={'../verifyPhoneOTP'}
                   style={{
                     color: '#ee6535',
                     fontSize: 13,

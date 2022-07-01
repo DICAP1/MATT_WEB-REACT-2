@@ -38,7 +38,7 @@ export default function ForgotPassword() {
     resetPassword({ email: email })
       .then((data) => {
         if (data.status === 'success') {
-          navigate('../signin')
+          navigate('../login')
         }
       })
       .catch((err) => console.log(err))
