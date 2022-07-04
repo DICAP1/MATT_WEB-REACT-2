@@ -77,7 +77,7 @@ export default function SignIn() {
         )
 
         if (user.user.has_onboard) {
-          navigate('./')
+          navigate('../')
           return
         }
 
