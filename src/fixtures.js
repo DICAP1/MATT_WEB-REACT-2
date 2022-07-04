@@ -88,3 +88,14 @@ export const toastMessages = {
     error: 'Try again. Server error',
   },
 }
+
+export const titles = {
+  '/login' : 'Login',
+  '/register' : 'Register',
+  '/create-account' : 'Create Account',
+  '/pricing' : 'Pricing',
+  '/setup-payment' : 'Payment',
+  '/select-broker' : 'Brokers',
+  '/forgot-password' : 'Forgot Password',
+  '/create-password' : 'Create Password',
+}

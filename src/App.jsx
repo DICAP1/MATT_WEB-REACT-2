@@ -1,5 +1,5 @@
 import './App.css'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import SignIn from './components/SigninScreen/SignIn'
 import PreSignUp from './components/PreSignUpScreen/PreSignUp'
 import SignUp from './components/SignUpScreen/SignUpScreen'
@@ -11,8 +11,14 @@ import SelectBroker from './components/SelectBrokerScreen/SelectBroker'
 import { RequireAuth } from './components/RequireAuth/RequireAuth'
 import Main from './components/Main/Main'
 import Toasts from './components/Toasts/Toasts'
+import { titles } from './fixtures'
+import { useEffect } from 'react'
 
 function App() {
+  const location = useLocation()
+  useEffect(() => {
+    document.title = titles[location.pathname] ?? 'MATT'
+  },[location])
 
   return (
     <div className='App'>
