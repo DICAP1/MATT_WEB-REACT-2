@@ -77,7 +77,7 @@ export const authApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message: toastMessages.signIn.error,
             })
           )
         }
