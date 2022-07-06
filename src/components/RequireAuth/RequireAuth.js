@@ -51,7 +51,7 @@ export const RequireAuth = ({
           }));
           console.log('im here')
           if (user?.data?.has_onboard) {
-            navigate('../')
+            navigate('./')
             return
           } 
   
@@ -61,11 +61,11 @@ export const RequireAuth = ({
           )
   
           if (isActive) {
-            navigate('../select-broker')
+            navigate('./select-broker')
             return
           }
   
-          navigate('../pricing')
+          navigate('./pricing')
         }
       } catch (err) {
         console.log('error getting user', err.message);
