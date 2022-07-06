@@ -25,6 +25,7 @@ export const RequireAuth = ({ redirectTo }) => {
       }
     } catch (err) {
       console.log('wrong credentials: ', err.message)
+      localStorage.clear()
       dispatch(
         setUser({
           isAuth: false,
