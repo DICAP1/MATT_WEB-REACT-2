@@ -87,15 +87,18 @@ export const toastMessages = {
     warningAllFields: 'All fields should be filled in',
     error: 'Try again. Server error',
   },
+  common: {
+    error: 'Server error. Try again.',
+  },
 }
 
 export const titles = {
-  '/login' : 'Login',
-  '/register' : 'Register',
-  '/create-account' : 'Create Account',
-  '/pricing' : 'Pricing',
-  '/setup-payment' : 'Payment',
-  '/select-broker' : 'Brokers',
-  '/forgot-password' : 'Forgot Password',
-  '/create-password' : 'Create Password',
+  '/login': 'Login',
+  '/register': 'Register',
+  '/create-account': 'Create Account',
+  '/pricing': 'Pricing',
+  '/setup-payment': 'Payment',
+  '/select-broker': 'Brokers',
+  '/forgot-password': 'Forgot Password',
+  '/create-password': 'Create Password',
 }

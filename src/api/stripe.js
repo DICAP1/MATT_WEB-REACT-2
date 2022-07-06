@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
 import { pushToast } from '../slices/toastSlice'
-import { toastTypes } from '../fixtures'
+import { toastMessages, toastTypes } from '../fixtures'
 import { getIdToken } from '../utils'
 
 export const stripeApi = createApi({
@@ -29,7 +29,8 @@ export const stripeApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -48,7 +49,8 @@ export const stripeApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -67,7 +69,8 @@ export const stripeApi = createApi({
             dispatch(
               pushToast({
                 type: toastTypes.error,
-                message: error.error.data.message,
+                message:
+                  error?.error?.data?.message || toastMessages.common.error,
               })
             )
           }

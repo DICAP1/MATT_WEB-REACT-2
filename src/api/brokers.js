@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
-import { getIdToken } from '../utils';
+import { getIdToken } from '../utils'
 import { pushToast } from '../slices/toastSlice'
 import { toastMessages, toastTypes } from '../fixtures'
 
@@ -9,12 +9,12 @@ export const brokerApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: getConfig().API_URL,
     prepareHeaders: (headers) => {
-      const token = getIdToken();
+      const token = getIdToken()
       if (token) {
         headers.set('authorization', `${token}`)
       }
       return headers
-    }
+    },
   }),
   endpoints: (builder) => ({
     getAllBrokes: builder.query({
@@ -29,14 +29,15 @@ export const brokerApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
       },
     }),
     getUserBrokers: builder.query({
-      query: ({publicId}) => ({
+      query: ({ publicId }) => ({
         url: `users/brokers/${publicId}`,
         method: 'GET',
       }),
@@ -47,17 +48,18 @@ export const brokerApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
       },
     }),
     postUserBroker: builder.mutation({
-      query: ({publicId, broker_id}) => ({
+      query: ({ publicId, broker_id }) => ({
         url: `users/brokers/${publicId}`,
         body: {
-          broker_id : broker_id
+          broker_id: broker_id,
         },
         method: 'POST',
       }),
@@ -74,7 +76,8 @@ export const brokerApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: toastMessages.postBroker.error,
+              message:
+                error?.error?.data?.message || toastMessages.postBroker.error,
             })
           )
         }

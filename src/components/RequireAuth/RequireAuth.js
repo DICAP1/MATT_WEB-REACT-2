@@ -79,9 +79,8 @@ export const RequireAuth = ({
   }, [user])
 
   if (isAuth === null) {
-    return null;
+    return null
   }
 
-  return isAuth ? <Outlet/> : <Navigate to={redirectTo}/>;
-};
-
+  return isAuth ? <Outlet /> : <Navigate to={redirectTo} />
+}
