@@ -75,26 +75,9 @@ export default function SignIn() {
             token: user.Authorization,
           })
         )
-
-        if (user.user.has_onboard) {
-          navigate('../')
-          return
-        }
-
-        const userSubscription = await getUserSubscription({ publicId })
-        const isActive = userSubscription?.data?.data.some(
-          (subscription) => subscription.plan.active
-        )
-
-        if (isActive) {
-          navigate('../select-broker')
-          return
-        }
-
-        navigate('../pricing')
-        return
       }
-      setIsLoading(false)
+      setIsLoading(false);
+      navigate('../pricing')
     } catch (err) {
       console.error(err)
       setIsLoading(false)
