@@ -64,7 +64,7 @@ export const toastMessages = {
     error: 'Try again. Server error',
   },
   signIn: {
-    success: 'You are successfully logged in',
+    success: 'You have successfully logged in',
     warning: 'Check your password and/or email',
     error: 'Try again. Server error',
   },
