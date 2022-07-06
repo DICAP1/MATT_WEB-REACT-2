@@ -47,7 +47,7 @@ export default function SelectBroker() {
   }
 
   const handleClick = () => {
-    navigate('../')
+    window.location.replace('https://demotraider.divergencecapital.com/#/get-started');
   }
 
   useEffect(() => {

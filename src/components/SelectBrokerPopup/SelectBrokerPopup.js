@@ -10,8 +10,8 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import './style.css'
 import {
-  useGetUserBrokersQuery,
   usePostUserBrokerMutation,
+  useLazyGetUserBrokersQuery,
 } from '../../api/brokers'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUserCredentials } from '../../slices/authSlice'
@@ -34,7 +34,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
   })
 
   const [postUserBroker] = usePostUserBrokerMutation()
-  const { data: userBrokers } = useGetUserBrokersQuery({ publicId })
+  const [getUserBroker] = useLazyGetUserBrokersQuery()
   const [patchUserBrokerById] = usePatchUserBrokerByIdMutation()
 
   const style = {
@@ -50,14 +50,12 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
 
   const isOanda = brokerConfig.name?.toLowerCase().includes('oanda')
 
-  const patchBrokerCredentials = async (brokerId, patchData, userBrokers) => {
+  const patchBrokerCredentials = async (brokerId, patchData) => {
     try {
-
+      const {data : userBrokers} = await getUserBroker({publicId});
       const brokerToUpdate = userBrokers.find(
         (data) => data.broker_id === brokerId
       )
-      console.log('brokerToUpdate: ', brokerToUpdate)
-      console.log('patchData: ', patchData)
 
       for (const [key, value] of Object.entries(patchData)) {
         const currentField = brokerToUpdate.user_broker_setting.find(
@@ -102,13 +100,12 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
         publicId,
         broker_id: brokerConfig.id,
       })
-
-      if (postBroker?.data !== null) {
+      if (postBroker?.data === null) {
         setValues({
           ...values,
           password: '',
         })
-        await patchBrokerCredentials(brokerConfig.id, userData, userBrokers)
+        await patchBrokerCredentials(brokerConfig.id, userData)
         onSubmit()
       }
       handleClose()

@@ -88,6 +88,7 @@ export const brokerApi = createApi({
 
 export const {
   useGetAllBrokesQuery,
+  useLazyGetUserBrokersQuery,
   useGetUserBrokersQuery,
   usePostUserBrokerMutation,
 } = brokerApi
