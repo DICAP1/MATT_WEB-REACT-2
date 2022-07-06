@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { getConfig } from '../config/app-config'
 import { getIdToken } from '../utils'
 import { pushToast } from '../slices/toastSlice'
-import { toastTypes } from '../fixtures'
+import { toastMessages, toastTypes } from '../fixtures'
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
@@ -31,7 +31,8 @@ export const usersApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -50,7 +51,8 @@ export const usersApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -69,7 +71,8 @@ export const usersApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }

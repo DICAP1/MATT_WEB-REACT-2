@@ -28,7 +28,8 @@ export const authApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message || toastMessages.register.error,
+              message:
+                error?.error?.data?.message || toastMessages.register.error,
             })
           )
         }
@@ -52,7 +53,8 @@ export const authApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -77,7 +79,8 @@ export const authApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message || toastMessages.signIn.error,
+              message:
+                error?.error?.data?.message || toastMessages.signIn.error,
             })
           )
         }
@@ -102,7 +105,8 @@ export const authApi = createApi({
           dispatch(
             pushToast({
               type: toastTypes.error,
-              message: error.error.data.message,
+              message:
+                error?.error?.data?.message || toastMessages.common.error,
             })
           )
         }
@@ -128,7 +132,7 @@ export const authApi = createApi({
             pushToast({
               type: toastTypes.error,
               message:
-                error.error.data.message || toastMessages.setPassword.error,
+                error?.error?.data?.message || toastMessages.setPassword.error,
             })
           )
         }
