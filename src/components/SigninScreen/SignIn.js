@@ -77,7 +77,7 @@ export default function SignIn() {
         )
       }
       setIsLoading(false);
-      navigate('../pricing')
+      navigate('../')
     } catch (err) {
       console.error(err)
       setIsLoading(false)

@@ -55,7 +55,7 @@ export const RequireAuth = ({
           }));
 
           if (user?.data?.has_onboard) {
-             window.location.replace('https://demotraider.divergencecapital.com/#/get-started')
+            window.location.replace('https://demotraider.divergencecapital.com/#/get-started')
             return
           }
 
