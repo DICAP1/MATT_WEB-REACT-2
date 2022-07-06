@@ -367,7 +367,7 @@ export default function SignUp() {
                   //   justifyContent="center"
                   alignItems="center"
                 >
-                  <Checkbox {...label} required />
+                  <Checkbox {...label} required style={{ color: '#ee6535' }} />
                   <p style={{ color: 'rgb(209, 209, 209)' }}>
                     I agree all the statements included in&nbsp;
                   </p>
