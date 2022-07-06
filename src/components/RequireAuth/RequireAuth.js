@@ -44,22 +44,21 @@ export const RequireAuth = ({
   useEffect(() => {
     const initUser = async () => {
       try {
+        const userSubscription = await getUserSubscription({ publicId: user?.data?.public_id})
+          const isActive = userSubscription?.data?.data.some(
+            (subscription) => subscription.plan.active
+        )
         if (user?.data?.confirmed) {
           dispatch(setUser({
             isAuth: true,
             ...user?.data 
           }));
-          console.log('im here')
+
           if (user?.data?.has_onboard) {
-            navigate('./')
+             window.location.replace('https://demotraider.divergencecapital.com/#/get-started')
             return
-          } 
-  
-          const userSubscription = await getUserSubscription({ publicId: user?.data?.public_id})
-          const isActive = userSubscription?.data?.data.some(
-            (subscription) => subscription.plan.active
-          )
-  
+          }
+
           if (isActive) {
             navigate('./select-broker')
             return
