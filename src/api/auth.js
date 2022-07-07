@@ -60,6 +60,32 @@ export const authApi = createApi({
         }
       },
     }),
+    resendConfirmation: builder.mutation({
+      query: (email) => ({
+        url: `users/resendConfirmation?email=${email}`,
+        method: 'POST',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+          dispatch(
+            pushToast({
+              type: toastTypes.success,
+              message: toastMessages.resendConfirmation.success,
+            })
+          )
+        } catch (error) {
+          dispatch(
+            pushToast({
+              type: toastTypes.error,
+              message:
+                error?.error?.data?.message ||
+                toastMessages.resendConfirmation.error,
+            })
+          )
+        }
+      },
+    }),
     signIn: builder.mutation({
       query: (userData) => ({
         url: `/auth/login`,
@@ -143,6 +169,7 @@ export const authApi = createApi({
 
 export const {
   useRegisterMutation,
+  useResendConfirmationMutation,
   useConfirmEmailQuery,
   useSignInMutation,
   useResetPasswordMutation,

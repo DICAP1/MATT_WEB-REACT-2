@@ -72,6 +72,10 @@ export const toastMessages = {
     success: 'You have confirmed your account. Thanks!',
     error: 'Try again. Server error',
   },
+  resendConfirmation: {
+    success: 'Confirmation email has been sent again',
+    error: "Server error. Confirmation hasn't been resent",
+  },
   resetPassword: {
     success: 'Success! Check your inbox email',
     warningEmail: 'Check your email address',
