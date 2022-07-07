@@ -15,7 +15,11 @@ import google from '../../assets/Icons/google.png'
 import linkedin from '../../assets/Icons/linkedin.png'
 import Logo from '../Logo/Logo'
 import MainScreen from '../MainScreen/MainScreen'
-import { useConfirmEmailQuery, useSignInMutation } from '../../api/auth'
+import {
+  useConfirmEmailQuery,
+  useResendConfirmationMutation,
+  useSignInMutation,
+} from '../../api/auth'
 import { setUser } from '../../slices/authSlice'
 import { LoadingButton } from '@mui/lab'
 import { pushToast } from '../../slices/toastSlice'
@@ -24,14 +28,24 @@ import { useLazyGetSubscriptionQuery } from '../../api/stripe'
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
+  const [confirmEmailToken, setConfirmEmailToken] = useState('')
+  const [showResendButton, setShowResendButton] = useState(false)
+  const [currentEmail, setCurrentEmail] = useState('')
+  const [values, setValues] = React.useState({
+    amount: '',
+    password: '',
+    weight: '',
+    weightRange: '',
+    showPassword: false,
+  })
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [signIn] = useSignInMutation()
-  const [confirmEmailToken, setConfirmEmailToken] = useState('')
   const { data: confirmEmail } = useConfirmEmailQuery(confirmEmailToken, {
     skip: !confirmEmailToken,
   })
   const [getUserSubscription] = useLazyGetSubscriptionQuery()
+  const [resendConfirmation] = useResendConfirmationMutation()
   const [searchParams, setSearchParams] = useSearchParams()
 
   const handleSubmit = async (event) => {
@@ -39,6 +53,13 @@ export default function SignIn() {
 
     const form = event.currentTarget
     const isValid = form.checkValidity()
+    const formData = new FormData(form)
+    const email = formData.get('email')
+    const password = formData.get('password')
+    const userData = {
+      email,
+      password,
+    }
 
     if (!isValid) {
       dispatch(
@@ -50,15 +71,8 @@ export default function SignIn() {
       return
     }
     try {
-      const formData = new FormData(form)
-      const email = formData.get('email')
-      const password = formData.get('password')
-      const userData = {
-        email,
-        password,
-      }
       setIsLoading(true)
-      const { data: user } = await signIn(userData)
+      const { data: user } = await signIn(userData).unwrap()
       const publicId = user?.public_id
       if (user?.status === 'success') {
         dispatch(
@@ -76,21 +90,16 @@ export default function SignIn() {
           })
         )
       }
-      setIsLoading(false);
+      setIsLoading(false)
       navigate('../')
     } catch (err) {
-      console.error(err)
       setIsLoading(false)
+      if (err.data.message.includes('not confirmed')) {
+        setShowResendButton(true)
+        setCurrentEmail(email)
+      }
     }
   }
-
-  const [values, setValues] = React.useState({
-    amount: '',
-    password: '',
-    weight: '',
-    weightRange: '',
-    showPassword: false,
-  })
 
   const handleChange = (prop) => (event) => {
     setValues({
@@ -108,6 +117,11 @@ export default function SignIn() {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault()
+  }
+
+  const handleClickResendConfirmation = async () => {
+    await resendConfirmation(currentEmail)
+    setShowResendButton(false)
   }
 
   useEffect(() => {
@@ -306,7 +320,28 @@ export default function SignIn() {
                 >
                   Sign In
                 </LoadingButton>
-
+                {showResendButton && (
+                  <LoadingButton
+                    type="button"
+                    fullWidth
+                    variant="text"
+                    sx={{
+                      mt: 1,
+                      mb: 2,
+                      backgroundColor: '#ff6838',
+                      textTransform: 'none',
+                      fontWeight: 'normal',
+                      color: '#ffffff',
+                      '&:hover': {
+                        backgroundColor: 'primary.main',
+                        opacity: [0.9, 0.8, 0.7],
+                      },
+                    }}
+                    onClick={handleClickResendConfirmation}
+                  >
+                    Resend confirmation
+                  </LoadingButton>
+                )}
                 <Grid
                   container
                   direction="row"
