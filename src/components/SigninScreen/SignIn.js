@@ -24,7 +24,6 @@ import { setUser } from '../../slices/authSlice'
 import { LoadingButton } from '@mui/lab'
 import { pushToast } from '../../slices/toastSlice'
 import { toastMessages, toastTypes } from '../../fixtures'
-import { useLazyGetSubscriptionQuery } from '../../api/stripe'
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false)
@@ -44,7 +43,6 @@ export default function SignIn() {
   const { data: confirmEmail } = useConfirmEmailQuery(confirmEmailToken, {
     skip: !confirmEmailToken,
   })
-  const [getUserSubscription] = useLazyGetSubscriptionQuery()
   const [resendConfirmation] = useResendConfirmationMutation()
   const [searchParams, setSearchParams] = useSearchParams()
 
@@ -72,7 +70,7 @@ export default function SignIn() {
     }
     try {
       setIsLoading(true)
-      const { data: user } = await signIn(userData).unwrap()
+      const user = await signIn(userData).unwrap()
       const publicId = user?.public_id
       if (user?.status === 'success') {
         dispatch(
