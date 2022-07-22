@@ -10,8 +10,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff'
 import Visibility from '@mui/icons-material/Visibility'
 import './style.css'
 import {
-  usePostUserBrokerMutation,
+  useGetUserBrokersQuery,
+  useLazyGetAccountByBrokerQuery,
   useLazyGetUserBrokersQuery,
+  usePostUserBrokerMutation,
 } from '../../api/brokers'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectUserCredentials } from '../../slices/authSlice'
@@ -36,6 +38,9 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
   const [postUserBroker] = usePostUserBrokerMutation()
   const [getUserBroker] = useLazyGetUserBrokersQuery()
   const [patchUserBrokerById] = usePatchUserBrokerByIdMutation()
+  const [getAccountByBroker] = useLazyGetAccountByBrokerQuery()
+  const { data: userBrokers, refetch: refetchUserBrokers } =
+    useGetUserBrokersQuery({ publicId }, { skip: !publicId })
 
   const style = {
     position: 'absolute',
@@ -52,7 +57,7 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
 
   const patchBrokerCredentials = async (brokerId, patchData) => {
     try {
-      const {data : userBrokers} = await getUserBroker({publicId});
+      const { data: userBrokers } = await getUserBroker({ publicId })
       const brokerToUpdate = userBrokers.find(
         (data) => data.broker_id === brokerId
       )
@@ -70,7 +75,6 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
             option_value: value,
           },
         })
-
       }
     } catch (err) {
       console.log('error: ', err.message)
@@ -96,25 +100,38 @@ const SelectBrokerPopup = ({ open, handleClose, brokerConfig, onSubmit }) => {
       setIsLoading(true)
 
       let userData = Object.fromEntries(new FormData(form))
-      const postBroker = await postUserBroker({
+      refetchUserBrokers()
+      if (!userBrokers.some((el) => el.broker_id === brokerConfig.id)) {
+        const postBroker = await postUserBroker({
+          publicId,
+          broker_id: brokerConfig.id,
+        })
+        if (postBroker?.data === null) {
+          setValues({
+            ...values,
+            password: '',
+          })
+        }
+      }
+      await patchBrokerCredentials(brokerConfig.id, userData)
+      const { data: accountId } = await getAccountByBroker({
         publicId,
         broker_id: brokerConfig.id,
       })
-      if (postBroker?.data === null) {
-        setValues({
-          ...values,
-          password: '',
-        })
-        await patchBrokerCredentials(brokerConfig.id, userData)
-        onSubmit()
+      if (!accountId) {
+        throw new Error(toastMessages.getAccount.error)
       }
+      onSubmit()
       handleClose()
     } catch (err) {
       console.log(err.message)
       dispatch(
         pushToast({
           type: toastTypes.error,
-          message: toastMessages.postBroker.error,
+          message:
+            err.message === toastMessages.getAccount.error
+              ? toastMessages.getAccount.error
+              : toastMessages.postBroker.error,
         })
       )
     }

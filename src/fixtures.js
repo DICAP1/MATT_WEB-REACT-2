@@ -91,6 +91,9 @@ export const toastMessages = {
     warningAllFields: 'All fields should be filled in',
     error: 'Try again. Server error',
   },
+  getAccount: {
+    error: 'Invalid details, check your credentials and try again',
+  },
   common: {
     error: 'Server error. Try again.',
   },
