@@ -83,6 +83,26 @@ export const brokerApi = createApi({
         }
       },
     }),
+    getAccountByBroker: builder.query({
+      query: ({ publicId, broker_id }) => ({
+        url: `accounts/${publicId}${broker_id}`,
+        method: 'GET',
+      }),
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          await queryFulfilled
+        } catch (error) {
+          // dispatch(
+          //   pushToast({
+          //     type: toastTypes.error,
+          //     message:
+          //       error?.error?.data?.message || toastMessages.getAccount.error,
+          //   })
+          // )
+          throw new Error(toastMessages.getAccount.error)
+        }
+      },
+    }),
   }),
 })
 
@@ -91,4 +111,5 @@ export const {
   useLazyGetUserBrokersQuery,
   useGetUserBrokersQuery,
   usePostUserBrokerMutation,
+  useLazyGetAccountByBrokerQuery,
 } = brokerApi
