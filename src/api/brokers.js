@@ -85,7 +85,7 @@ export const brokerApi = createApi({
     }),
     getAccountByBroker: builder.query({
       query: ({ publicId, broker_id }) => ({
-        url: `accounts/${publicId}${broker_id}`,
+        url: `accounts/?broker_id=${broker_id}&public_id=${publicId}`,
         method: 'GET',
       }),
       async onQueryStarted(arg, { dispatch, queryFulfilled }) {
